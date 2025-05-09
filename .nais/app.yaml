@@ -6,7 +6,6 @@ metadata:
 spec:
   ingresses:
     - https://brukerflate-innkreving.intern.dev.nav.no
-  image: {{ image }}
   replicas:
     max: 1
     min: 1
