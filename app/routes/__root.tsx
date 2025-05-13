@@ -1,9 +1,13 @@
 import type {ReactNode} from 'react'
-import {createRootRoute, HeadContent, Outlet, Scripts,} from '@tanstack/react-router'
-import {TanStackRouterDevtools} from "@tanstack/router-devtools";
-import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import {createRootRouteWithContext, HeadContent, Outlet, Scripts,} from '@tanstack/react-router'
+import {Heading, Page} from "@navikt/ds-react";
+import {TanStackRouterDevtools} from "@tanstack/react-router-devtools";
+import navCss from "@navikt/ds-css?url"
+import {QueryClient} from "@tanstack/react-query";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+    queryClient: QueryClient
+}>()({
     head: () => ({
         meta: [
             {
@@ -14,19 +18,30 @@ export const Route = createRootRoute({
                 content: 'width=device-width, initial-scale=1',
             },
             {
-                title: 'TanStack Start Starter',
+                title: 'Innkreving',
             },
         ],
+        links: [
+            {rel: 'stylesheet', href: navCss }
+        ]
     }),
     component: RootComponent,
 })
 
+
 function RootComponent() {
     return (
         <RootDocument>
-            <Outlet/>
-            <TanStackRouterDevtools position="bottom-right"/>
-            <ReactQueryDevtools buttonPosition="bottom-left"/>
+            <Page>
+                <Page.Block width="2xl" gutters>
+                    <Heading level="1" size="large">Innkreving</Heading>
+                </Page.Block>
+                <Page.Block width="2xl" gutters>
+                    <Outlet/>
+                </Page.Block>
+                <TanStackRouterDevtools position="bottom-right"/>
+                {/*<ReactQueryDevtools buttonPosition="bottom-left"/>*/}
+            </Page>
         </RootDocument>
     )
 }

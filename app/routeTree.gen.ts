@@ -11,9 +11,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as KravoversiktImport } from './routes/kravoversikt'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const KravoversiktRoute = KravoversiktImport.update({
+  id: '/kravoversikt',
+  path: '/kravoversikt',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +39,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/kravoversikt': {
+      id: '/kravoversikt'
+      path: '/kravoversikt'
+      fullPath: '/kravoversikt'
+      preLoaderRoute: typeof KravoversiktImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/kravoversikt': typeof KravoversiktRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/kravoversikt': typeof KravoversiktRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/kravoversikt': typeof KravoversiktRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/kravoversikt'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/kravoversikt'
+  id: '__root__' | '/' | '/kravoversikt'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  KravoversiktRoute: typeof KravoversiktRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  KravoversiktRoute: KravoversiktRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/kravoversikt"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/kravoversikt": {
+      "filePath": "kravoversikt.tsx"
     }
   }
 }
