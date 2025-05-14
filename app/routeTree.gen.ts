@@ -12,7 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as KravoversiktImport } from './routes/kravoversikt'
-import { Route as IndexImport } from './routes/index'
+import { Route as KravoversiktResultatImport } from './routes/kravoversikt.resultat'
 
 // Create/Update Routes
 
@@ -22,23 +22,16 @@ const KravoversiktRoute = KravoversiktImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRoute,
+const KravoversiktResultatRoute = KravoversiktResultatImport.update({
+  id: '/resultat',
+  path: '/resultat',
+  getParentRoute: () => KravoversiktRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/kravoversikt': {
       id: '/kravoversikt'
       path: '/kravoversikt'
@@ -46,44 +39,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KravoversiktImport
       parentRoute: typeof rootRoute
     }
+    '/kravoversikt/resultat': {
+      id: '/kravoversikt/resultat'
+      path: '/resultat'
+      fullPath: '/kravoversikt/resultat'
+      preLoaderRoute: typeof KravoversiktResultatImport
+      parentRoute: typeof KravoversiktImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface KravoversiktRouteChildren {
+  KravoversiktResultatRoute: typeof KravoversiktResultatRoute
+}
+
+const KravoversiktRouteChildren: KravoversiktRouteChildren = {
+  KravoversiktResultatRoute: KravoversiktResultatRoute,
+}
+
+const KravoversiktRouteWithChildren = KravoversiktRoute._addFileChildren(
+  KravoversiktRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/kravoversikt': typeof KravoversiktRoute
+  '/kravoversikt': typeof KravoversiktRouteWithChildren
+  '/kravoversikt/resultat': typeof KravoversiktResultatRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/kravoversikt': typeof KravoversiktRoute
+  '/kravoversikt': typeof KravoversiktRouteWithChildren
+  '/kravoversikt/resultat': typeof KravoversiktResultatRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/kravoversikt': typeof KravoversiktRoute
+  '/kravoversikt': typeof KravoversiktRouteWithChildren
+  '/kravoversikt/resultat': typeof KravoversiktResultatRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/kravoversikt'
+  fullPaths: '/kravoversikt' | '/kravoversikt/resultat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/kravoversikt'
-  id: '__root__' | '/' | '/kravoversikt'
+  to: '/kravoversikt' | '/kravoversikt/resultat'
+  id: '__root__' | '/kravoversikt' | '/kravoversikt/resultat'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  KravoversiktRoute: typeof KravoversiktRoute
+  KravoversiktRoute: typeof KravoversiktRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  KravoversiktRoute: KravoversiktRoute,
+  KravoversiktRoute: KravoversiktRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -96,15 +106,18 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
         "/kravoversikt"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
-    },
     "/kravoversikt": {
-      "filePath": "kravoversikt.tsx"
+      "filePath": "kravoversikt.tsx",
+      "children": [
+        "/kravoversikt/resultat"
+      ]
+    },
+    "/kravoversikt/resultat": {
+      "filePath": "kravoversikt.resultat.tsx",
+      "parent": "/kravoversikt"
     }
   }
 }
