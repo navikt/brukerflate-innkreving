@@ -2,6 +2,7 @@ import {createFileRoute} from '@tanstack/react-router'
 import {createServerFn} from "@tanstack/react-start";
 import {z} from "zod";
 import {zodValidator} from "@tanstack/zod-adapter";
+import {Alert} from "@navikt/ds-react";
 
 
 const SkyldnerSchema = z.object({
@@ -27,7 +28,6 @@ const hentKravoversikt = createServerFn()
         )
 
         if (!response.ok) {
-            console.log(await response.text())
             throw new Error('Feilet under henting av kravoversikt')
         } else {
             return response.json()
@@ -38,7 +38,8 @@ export const Route = createFileRoute('/kravoversikt/resultat')({
     component: Resultat,
     validateSearch: zodValidator(SkyldnerSchema),
     loaderDeps: ({search}) => search,
-    loader: ({deps}) => hentKravoversikt({data: deps})
+    loader: ({deps}) => hentKravoversikt({data: deps}),
+    errorComponent: ({error}) => <Alert variant="error">{error.message}</Alert>
 })
 
 function Resultat() {
