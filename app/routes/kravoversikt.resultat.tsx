@@ -1,9 +1,11 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {createServerFn} from "@tanstack/react-start";
 import {z} from "zod";
 import {zodValidator} from "@tanstack/zod-adapter";
-import {Alert, Table} from "@navikt/ds-react";
-import Kravdetaljer, {KravdetaljerProps} from "../components/Kravdetaljer";
+import {Alert, Loader, Table} from "@navikt/ds-react";
+import Kravdetaljer from "../components/Kravdetaljer";
+import {useQuery} from "@tanstack/react-query";
+import {hentKravoversikt} from "../server/hentKravoversikt";
+import {hentKravdetaljer} from "../server/hentKravdetaljer";
 
 
 const SkyldnertypeSchema = z.enum(['fødselsnummer', 'orgnummer']);
@@ -11,42 +13,6 @@ const SkyldnerSchema = z.object({
     skyldner: z.coerce.string(),
     type: SkyldnertypeSchema
 })
-
-const KravSchema = z.object({
-    kravidentifikator: z.object({
-        type: z.string(),
-        id: z.string(),
-    }),
-    kravtype: z.string(),
-})
-
-const KravoversiktSchema = z.object({
-    krav: z.array(KravSchema)
-})
-
-const hentKravoversikt = createServerFn()
-    .validator(SkyldnerSchema)
-    .handler(async ({data}) => {
-        const response = await fetch(
-            'https://utenlandsadresser-tilbakekreving.intern.dev.nav.no/internal/kravoversikt',
-            {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    id: data.skyldner,
-                    type: data.type,
-                })
-            }
-        )
-
-        if (!response.ok) {
-            throw new Error('Feilet under henting av kravoversikt')
-        } else {
-            return KravoversiktSchema.parse(await response.json())
-        }
-    })
 
 export const Route = createFileRoute('/kravoversikt/resultat')({
     component: Resultat,
@@ -73,7 +39,11 @@ function Resultat() {
                         const {kravidentifikator, kravtype} = krav;
                         const {id, type} = kravidentifikator;
                         return (
-                            <Table.ExpandableRow key={`${id}-${type}-${i}`} content={KravdetaljerWrapper()}>
+                            <Table.ExpandableRow
+                                key={`${id}-${type}-${i}`}
+                                content={<KravdetaljerWrapper/>}
+                                expandOnRowClick
+                            >
                                 <Table.HeaderCell scope="row">{id}</Table.HeaderCell>
                                 <Table.HeaderCell scope="row">{type}</Table.HeaderCell>
                                 <Table.DataCell>{kravtype}</Table.DataCell>
@@ -87,20 +57,24 @@ function Resultat() {
 }
 
 function KravdetaljerWrapper() {
-    const kravdetaljerProps: KravdetaljerProps = {
-        kravgrunnlag: {
-            datoNårKravVarBesluttetHosOppdragsgiver: "2022"
-        },
-        kravlinjer: [
-            {
-                kravlinjetype: "type",
-                opprinneligBeløp: 100,
-                gjenståendeBeløp: 50,
+    const kravdetaljer = useQuery({
+        queryKey: ["87b5a5c6-17ea-413a-ad80-b6c3406188fa"],
+        queryFn: () => hentKravdetaljer({
+            data: {
+                id: "87b5a5c6-17ea-413a-ad80-b6c3406188fa",
+                type: "SKATTEETATEN"
             }
-        ]
+        })
+    })
+
+    if (kravdetaljer.status === "pending") {
+        return <Loader/>
+    }
+    if (kravdetaljer.status === "error") {
+        return <Alert variant="error">Feilet ved henting av kravdetaljer</Alert>
     }
 
-    return <Kravdetaljer {...kravdetaljerProps} />
+    return <Kravdetaljer {...kravdetaljer.data} />
 }
 
 export type Skyldnertype = z.infer<typeof SkyldnertypeSchema>
