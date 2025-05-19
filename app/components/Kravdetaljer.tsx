@@ -1,22 +1,5 @@
-/*
-{
-	"kravgrunnlag": {
-		"datoNårKravVarBesluttetHosOppdragsgiver": "2025-05-15"
-	},
-	"kravlinjer": [
-		{
-			"kravlinjetype": "hovedstol",
-			"opprinneligBeløp": 15000,
-			"gjenståendeBeløp": 7500
-		},
-		{
-			"kravlinjetype": "rentetilleggVedTilbakekrevingAvFeilutbetalingerFraNAV",
-			"opprinneligBeløp": 4500,
-			"gjenståendeBeløp": 1500
-		}
-	]
-}
- */
+import {BodyShort, Box, Heading, VStack} from "@navikt/ds-react";
+
 export interface KravdetaljerProps {
     kravgrunnlag: {
         datoNårKravVarBesluttetHosOppdragsgiver: string
@@ -30,17 +13,25 @@ export interface KravdetaljerProps {
 
 export default function Kravdetaljer(props: KravdetaljerProps) {
     return (
-        <>
-            <p>{props.kravgrunnlag.datoNårKravVarBesluttetHosOppdragsgiver}</p>
+        <VStack gap="2">
+            <Heading level="2" size="large">Krav</Heading>
+            <Heading size="medium" level="3">Dato når krav var besluttet hos oppdragsgiver</Heading>
+            <BodyShort>{props.kravgrunnlag.datoNårKravVarBesluttetHosOppdragsgiver}</BodyShort>
+            <Heading size="medium" level="3">Kravlinjer</Heading>
             {props.kravlinjer.map((kravlinje) => {
                 return (
-                    <>
-                        <p>{kravlinje.kravlinjetype}</p>
-                        <p>{kravlinje.opprinneligBeløp}</p>
-                        <p>{kravlinje.gjenståendeBeløp}</p>
-                    </>
+                    <Box background="surface-subtle" borderColor="border-alt-3" padding="4" borderWidth="2" borderRadius="xlarge">
+                        <VStack gap="1">
+                            <Heading size="small" level="4">Kravlinjetype</Heading>
+                            <BodyShort>{kravlinje.kravlinjetype}</BodyShort>
+                            <Heading size="small" level="4">Opprinnelig beløp</Heading>
+                            <BodyShort>{kravlinje.opprinneligBeløp}</BodyShort>
+                            <Heading size="small" level="4">Gjenstående beløp</Heading>
+                            <BodyShort>{kravlinje.gjenståendeBeløp}</BodyShort>
+                        </VStack>
+                    </Box>
                 )
             })}
-        </>
+        </VStack>
     )
 }

@@ -1,18 +1,12 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {z} from "zod";
 import {zodValidator} from "@tanstack/zod-adapter";
 import {Alert, Loader, Table} from "@navikt/ds-react";
 import Kravdetaljer from "../components/Kravdetaljer";
 import {useQuery} from "@tanstack/react-query";
 import {hentKravoversikt} from "../server/hentKravoversikt";
 import {hentKravdetaljer} from "../server/hentKravdetaljer";
+import {SkyldnerSchema} from "../types/skyldner";
 
-
-const SkyldnertypeSchema = z.enum(['fødselsnummer', 'orgnummer']);
-const SkyldnerSchema = z.object({
-    skyldner: z.coerce.string(),
-    type: SkyldnertypeSchema
-})
 
 export const Route = createFileRoute('/kravoversikt/resultat')({
     component: Resultat,
@@ -76,6 +70,3 @@ function KravdetaljerWrapper() {
 
     return <Kravdetaljer {...kravdetaljer.data} />
 }
-
-export type Skyldnertype = z.infer<typeof SkyldnertypeSchema>
-export {SkyldnerSchema}

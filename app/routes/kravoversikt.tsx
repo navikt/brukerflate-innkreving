@@ -1,11 +1,11 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
 import {Radio, RadioGroup, Search} from "@navikt/ds-react";
 import {zodValidator} from "@tanstack/zod-adapter";
-import {SkyldnerSchema, Skyldnertype} from "./kravoversikt.resultat";
+import {SkyldnerSchema, Skyldnertype} from "../types/skyldner";
 
 export const Route = createFileRoute('/kravoversikt')({
     component: Kravoversikt,
-    validateSearch: zodValidator(SkyldnerSchema.optional())
+    validateSearch: zodValidator(SkyldnerSchema)
 })
 
 function Kravoversikt() {
