@@ -27,7 +27,7 @@ const hentKravdetaljer = createServerFn()
     .validator(KravdetaljerRequestSchema)
     .handler(async ({data}) => {
         const response = await fetch(
-            'https://utenlandsadresser-tilbakekreving.intern.dev.nav.no/internal/kravdetaljer',
+            'http://tilbakekreving/internal/kravdetaljer',
             {
                 method: 'POST',
                 headers: {

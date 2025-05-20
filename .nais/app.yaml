@@ -13,3 +13,6 @@ spec:
     requests:
       cpu: 50m
       memory: 32Mi
+  accessPolicy:
+    outbound:
+      application: tilbakekreving
