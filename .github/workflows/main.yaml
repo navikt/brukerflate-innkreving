@@ -26,6 +26,8 @@ jobs:
         id: docker-build-push
         with:
           team: utenlandsadresser
+          build_secrets: |
+            node_auth_token=${{ secrets.READER_TOKEN }}
       - name: Deploy to Nais
         uses: nais/deploy/actions/deploy@v2
         env:
