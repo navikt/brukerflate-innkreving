@@ -4,8 +4,10 @@ import {SkyldnerSchema} from "../types/skyldner";
 
 const Krav = z.object({
     kravidentifikator: z.object({
-        type: z.string(),
-        id: z.string(),
+        // TODO: Endre backend til å returnere upper case
+        type: z.enum(["skatteetaten", "nav"]).transform(v => v.toUpperCase()).pipe(z.enum(["SKATTEETATEN", "NAV"])),
+        // TODO: Fjern når endepunktet returnerer faktiske verdier
+        id: z.string().nonempty().catch("87b5a5c6-17ea-413a-ad80-b6c3406188fa"),
     }),
     kravtype: z.string(),
 })

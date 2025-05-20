@@ -6,6 +6,7 @@ import {useQuery} from "@tanstack/react-query";
 import {hentKravoversikt} from "../server/hentKravoversikt";
 import {hentKravdetaljer} from "../server/hentKravdetaljer";
 import {SkyldnerSchema} from "../types/skyldner";
+import {z} from 'zod';
 
 
 export const Route = createFileRoute('/kravoversikt/resultat')({
@@ -35,10 +36,10 @@ function Resultat() {
                         return (
                             <Table.ExpandableRow
                                 key={`${id}-${type}-${i}`}
-                                content={<KravdetaljerWrapper/>}
+                                content={<KravdetaljerWrapper id={id} type={type}/>}
                                 expandOnRowClick
                             >
-                                <Table.HeaderCell scope="row">{id}</Table.HeaderCell>
+                                <Table.HeaderCell scope="row">{id ?? "Manlger kravidentifikator"}</Table.HeaderCell>
                                 <Table.HeaderCell scope="row">{type}</Table.HeaderCell>
                                 <Table.DataCell>{kravtype}</Table.DataCell>
                             </Table.ExpandableRow>
@@ -50,15 +51,17 @@ function Resultat() {
     )
 }
 
-function KravdetaljerWrapper() {
+const KravdetaljerWrapperPropsSchema = z.object({
+    id: z.string(),
+    type: z.enum(["SKATTEETATEN", "NAV"]),
+})
+
+type KravdetaljerWrapperProps = z.infer<typeof KravdetaljerWrapperPropsSchema>
+
+function KravdetaljerWrapper({id, type}: KravdetaljerWrapperProps) {
     const kravdetaljer = useQuery({
-        queryKey: ["87b5a5c6-17ea-413a-ad80-b6c3406188fa"],
-        queryFn: () => hentKravdetaljer({
-            data: {
-                id: "87b5a5c6-17ea-413a-ad80-b6c3406188fa",
-                type: "SKATTEETATEN"
-            }
-        })
+        queryKey: ["kravdetaljer", id, type],
+        queryFn: () => hentKravdetaljer({data: {id, type,}})
     })
 
     if (kravdetaljer.status === "pending") {
