@@ -20,7 +20,7 @@ export const hentKravoversikt = createServerFn()
     .validator(SkyldnerSchema)
     .handler(async ({data}) => {
         const response = await fetch(
-            'https://utenlandsadresser-tilbakekreving.intern.dev.nav.no/internal/kravoversikt',
+            'http://tilbakekreving/internal/kravoversikt',
             {
                 method: 'POST',
                 headers: {
