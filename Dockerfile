@@ -8,8 +8,8 @@ COPY package.json package-lock.json ./
 
 # Set up npm to use GitHub Packages
 RUN --mount=type=secret,id=node_auth_token,env=NODE_AUTH_TOKEN
-RUN echo "@navikt:registry=https://npm.pkg.github.com" > .npmrc && \
-    echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+RUN echo '@navikt:registry=https://npm.pkg.github.com' > .npmrc && \
+    echo '//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN' >> .npmrc
 
 # Install dependencies
 RUN npm ci
