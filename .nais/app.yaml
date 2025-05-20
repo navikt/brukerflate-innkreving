@@ -15,4 +15,5 @@ spec:
       memory: 32Mi
   accessPolicy:
     outbound:
-      application: tilbakekreving
+      rules:
+        - application: tilbakekreving
