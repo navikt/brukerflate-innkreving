@@ -2,22 +2,22 @@ import {createFileRoute} from '@tanstack/react-router'
 import {zodValidator} from "@tanstack/zod-adapter";
 import {Alert, Loader, Table} from "@navikt/ds-react";
 import Kravdetaljer from "../components/Kravdetaljer";
-import {useQuery} from "@tanstack/react-query";
 import {hentKravoversikt} from "../server/hentKravoversikt";
-import {hentKravdetaljer} from "../server/hentKravdetaljer";
+import {KravdetaljerRequest} from "../server/hentKravdetaljer";
 import {SkyldnerSchema} from "../types/skyldner";
-import {z} from 'zod';
+import useKravdetaljer from "../queries/useKravdetaljer";
 
 
 export const Route = createFileRoute('/kravoversikt/resultat')({
-    component: Resultat,
+    component: Innkrevingskrav,
     validateSearch: zodValidator(SkyldnerSchema),
     loaderDeps: ({search}) => search,
-    loader: ({deps}) => hentKravoversikt({data: deps}),
+    loader: ({deps: skyldner}) => hentKravoversikt({data: skyldner}),
+    pendingComponent: () => <Loader/>,
     errorComponent: ({error}) => <Alert variant="error">{error.message}</Alert>
 })
 
-function Resultat() {
+function Innkrevingskrav() {
     const loaderData = Route.useLoaderData()
     return (
         <Table>
@@ -51,18 +51,8 @@ function Resultat() {
     )
 }
 
-const KravdetaljerWrapperPropsSchema = z.object({
-    id: z.string(),
-    type: z.enum(["SKATTEETATEN", "NAV"]),
-})
-
-type KravdetaljerWrapperProps = z.infer<typeof KravdetaljerWrapperPropsSchema>
-
-function KravdetaljerWrapper({id, type}: KravdetaljerWrapperProps) {
-    const kravdetaljer = useQuery({
-        queryKey: ["kravdetaljer", id, type],
-        queryFn: () => hentKravdetaljer({data: {id, type,}})
-    })
+function KravdetaljerWrapper(kravdetaljerRequest: KravdetaljerRequest) {
+    const kravdetaljer = useKravdetaljer(kravdetaljerRequest)
 
     if (kravdetaljer.status === "pending") {
         return <Loader/>

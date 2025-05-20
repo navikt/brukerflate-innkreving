@@ -1,15 +1,5 @@
 import {BodyShort, Box, Heading, VStack} from "@navikt/ds-react";
-
-export interface KravdetaljerProps {
-    kravgrunnlag: {
-        datoNårKravVarBesluttetHosOppdragsgiver: string
-    },
-    kravlinjer: {
-        kravlinjetype: string,
-        opprinneligBeløp: number,
-        gjenståendeBeløp: number
-    }[]
-}
+import {Kravdetaljer as KravdetaljerProps} from "../server/hentKravdetaljer";
 
 export default function Kravdetaljer(props: KravdetaljerProps) {
     return (
@@ -20,7 +10,8 @@ export default function Kravdetaljer(props: KravdetaljerProps) {
             <Heading size="medium" level="3">Kravlinjer</Heading>
             {props.kravlinjer.map((kravlinje) => {
                 return (
-                    <Box background="surface-subtle" borderColor="border-alt-3" padding="4" borderWidth="2" borderRadius="xlarge">
+                    <Box background="surface-subtle" borderColor="border-alt-3" padding="4" borderWidth="2"
+                         borderRadius="xlarge">
                         <VStack gap="1">
                             <Heading size="small" level="4">Kravlinjetype</Heading>
                             <BodyShort>{kravlinje.kravlinjetype}</BodyShort>

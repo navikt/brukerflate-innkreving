@@ -1,12 +1,14 @@
 import {z} from "zod";
 import {createServerFn} from "@tanstack/react-start";
 
-const KravdetaljerRequest = z.object({
+const KravdetaljerRequestSchema = z.object({
     id: z.string(),
     type: z.enum(["SKATTEETATEN", "NAV"]),
 })
 
-const Kravdetaljer = z.object({
+export type KravdetaljerRequest = z.infer<typeof KravdetaljerRequestSchema>
+
+const KravdetaljerSchema = z.object({
     kravgrunnlag: z.object({
         datoNårKravVarBesluttetHosOppdragsgiver: z.string()
     }),
@@ -19,8 +21,10 @@ const Kravdetaljer = z.object({
     )
 })
 
-export const hentKravdetaljer = createServerFn()
-    .validator(KravdetaljerRequest)
+export type Kravdetaljer = z.infer<typeof KravdetaljerSchema>
+
+const hentKravdetaljer = createServerFn()
+    .validator(KravdetaljerRequestSchema)
     .handler(async ({data}) => {
         const response = await fetch(
             'https://utenlandsadresser-tilbakekreving.intern.dev.nav.no/internal/kravdetaljer',
@@ -39,6 +43,8 @@ export const hentKravdetaljer = createServerFn()
         if (!response.ok) {
             throw new Error('Feilet under henting av kravoversikt')
         } else {
-            return Kravdetaljer.parse(await response.json())
+            return KravdetaljerSchema.parse(await response.json())
         }
     })
+
+export default hentKravdetaljer
