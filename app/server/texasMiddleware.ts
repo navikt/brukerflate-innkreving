@@ -21,7 +21,7 @@ export const texasMiddleware = createMiddleware().server(async ({next}) => {
 
     console.log(userToken)
 
-    const texasUrl = process.env['NAIS_TOKEN_INTROSPECTION_ENDPOINT']
+    const texasUrl = process.env['NAIS_TOKEN_EXCHANGE_ENDPOINT']
 
     if (texasUrl === undefined) {
         throw new Error('Texas URL environment variable is not defined.')
