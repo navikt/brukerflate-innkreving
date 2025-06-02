@@ -4,7 +4,7 @@ metadata:
   name: brukerflate-innkreving
   namespace: utenlandsadresser
   annotations:
-    texas.nais.io/enabled: true
+    texas.nais.io/enabled: "true"
 spec:
   ingresses:
     - https://brukerflate-innkreving.intern.dev.nav.no
