@@ -11,6 +11,8 @@ const TexasResponse = z.object({
 export const texasMiddleware = createMiddleware().server(async ({next}) => {
     const authorizationHeader = getHeader('Authorization')
 
+    console.log(authorizationHeader)
+
     if (authorizationHeader === undefined) {
         throw new Error('No authorization header present in request.')
     }
@@ -30,6 +32,8 @@ export const texasMiddleware = createMiddleware().server(async ({next}) => {
             user_token: authorizationHeader.split(' ')[1]
         })
     })
+
+    console.log(response)
 
     const oboToken = TexasResponse.parse(await response.json())
 
