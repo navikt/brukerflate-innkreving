@@ -33,6 +33,10 @@ export const texasMiddleware = createMiddleware().server(async ({next}) => {
         })
     })
 
+    if (!response.ok) {
+        throw new Error(`Failed to exchange token: ${await response.text()}`)
+    }
+
     console.log(response)
 
     const oboToken = TexasResponse.parse(await response.json())
