@@ -1,5 +1,6 @@
 import {z} from "zod";
 import {createServerFn} from "@tanstack/react-start";
+import {texasMiddleware} from "./texasMiddleware";
 
 const KravdetaljerRequestSchema = z.object({
     id: z.string(),
@@ -25,13 +26,15 @@ export type Kravdetaljer = z.infer<typeof KravdetaljerSchema>
 
 const hentKravdetaljer = createServerFn()
     .validator(KravdetaljerRequestSchema)
-    .handler(async ({data}) => {
+    .middleware([texasMiddleware])
+    .handler(async ({data, context}) => {
         const response = await fetch(
             'http://tilbakekreving/internal/kravdetaljer',
             {
                 method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${context.oboToken}`
                 },
                 body: JSON.stringify({
                     id: data.id,

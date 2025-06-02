@@ -1,6 +1,7 @@
 import {z} from "zod";
 import {createServerFn} from "@tanstack/react-start";
 import {SkyldnerSchema} from "../types/skyldner";
+import {texasMiddleware} from "./texasMiddleware";
 
 const Krav = z.object({
     kravidentifikator: z.object({
@@ -18,13 +19,15 @@ const Kravoversikt = z.object({
 
 export const hentKravoversikt = createServerFn()
     .validator(SkyldnerSchema)
-    .handler(async ({data}) => {
+    .middleware([texasMiddleware])
+    .handler(async ({data, context}) => {
         const response = await fetch(
             'http://tilbakekreving/internal/kravoversikt',
             {
                 method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${context.oboToken}`
                 },
                 body: JSON.stringify({
                     id: data.skyldner,
