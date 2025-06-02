@@ -17,6 +17,10 @@ export const texasMiddleware = createMiddleware().server(async ({next}) => {
         throw new Error('No authorization header present in request.')
     }
 
+    const userToken = authorizationHeader.split(' ')
+
+    console.log(userToken)
+
     const texasUrl = process.env['NAIS_TOKEN_INTROSPECTION_ENDPOINT']
 
     if (texasUrl === undefined) {
