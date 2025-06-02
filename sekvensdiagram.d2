@@ -1,0 +1,145 @@
+classes: {
+  dashed: {
+    style.stroke-dash: 5
+  }
+  nav: {
+    style.stroke: red
+  }
+}
+
+Innkrevingskrav: {
+  shape: sequence_diagram
+  Bruker {
+    shape: person
+    class: nav
+  }
+  Frontend: "brukerflate-innkrevingsoppdrag" {
+    class: nav
+  }
+  Backend: "tilbakekreving" {
+    class: nav
+  }
+  Maskinporten: {
+    style {
+      stroke: green
+      stroke-dash: 0
+    }
+  }
+  Skatteetaten
+
+  Vis kravoversikt: {
+    Bruker.søk -> Frontend.søk: "Søk på person/organisasjon"
+    Frontend.søk -> Backend.søk: "Søk på person/organisasjon"
+
+    Backend.søk -> Skatteetaten.søk: "Søk på person/organisasjon"
+    Skatteetaten.søk -> Backend.søk: "Liste over Krav" {
+      class: dashed
+    }
+
+    Backend.søk -> Frontend.søk: "Liste over Krav" {
+      class: dashed
+    }
+    Frontend.søk -> Bruker.vis: "Liste over Krav" {
+      class: dashed
+    }
+  }
+
+  Vis kravdetaljer: {
+    Bruker.vis -> Frontend.vis: "Klikk på krav fra kravoversikt"
+    Frontend.vis -> Backend.vis: "Slå opp krav"
+    Backend.vis -> Skatteetaten.vis: "Hent kravdetaljer"
+    Skatteetaten.vis -> Backend.vis: "Kravdetaljer" {
+      class: dashed
+    }
+    Backend.vis -> Frontend.vis: "Kravdetaljer" {
+      class: dashed
+    }
+    Frontend.vis -> Bruker.rediger: "Kravdetaljer" {
+      class: dashed
+    }
+  }
+
+  Rediger/legg til tilleggsfrist: {
+    Bruker.rediger -> Frontend.rediger: "Rediger/legg til tilleggsfrist"
+    Frontend.rediger -> Backend.rediger: "Rediger/legg til tilleggsfrist"
+    Backend.rediger -> Skatteetaten.rediger: "Rediger/legg til tilleggsfrist"
+    Skatteetaten.rediger -> Backend.rediger: "Kravdetaljer" {
+      class: dashed
+    }
+    Backend.rediger -> Frontend.rediger: "Kravdetaljer" {
+      class: dashed
+    }
+  }
+}
+
+Auth: {
+  shape: sequence_diagram
+  Maskinporten: {
+    shape: sequence_diagram
+    Backend: "tilbakekreving" {
+      class: nav
+    }
+    Maskinporten {
+      style {
+        stroke: green
+      }
+    }
+    Skatteetaten
+
+    Backend.token -> Maskinporten.token: "Hent token"
+    Maskinporten.token -> Backend.token: "Token" {
+      class: dashed
+    }
+    Backend.token -> Skatteetaten.token: "Spørring med token"
+  }
+
+  Entra ID: {
+    shape: sequence_diagram
+    Bruker {
+      shape: person
+      class: nav
+    }
+    Wonderwall: "Login proxy (Wonderwall)"
+    Frontend: "brukerflate-innkrevingsoppdrag" {
+      class: nav
+    }
+    Texas: "Tokenvalidering (Texas)"
+    Backend: "tilbakekreving" {
+      class: nav
+    }
+
+    Ikke innlogget bruker: {
+      Bruker.login -> Wonderwall.login: "Navigerer til brukerflaten"
+      Wonderwall.login -> Bruker.login: "Redirect til login" {
+        class: dashed
+      }
+      Bruker.login -> Wonderwall.login: "Logg inn med Entra ID"
+      Wonderwall.login -> Wonderwall.login: "Oppretter sessjon"
+      Wonderwall.login -> Bruker.innlogget: "Setter sessjonscookie" {
+        class: dashed
+      }
+    }
+
+    Innlogget bruker: {
+      Bruker.innlogget -> Wonderwall.innlogget: "Navigerer til brukerflaten"
+      Wonderwall.innlogget -> Wonderwall.innlogget: "Sjekker sessjon"
+      Wonderwall.innlogget -> Frontend.innlogget: "Spørring med auth header"
+      Frontend.innlogget -> Texas.frontend: "Hent OBO token"
+      Texas.frontend -> Frontend.innlogget: "OBO token" {
+        class: dashed
+      }
+      Frontend.innlogget -> Backend.innlogget: "Spørring med OBO token"
+      Backend.innlogget -> Texas.backend: "Valider OBO token"
+      Texas.backend -> Backend.innlogget: "Validert token med claims" {
+        class: dashed
+      }
+      Backend.innlogget -> Backend.innlogget: "Filtrer data basert på claims"
+      Backend.innlogget -> Frontend.innlogget: "Data" {
+        class: dashed
+      }
+      Frontend.innlogget -> Bruker.innlogget: "Data" {
+        class: dashed
+      }
+    }
+  }
+}
