@@ -11,15 +11,9 @@ const TexasResponse = z.object({
 export const texasMiddleware = createMiddleware().server(async ({next}) => {
     const authorizationHeader = getHeader('Authorization')
 
-    console.log(authorizationHeader)
-
     if (authorizationHeader === undefined) {
         throw new Error('No authorization header present in request.')
     }
-
-    const userToken = authorizationHeader.split(' ')
-
-    console.log(userToken)
 
     const texasUrl = process.env['NAIS_TOKEN_EXCHANGE_ENDPOINT']
 
@@ -40,8 +34,6 @@ export const texasMiddleware = createMiddleware().server(async ({next}) => {
     if (!response.ok) {
         throw new Error(`Failed to exchange token: ${await response.text()}`)
     }
-
-    console.log(response)
 
     const oboToken = TexasResponse.parse(await response.json())
 
