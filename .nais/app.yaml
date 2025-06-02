@@ -17,3 +17,10 @@ spec:
     outbound:
       rules:
         - application: tilbakekreving
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: true
+    sidecar:
+      enabled: true
+      autoLogin: true
