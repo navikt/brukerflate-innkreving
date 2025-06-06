@@ -23,6 +23,7 @@
   "dependencies": {
     "@navikt/ds-css": "^7.22.0",
     "@navikt/ds-react": "^7.22.0",
+    "@navikt/aksel-icons": "^7.22.0",
     "@tanstack/react-form": "^1.12.1",
     "@tanstack/react-query": "^5.80.5",
     "@tanstack/react-query-devtools": "^5.80.5",
