@@ -5,6 +5,7 @@ import {TanStackRouterDevtools} from "@tanstack/react-router-devtools";
 import navCss from "@navikt/ds-css?url"
 import {QueryClient} from "@tanstack/react-query";
 import {LeaveIcon} from "@navikt/aksel-icons";
+import {hentBruker} from "../server/hentBruker";
 
 export const Route = createRootRouteWithContext<{
     queryClient: QueryClient
@@ -26,11 +27,14 @@ export const Route = createRootRouteWithContext<{
             {rel: 'stylesheet', href: navCss}
         ]
     }),
+    loader: () => hentBruker(),
     component: RootComponent,
 })
 
 
 function RootComponent() {
+    const bruker = Route.useLoaderData()
+
     return (
         <RootDocument>
             <Page>
@@ -40,15 +44,14 @@ function RootComponent() {
                     <Dropdown>
                         <InternalHeader.UserButton
                             as={Dropdown.Toggle}
-                            name="Ola N."
-                            description="Enhet: Skien"
+                            name={bruker.foretrukketBrukernavn}
                         />
                         <Dropdown.Menu>
                             <dl>
                                 <BodyShort as="dt" size="small">
-                                    Ola Normann
+                                    {bruker.foretrukketBrukernavn}
                                 </BodyShort>
-                                <Detail as="dd">D123456</Detail>
+                                <Detail as="dd">{bruker.navIdent}</Detail>
                             </dl>
                             <Dropdown.Menu.Divider/>
                             <Dropdown.Menu.List>
