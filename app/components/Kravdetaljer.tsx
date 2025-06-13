@@ -9,7 +9,7 @@ interface KravdetaljerComponentProps extends KravdetaljerProps {
 
 export default function Kravdetaljer(props: KravdetaljerComponentProps) {
     const {datepickerProps, inputProps} = useDatepicker({
-        fromDate: props.tilleggsfrist ? new Date(props.tilleggsfrist) : undefined,
+        defaultSelected: props.tilleggsfrist ? new Date(props.tilleggsfrist) : undefined,
         onDateChange: (date) => {
             if (date) {
                 oppdaterTilleggsfrist({
