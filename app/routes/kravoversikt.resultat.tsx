@@ -61,5 +61,5 @@ function KravdetaljerWrapper(kravdetaljerRequest: KravdetaljerRequest) {
         return <Alert variant="error">Feilet ved henting av kravdetaljer</Alert>
     }
 
-    return <Kravdetaljer {...kravdetaljer.data} />
+    return <Kravdetaljer {...kravdetaljer.data} id={kravdetaljerRequest.id} type={kravdetaljerRequest.type} />
 }

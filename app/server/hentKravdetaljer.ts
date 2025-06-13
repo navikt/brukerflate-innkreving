@@ -19,7 +19,8 @@ const KravdetaljerSchema = z.object({
             opprinneligBeløp: z.number(),
             gjenståendeBeløp: z.number(),
         })
-    )
+    ),
+    tilleggsfrist: z.string().date().nullish(),
 })
 
 export type Kravdetaljer = z.infer<typeof KravdetaljerSchema>

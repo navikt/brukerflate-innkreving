@@ -1,12 +1,39 @@
-import {BodyShort, Box, Heading, VStack} from "@navikt/ds-react";
+import {BodyShort, Box, DatePicker, Heading, HStack, useDatepicker, VStack} from "@navikt/ds-react";
 import {Kravdetaljer as KravdetaljerProps} from "../server/hentKravdetaljer";
+import oppdaterTilleggsfrist from "../server/oppdaterTilleggsfrist";
 
-export default function Kravdetaljer(props: KravdetaljerProps) {
+interface KravdetaljerComponentProps extends KravdetaljerProps {
+    id: string;
+    type: "SKATTEETATEN" | "NAV";
+}
+
+export default function Kravdetaljer(props: KravdetaljerComponentProps) {
+    const {datepickerProps, inputProps} = useDatepicker({
+        fromDate: props.tilleggsfrist ? new Date(props.tilleggsfrist) : undefined,
+        onDateChange: (date) => {
+            if (date) {
+                oppdaterTilleggsfrist({
+                    data: {
+                        id: props.id,
+                        type: props.type,
+                        tilleggsfrist: date.toISOString().split('T')[0],
+                    }
+                });
+            }
+        },
+    });
+
     return (
         <VStack gap="2">
             <Heading level="2" size="large">Krav</Heading>
             <Heading size="medium" level="3">Dato når krav var besluttet hos oppdragsgiver</Heading>
             <BodyShort>{props.kravgrunnlag.datoNårKravVarBesluttetHosOppdragsgiver}</BodyShort>
+            <Heading size="medium" level="3">Tilleggsfrist</Heading>
+            <HStack>
+                <DatePicker {...datepickerProps}>
+                    <DatePicker.Input {...inputProps} label="Tilleggsfrist"/>
+                </DatePicker>
+            </HStack>
             <Heading size="medium" level="3">Kravlinjer</Heading>
             {props.kravlinjer.map((kravlinje) => {
                 return (
