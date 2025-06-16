@@ -4,5 +4,6 @@
 /build/
 /.output/
 /.vinxi/
+/.tanstack/
 
 .idea
