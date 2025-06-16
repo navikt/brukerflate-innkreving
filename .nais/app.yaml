@@ -1,28 +1,28 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: brukerflate-innkreving
-  namespace: utenlandsadresser
-  annotations:
-    texas.nais.io/enabled: "true"
+    name: brukerflate-innkreving
+    namespace: utenlandsadresser
+    annotations:
+        texas.nais.io/enabled: "true"
 spec:
-  ingresses:
-    - https://brukerflate-innkreving.intern.dev.nav.no
-  replicas:
-    max: 1
-    min: 1
-  resources:
-    requests:
-      cpu: 50m
-      memory: 32Mi
-  accessPolicy:
-    outbound:
-      rules:
-        - application: tilbakekreving
-  azure:
-    application:
-      enabled: true
-      allowAllUsers: true
-    sidecar:
-      enabled: true
-      autoLogin: true
+    ingresses:
+        - https://brukerflate-innkreving.intern.dev.nav.no
+    replicas:
+        max: 1
+        min: 1
+    resources:
+        requests:
+            cpu: 50m
+            memory: 32Mi
+    accessPolicy:
+        outbound:
+            rules:
+                - application: tilbakekreving
+    azure:
+        application:
+            enabled: true
+            allowAllUsers: true
+        sidecar:
+            enabled: true
+            autoLogin: true

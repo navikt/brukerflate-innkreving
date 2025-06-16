@@ -17,7 +17,7 @@ RUN --mount=type=secret,id=node_auth_token,env=NODE_AUTH_TOKEN npm ci
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # Production stage using distroless
 FROM gcr.io/distroless/nodejs22-debian12 AS run
