@@ -1,37 +1,27 @@
-# Build stage
-FROM node:22 AS build
+FROM node:22-slim AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+RUN corepack prepare pnpm@10.12.1 --activate
+
+FROM base AS prod
 
 WORKDIR /app
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN --mount=type=secret,id=npmrc,target=/app/.npmrc pnpm fetch
 
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Set up npm to use GitHub Packages
-RUN echo '@navikt:registry=https://npm.pkg.github.com' > .npmrc && \
-    echo '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}' >> .npmrc
-
-# Install dependencies
-RUN --mount=type=secret,id=node_auth_token,env=NODE_AUTH_TOKEN npm ci
-
-# Copy the rest of the application code
 COPY . .
-
-# Build the application
+RUN pnpm install --offline
 RUN pnpm run build
 
-# Production stage using distroless
-FROM gcr.io/distroless/nodejs22-debian12 AS run
-
+FROM base
 WORKDIR /app
-
-# Copy the build output directories
-COPY --from=build /app/.output ./.output
-COPY --from=build /app/.vinxi ./.vinxi
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package.json ./
+COPY --from=prod /app/node_modules /app/node_modules
+COPY --from=prod /app/.output /app/.output
+COPY --from=prod /app/package.json /app/package.json
 
 # Set environment to production
 ENV NODE_ENV=production
 
-# Command to run the application directly
-CMD [".output/server/index.mjs"]
+CMD ["pnpm", "start"]
