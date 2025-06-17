@@ -1,0 +1,7 @@
+# Template for local development
+# To use:
+# 1. Copy this file to .npmrc
+# 2. Replace <YOUR_GITHUB_TOKEN> with your personal GitHub token with read access to packages
+
+//npm.pkg.github.com/:_authToken=<YOUR_GITHUB_TOKEN>
+@navikt:registry=https://npm.pkg.github.com

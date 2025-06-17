@@ -7,3 +7,6 @@
 /.nitro/
 
 .idea
+
+# npm configuration
+.npmrc
