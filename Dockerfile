@@ -5,8 +5,10 @@ WORKDIR /app
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
-COPY pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN --mount=type=secret,id=npmrc,target=/app/.npmrc pnpm fetch
+COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc.template ./
+RUN --mount=type=secret,id=github_npm_token,env=GITHUB_NPM_TOKEN \
+    sed "s/<YOUR_GITHUB_TOKEN>/${GITHUB_NPM_TOKEN}/g" .npmrc.template > .npmrc && \
+    pnpm fetch
 COPY package.json ./
 RUN pnpm install --offline --frozen-lockfile
 

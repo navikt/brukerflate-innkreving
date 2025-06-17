@@ -15,9 +15,6 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   fetch-depth: 0 # Fetch all history for what-changed action
-            - name: Generate .npmrc file from template
-              run: |
-                cat .npmrc.template | sed 's/<YOUR_GITHUB_TOKEN>/${{ secrets.READER_TOKEN }}/g' > .npmrc
             - name: Determine what to do
               id: changed-files
               uses: "nais/what-changed@main"
@@ -30,7 +27,7 @@ jobs:
               with:
                   team: utenlandsadresser
                   build_secrets: |
-                      npmrc=.npmrc
+                      github_npm_token=${{ secrets.READER_TOKEN }}
             - name: Deploy to Nais
               uses: nais/deploy/actions/deploy@v2
               env:
