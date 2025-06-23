@@ -20,6 +20,8 @@ const Kravoversikt = z.object({
     krav: z.array(Krav),
 });
 
+export type Kravoversikt = z.infer<typeof Kravoversikt>;
+
 export const hentKravoversikt = createServerFn()
     .validator(SkyldnerSchema)
     .middleware([texasMiddleware])

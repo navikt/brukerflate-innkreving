@@ -7,7 +7,7 @@ interface SkyldnerSearchFormProps {
     action: string;
 }
 
-export function SkyldnerSøkeskjema({
+export default function SkyldnerSøkeskjema({
     initiellSkyldner = "",
     initiellType = "fødselsnummer",
     action,

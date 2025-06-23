@@ -8,7 +8,7 @@ const TexasResponse = z.object({
     token_type: z.string(),
 });
 
-export const texasMiddleware = createMiddleware()
+export const texasMiddleware = createMiddleware({ type: "function" })
     .middleware([authorizationHeaderMiddleware])
     .server(async ({ next, context }) => {
         const texasUrl = process.env["NAIS_TOKEN_EXCHANGE_ENDPOINT"];

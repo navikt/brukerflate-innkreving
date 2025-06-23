@@ -10,7 +10,7 @@ const BrukerJwt = z.object({
     groups: z.array(z.string()),
 });
 
-export const brukerMiddleware = createMiddleware()
+export const brukerMiddleware = createMiddleware({ type: "function" })
     .middleware([authorizationHeaderMiddleware])
     .server(async ({ next, context }) => {
         const payload = decodeJwt(context.bearerToken);

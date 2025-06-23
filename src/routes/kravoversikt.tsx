@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SkyldnerSchema } from "../types/skyldner";
-import { SkyldnerSøkeskjema } from "../components/SkyldnerSøkeskjema";
+import SkyldnerSøkeskjema from "../components/SkyldnerSøkeskjema";
 
 export const Route = createFileRoute("/kravoversikt")({
     component: Kravoversikt,
