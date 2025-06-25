@@ -1,10 +1,21 @@
-import { Alert, Loader, Table } from "@navikt/ds-react";
-import { KravdetaljerRequest } from "../server/hentKravdetaljer";
-import useKravdetaljer from "../queries/useKravdetaljer";
-import Kravdetaljer from "./Kravdetaljer";
+import { Table } from "@navikt/ds-react";
 import { Kravoversikt } from "../server/hentKravoversikt";
+import React from "react";
 
-export default function Kravtabell({ krav }: Kravoversikt) {
+type KravIdentifikator = Kravoversikt["krav"][number]["kravidentifikator"];
+
+interface KravtabellProps {
+    krav: Kravoversikt["krav"];
+    ExpandableContent: React.ComponentType<{
+        id: string;
+        type: KravIdentifikator["type"];
+    }>;
+}
+
+export default function Kravtabell({
+    krav,
+    ExpandableContent,
+}: KravtabellProps) {
     return (
         <Table>
             <Table.Header>
@@ -23,9 +34,7 @@ export default function Kravtabell({ krav }: Kravoversikt) {
                     return (
                         <Table.ExpandableRow
                             key={`${id}-${type}-${i}`}
-                            content={
-                                <KravdetaljerWrapper id={id} type={type} />
-                            }
+                            content={<ExpandableContent id={id} type={type} />}
                             expandOnRowClick
                         >
                             <Table.HeaderCell scope="row">
@@ -40,26 +49,5 @@ export default function Kravtabell({ krav }: Kravoversikt) {
                 })}
             </Table.Body>
         </Table>
-    );
-}
-
-function KravdetaljerWrapper(kravdetaljerRequest: KravdetaljerRequest) {
-    const kravdetaljer = useKravdetaljer(kravdetaljerRequest);
-
-    if (kravdetaljer.status === "pending") {
-        return <Loader />;
-    }
-    if (kravdetaljer.status === "error") {
-        return (
-            <Alert variant="error">Feilet ved henting av kravdetaljer</Alert>
-        );
-    }
-
-    return (
-        <Kravdetaljer
-            {...kravdetaljer.data}
-            id={kravdetaljerRequest.id}
-            type={kravdetaljerRequest.type}
-        />
     );
 }

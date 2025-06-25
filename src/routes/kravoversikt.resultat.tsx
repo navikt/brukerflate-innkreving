@@ -4,6 +4,7 @@ import { Alert, Loader } from "@navikt/ds-react";
 import { hentKravoversikt } from "../server/hentKravoversikt";
 import { SkyldnerSchema } from "../types/skyldner";
 import Kravtabell from "../components/Kravtabell";
+import { ExpandableKravContent } from "../components/ExpandableKravContent";
 
 export const Route = createFileRoute("/kravoversikt/resultat")({
     component: Innkrevingskrav,
@@ -18,5 +19,10 @@ export const Route = createFileRoute("/kravoversikt/resultat")({
 
 function Innkrevingskrav() {
     const loaderData = Route.useLoaderData();
-    return <Kravtabell krav={loaderData.krav} />;
+    return (
+        <Kravtabell
+            krav={loaderData.krav}
+            ExpandableContent={ExpandableKravContent}
+        />
+    );
 }

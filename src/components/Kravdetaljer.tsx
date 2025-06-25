@@ -1,12 +1,12 @@
 import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
-import { Kravdetaljer as KravdetaljerProps } from "../server/hentKravdetaljer";
+import { Kravdetaljer } from "../server/hentKravdetaljer";
 
-interface KravdetaljerComponentProps extends KravdetaljerProps {
+interface KravdetaljerProps extends Kravdetaljer {
     id: string;
     type: "SKATTEETATEN" | "NAV";
 }
 
-export default function Kravdetaljer(props: KravdetaljerComponentProps) {
+export default function Kravdetaljer(props: KravdetaljerProps) {
     return (
         <VStack gap="2">
             <Heading level="2" size="large">
