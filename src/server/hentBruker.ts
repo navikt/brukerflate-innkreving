@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { brukerMiddleware } from "./brukerMiddleware";
+import { brukerMiddleware } from "./middleware/brukerMiddleware";
 
 export const hentBruker = createServerFn()
     .middleware([brukerMiddleware])

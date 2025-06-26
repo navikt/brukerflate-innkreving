@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createServerFn } from "@tanstack/react-start";
-import { texasMiddleware } from "./texasMiddleware";
+import { texasMiddleware } from "./middleware/texasMiddleware";
 
 const KravdetaljerRequestSchema = z.object({
     id: z.string(),

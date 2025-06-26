@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createServerFn } from "@tanstack/react-start";
 import { SkyldnerSchema } from "../types/skyldner";
-import { texasMiddleware } from "./texasMiddleware";
+import { texasMiddleware } from "./middleware/texasMiddleware";
 
 const Krav = z.object({
     kravidentifikator: z.object({
