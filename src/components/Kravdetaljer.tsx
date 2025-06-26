@@ -1,7 +1,7 @@
 import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
-import { Kravdetaljer } from "../server/hentKravdetaljer";
+import { Kravdetaljer as KravdetaljerResponse } from "../server/hentKravdetaljer";
 
-interface KravdetaljerProps extends Kravdetaljer {
+interface KravdetaljerProps extends KravdetaljerResponse {
     id: string;
     type: "SKATTEETATEN" | "NAV";
 }
