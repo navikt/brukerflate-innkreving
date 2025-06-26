@@ -4,6 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { injectAuthHeaderPlugin } from "./src/vite-plugins/injectAuthHeaderPlugin";
 import { texasTokenExchangePlugin } from "./src/vite-plugins/texasTokenExchangePlugin";
+import { mockKravPlugin } from "./src/vite-plugins/mockKravPlugin";
 
 export default defineConfig({
     plugins: [
@@ -12,5 +13,6 @@ export default defineConfig({
         // Only add these plugins in development mode
         { ...injectAuthHeaderPlugin(), apply: "serve" },
         { ...texasTokenExchangePlugin(), apply: "serve" },
+        { ...mockKravPlugin(), apply: "serve" },
     ],
 });

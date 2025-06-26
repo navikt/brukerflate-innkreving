@@ -28,8 +28,9 @@ const hentKravdetaljer = createServerFn()
     .validator(KravdetaljerRequestSchema)
     .middleware([texasMiddleware])
     .handler(async ({ data, context }) => {
+        const kravdetaljerUrl = process.env.KRAVDETALJER_API_URL || "http://tilbakekreving/internal/kravdetaljer";
         const response = await fetch(
-            "http://tilbakekreving/internal/kravdetaljer",
+            kravdetaljerUrl,
             {
                 method: "POST",
                 headers: {

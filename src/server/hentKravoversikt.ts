@@ -5,11 +5,11 @@ import { texasMiddleware } from "./middleware/texasMiddleware";
 
 const Krav = z.object({
     kravidentifikator: z.object({
-        // TODO: Endre backend til å returnere upper case
-        type: z
-            .enum(["skatteetaten", "nav"])
-            .transform((v) => v.toUpperCase())
-            .pipe(z.enum(["SKATTEETATEN", "NAV"])),
+        // Accept both uppercase and lowercase values
+        type: z.string()
+            .transform(v => v.toLowerCase())
+            .pipe(z.enum(["skatteetaten", "nav"]))
+            .transform(v => v.toUpperCase()),
         // TODO: Fjern når endepunktet returnerer faktiske verdier
         id: z.string().nonempty().catch("87b5a5c6-17ea-413a-ad80-b6c3406188fa"),
     }),
@@ -26,8 +26,9 @@ export const hentKravoversikt = createServerFn()
     .validator(SkyldnerSchema)
     .middleware([texasMiddleware])
     .handler(async ({ data, context }) => {
+        const kravoversiktUrl = process.env.KRAVOVERSIKT_API_URL || "http://tilbakekreving/internal/kravoversikt";
         const response = await fetch(
-            "http://tilbakekreving/internal/kravoversikt",
+            kravoversiktUrl,
             {
                 method: "POST",
                 headers: {
