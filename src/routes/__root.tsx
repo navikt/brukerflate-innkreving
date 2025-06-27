@@ -17,6 +17,7 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import navCss from "@navikt/ds-css?url";
 import appCss from "../style/app.css?url";
+import favicon from "../favicon.png?url"
 import { QueryClient } from "@tanstack/react-query";
 import { LeaveIcon } from "@navikt/aksel-icons";
 import { hentBruker } from "../server/hentBruker";
@@ -38,8 +39,9 @@ export const Route = createRootRouteWithContext<{
             },
         ],
         links: [
-            { rel: "stylesheet", href: navCss },
-            { rel: "stylesheet", href: appCss },
+            { rel: "stylesheet", href: navCss, type: "text/css" },
+            { rel: "stylesheet", href: appCss, type: "text/css" },
+            { rel: "icon", href: favicon, type: "image/png" },
         ],
     }),
     loader: () => hentBruker(),
