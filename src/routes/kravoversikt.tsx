@@ -11,13 +11,13 @@ export const Route = createFileRoute("/kravoversikt")({
 function Kravoversikt() {
     const search = Route.useSearch();
     return (
-        <>
+        <div className="pt-4">
             <SkyldnerSøkeskjema
                 initiellSkyldner={search?.skyldner}
                 initiellType={search?.type}
                 action="/kravoversikt/resultat"
             />
             <Outlet />
-        </>
+        </div>
     );
 }

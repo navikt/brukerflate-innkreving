@@ -5,11 +5,10 @@ import { texasMiddleware } from "./middleware/texasMiddleware";
 
 const Krav = z.object({
     kravidentifikator: z.object({
-        // Accept both uppercase and lowercase values
-        type: z.string()
-            .transform(v => v.toLowerCase())
-            .pipe(z.enum(["skatteetaten", "nav"]))
-            .transform(v => v.toUpperCase()),
+        type: z
+            .string()
+            .transform((v) => v.toUpperCase())
+            .pipe(z.enum(["SKATTEETATEN", "NAV"])),
         // TODO: Fjern når endepunktet returnerer faktiske verdier
         id: z.string().nonempty().catch("87b5a5c6-17ea-413a-ad80-b6c3406188fa"),
     }),
@@ -26,21 +25,20 @@ export const hentKravoversikt = createServerFn()
     .validator(SkyldnerSchema)
     .middleware([texasMiddleware])
     .handler(async ({ data, context }) => {
-        const kravoversiktUrl = process.env.KRAVOVERSIKT_API_URL || "http://tilbakekreving/internal/kravoversikt";
-        const response = await fetch(
-            kravoversiktUrl,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${context.oboToken}`,
-                },
-                body: JSON.stringify({
-                    id: data.skyldner,
-                    type: data.type,
-                }),
+        const kravoversiktUrl =
+            process.env.KRAVOVERSIKT_API_URL ||
+            "http://tilbakekreving/internal/kravoversikt";
+        const response = await fetch(kravoversiktUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${context.oboToken}`,
             },
-        );
+            body: JSON.stringify({
+                id: data.skyldner,
+                type: data.type,
+            }),
+        });
 
         if (!response.ok) {
             throw new Error("Feilet under henting av kravoversikt");

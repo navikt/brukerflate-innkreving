@@ -36,7 +36,10 @@ export const Route = createRootRouteWithContext<{
                 title: "Innkreving",
             },
         ],
-        links: [{ rel: "stylesheet", href: navCss }],
+        links: [
+            { rel: "stylesheet", href: navCss },
+            { rel: "stylesheet", href: "/src/style/app.css" },
+        ],
     }),
     loader: () => hentBruker(),
     component: RootComponent,
