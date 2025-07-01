@@ -1,15 +1,17 @@
 import { Heading, Radio, RadioGroup, Search, VStack } from "@navikt/ds-react";
-import { Skyldnertype } from "../types/skyldner";
+import { Kravfilter, Skyldnertype } from "../types/skyldner";
 
 interface SkyldnerSearchFormProps {
     initiellSkyldner?: string;
     initiellType?: Skyldnertype;
+    initiellKravfilter?: Kravfilter;
     action: string;
 }
 
 export default function SkyldnerSøkeskjema({
     initiellSkyldner = "",
     initiellType = "fødselsnummer",
+    initiellKravfilter = "ALLE",
     action,
 }: SkyldnerSearchFormProps) {
     return (
@@ -34,6 +36,16 @@ export default function SkyldnerSøkeskjema({
                         Fødselsnummer
                     </Radio>
                     <Radio value={"orgnummer" as Skyldnertype}>Orgnummer</Radio>
+                </RadioGroup>
+                <RadioGroup
+                    name="kravfilter"
+                    legend="Velg kravfilter"
+                    defaultValue={initiellKravfilter}
+                >
+                    <Radio value={"ALLE" as Kravfilter}>Alle</Radio>
+                    <Radio value={"ÅPNE" as Kravfilter}>Åpne</Radio>
+                    <Radio value={"LUKKEDE" as Kravfilter}>Lukkede</Radio>
+                    <Radio value={"INGEN" as Kravfilter}>Ingen</Radio>
                 </RadioGroup>
             </VStack>
         </form>

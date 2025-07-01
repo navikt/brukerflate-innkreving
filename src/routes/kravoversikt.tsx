@@ -15,6 +15,7 @@ function Kravoversikt() {
             <SkyldnerSøkeskjema
                 initiellSkyldner={search?.skyldner}
                 initiellType={search?.type}
+                initiellKravfilter={search?.kravfilter}
                 action="/kravoversikt/resultat"
             />
             <Outlet />

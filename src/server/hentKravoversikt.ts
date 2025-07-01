@@ -37,6 +37,7 @@ export const hentKravoversikt = createServerFn()
             body: JSON.stringify({
                 id: data.skyldner,
                 type: data.type,
+                kravfilter: data.kravfilter,
             }),
         });
 
