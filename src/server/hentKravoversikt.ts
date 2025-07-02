@@ -42,7 +42,7 @@ export const hentKravoversikt = createServerFn()
         });
 
         if (!response.ok) {
-            throw new Error("Feilet under henting av kravoversikt");
+            throw new Error(`Feilet under henting av kravoversikt: ${response.status} ${response.statusText} - ${await response.text()}`);
         } else {
             return Kravoversikt.parse(await response.json());
         }
