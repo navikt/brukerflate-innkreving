@@ -1,5 +1,5 @@
-import { Kravoversikt } from "../server/hentKravoversikt";
-import useKravdetaljer from "../queries/useKravdetaljer";
+import { Kravoversikt } from "../../server/hentKravoversikt";
+import useKravdetaljer from "../../queries/useKravdetaljer";
 import { Alert, Loader } from "@navikt/ds-react";
 import Kravdetaljer from "./Kravdetaljer";
 

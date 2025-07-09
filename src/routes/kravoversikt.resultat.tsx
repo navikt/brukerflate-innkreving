@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Alert, Loader } from "@navikt/ds-react";
 import { hentKravoversikt } from "../server/hentKravoversikt";
 import Kravtabell from "../components/Kravtabell";
-import { ExpandableKravContent } from "../components/ExpandableKravContent";
+import { ExpandableKravContent } from "../components/kravdetaljer/ExpandableKravContent";
 
 export const Route = createFileRoute("/kravoversikt/resultat")({
     component: Innkrevingskrav,
