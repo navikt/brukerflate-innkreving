@@ -13,5 +13,8 @@ export default function useKravdetaljer(
             kravdetaljerRequest.type,
         ],
         queryFn: () => hentKravdetaljer({ data: kravdetaljerRequest }),
+        staleTime: Infinity, // Prevent data from becoming stale
+        refetchOnWindowFocus: false, // Prevent refetching when window regains focus
+        refetchOnMount: false, // Prevent refetching when component remounts
     });
 }
