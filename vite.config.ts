@@ -6,11 +6,13 @@ import { injectAuthHeaderPlugin } from "./src/vite-plugins/injectAuthHeaderPlugi
 import { texasTokenExchangePlugin } from "./src/vite-plugins/texasTokenExchangePlugin";
 import { mockKravPlugin } from "./src/vite-plugins/mockKravPlugin";
 import tailwindcss from "@tailwindcss/vite";
+import viteReact from "@vitejs/plugin-react";
 
 export default defineConfig({
     plugins: [
         tsconfigPaths(),
-        tanstackStart(),
+        tanstackStart({ customViteReactPlugin: true }),
+        viteReact(),
         tailwindcss(),
         // Only add these plugins in development mode
         { ...injectAuthHeaderPlugin(), apply: "serve" },
