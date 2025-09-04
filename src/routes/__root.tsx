@@ -17,9 +17,9 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import navCss from "@navikt/ds-css?url";
 import appCss from "../style/app.css?url";
-import favicon from "../favicon.png?url"
+import favicon from "../favicon.png?url";
 import { QueryClient } from "@tanstack/react-query";
-import { LeaveIcon } from "@navikt/aksel-icons";
+import { LeaveIcon, PersonGroupIcon } from "@navikt/aksel-icons";
 import { hentBruker } from "../server/hentBruker";
 
 export const Route = createRootRouteWithContext<{
@@ -73,6 +73,16 @@ function RootComponent() {
                             </dl>
                             <Dropdown.Menu.Divider />
                             <Dropdown.Menu.List>
+                                <Dropdown.Menu.List.Item
+                                    as={Link}
+                                    href="/oauth2/login?redirect=/kravoversikt"
+                                >
+                                    Bytt bruker <Spacer />{" "}
+                                    <PersonGroupIcon
+                                        aria-hidden
+                                        fontSize="1.5rem"
+                                    />
+                                </Dropdown.Menu.List.Item>
                                 <Dropdown.Menu.List.Item
                                     as={Link}
                                     href="/oauth2/logout?redirect=/kravoversikt"
