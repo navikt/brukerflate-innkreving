@@ -25,6 +25,7 @@
         "@navikt/aksel-icons": "^7.29.1",
         "@navikt/ds-css": "^7.29.1",
         "@navikt/ds-react": "^7.29.1",
+        "@navikt/ds-tailwind": "^7.29.1",
         "@tanstack/react-form": "^1.19.3",
         "@tanstack/react-query": "^5.86.0",
         "@tanstack/react-query-devtools": "^5.86.0",
