@@ -5,24 +5,15 @@ import {
     Outlet,
     Scripts,
 } from "@tanstack/react-router";
-import {
-    BodyShort,
-    Detail,
-    Dropdown,
-    InternalHeader,
-    Link,
-    Page,
-    Spacer,
-    Theme,
-} from "@navikt/ds-react";
+import { InternalHeader, Page, Spacer, Theme } from "@navikt/ds-react";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import navCss from "@navikt/ds-css/darkside?url";
 import appCss from "../style/app.css?url";
 import tailwind from "../style/tailwind.css?url";
 import favicon from "../favicon.png?url";
 import { QueryClient } from "@tanstack/react-query";
-import { LeaveIcon, PersonGroupIcon } from "@navikt/aksel-icons";
 import { hentBruker } from "../server/hentBruker";
+import { BrukerDropdown } from "../components/BrukerDropdown";
 
 export const Route = createRootRouteWithContext<{
     queryClient: QueryClient;
@@ -63,43 +54,10 @@ function RootComponent() {
                             Innkreving
                         </InternalHeader.Title>
                         <Spacer />
-                        <Dropdown>
-                            <InternalHeader.UserButton
-                                as={Dropdown.Toggle}
-                                name={bruker.foretrukketBrukernavn}
-                            />
-                            <Dropdown.Menu>
-                                <dl>
-                                    <BodyShort as="dt" size="small">
-                                        {bruker.foretrukketBrukernavn}
-                                    </BodyShort>
-                                    <Detail as="dd">{bruker.navIdent}</Detail>
-                                </dl>
-                                <Dropdown.Menu.Divider />
-                                <Dropdown.Menu.List>
-                                    <Dropdown.Menu.List.Item
-                                        as={Link}
-                                        href="/oauth2/login?redirect=/kravoversikt"
-                                    >
-                                        Bytt bruker <Spacer />{" "}
-                                        <PersonGroupIcon
-                                            aria-hidden
-                                            fontSize="1.5rem"
-                                        />
-                                    </Dropdown.Menu.List.Item>
-                                    <Dropdown.Menu.List.Item
-                                        as={Link}
-                                        href="/oauth2/logout?redirect=/kravoversikt"
-                                    >
-                                        Logg ut <Spacer />{" "}
-                                        <LeaveIcon
-                                            aria-hidden
-                                            fontSize="1.5rem"
-                                        />
-                                    </Dropdown.Menu.List.Item>
-                                </Dropdown.Menu.List>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <BrukerDropdown
+                            foretrukketBrukernavn={bruker.foretrukketBrukernavn}
+                            navIdent={bruker.navIdent}
+                        />
                     </InternalHeader>
                     <Page.Block as="main" width="2xl" gutters>
                         <Outlet />
