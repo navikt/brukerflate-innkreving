@@ -7,6 +7,12 @@
 /.nitro/
 
 .idea
+.junie
 
 # npm configuration
 .npmrc
+
+# Claude Code files
+CLAUDE.md
+.serena/
+.claude
