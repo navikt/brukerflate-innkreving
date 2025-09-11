@@ -59,7 +59,7 @@ function RootComponent() {
                             navIdent={bruker.navIdent}
                         />
                     </InternalHeader>
-                    <Page.Block as="main" width="2xl" gutters>
+                    <Page.Block as="main" gutters>
                         <Outlet />
                     </Page.Block>
                     <TanStackRouterDevtools position="bottom-right" />

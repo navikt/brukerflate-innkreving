@@ -10,7 +10,7 @@ export function ExpandableKravContent({
     id: string;
     type: Kravoversikt["krav"][number]["kravidentifikator"]["type"];
 }) {
-    const kravdetaljer = useKravdetaljer({ id, type });
+    const kravdetaljer = useKravdetaljer({ kravId: id, type });
 
     if (kravdetaljer.status === "pending") {
         return <Loader />;

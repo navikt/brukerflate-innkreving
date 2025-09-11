@@ -18,8 +18,6 @@ export default function OppdragsgiverSection({ oppdragsgiver }: OppdragsgiverSec
                 Oppdragsgiver
             </Heading>
             <Box
-                background="surface-subtle"
-                borderColor="border-alt-3"
                 padding="4"
                 borderWidth="2"
                 borderRadius="xlarge"

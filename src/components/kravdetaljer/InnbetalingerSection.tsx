@@ -22,8 +22,6 @@ export default function InnbetalingerSection({ innbetalingPlassertMotKrav }: Inn
             {innbetalingPlassertMotKrav.map((innbetaling, index) => (
                 <Box
                     key={index}
-                    background="surface-subtle"
-                    borderColor="border-alt-3"
                     padding="4"
                     borderWidth="2"
                     borderRadius="xlarge"
