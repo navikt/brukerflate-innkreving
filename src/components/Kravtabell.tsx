@@ -1,5 +1,5 @@
 import { Table } from "@navikt/ds-react";
-import { Link as RouterLink } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Kravoversikt } from "../server/hentKravoversikt";
 import React from "react";
 import { Route as KravoversiktRoute } from "../routes/kravoversikt";
@@ -9,11 +9,29 @@ interface KravtabellProps {
 }
 
 export default function Kravtabell({ krav }: KravtabellProps) {
+    const navigate = useNavigate({ from: KravoversiktRoute.fullPath });
+
+    const handleRowClick = (id: string, type: string) => {
+        navigate({
+            to: "/kravoversikt/kravdetaljer/$kravId",
+            params: { kravId: id },
+            search: { type: type as "SKATTEETATEN" | "NAV" },
+        }).catch((error) => {
+            console.error("Navigation failed:", error);
+        });
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent, id: string, type: string) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleRowClick(id, type);
+        }
+    };
+
     return (
         <Table>
             <Table.Header>
                 <Table.Row>
-                    <Table.HeaderCell />
                     <Table.HeaderCell scope="col" colSpan={2}>
                         Kravidentifikator
                     </Table.HeaderCell>
@@ -27,23 +45,21 @@ export default function Kravtabell({ krav }: KravtabellProps) {
                     const rowKey = `${id}-${type}-${i}`;
 
                     return (
-                        <RouterLink
+                        <Table.Row
                             key={rowKey}
-                            from={KravoversiktRoute.fullPath}
-                            to="/kravoversikt/kravdetaljer/$kravId"
-                            params={{ kravId: id }}
-                            search={{ type }}
+                            className="cursor-pointer"
+                            tabIndex={0}
+                            role="button"
+                            onClick={() => handleRowClick(id, type)}
+                            onKeyDown={(e) => handleKeyDown(e, id, type)}
+                            aria-label={`Vis detaljer for krav ${id ?? "uten identifikator"} av type ${type}`}
                         >
-                            <Table.Row>
-                                <Table.HeaderCell scope="row">
-                                    {id ?? "Manlger kravidentifikator"}
-                                </Table.HeaderCell>
-                                <Table.HeaderCell scope="row">
-                                    {type}
-                                </Table.HeaderCell>
-                                <Table.DataCell>{kravtype}</Table.DataCell>
-                            </Table.Row>
-                        </RouterLink>
+                            <Table.HeaderCell scope="row">
+                                {id ?? "Mangler kravidentifikator"}
+                            </Table.HeaderCell>
+                            <Table.DataCell>{type}</Table.DataCell>
+                            <Table.DataCell>{kravtype}</Table.DataCell>
+                        </Table.Row>
                     );
                 })}
             </Table.Body>
