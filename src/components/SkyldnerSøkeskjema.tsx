@@ -1,51 +1,69 @@
 import { Heading, Radio, RadioGroup, Search, VStack } from "@navikt/ds-react";
-import { Kravfilter, Skyldnertype } from "../types/skyldner";
+import { useState } from "react";
+import { Kravfilter, type SkyldnerData, Skyldnertype } from "../types/skyldner";
 
 interface SkyldnerSearchFormProps {
+    onSubmit: (data: SkyldnerData) => void;
+    isLoading?: boolean;
     initiellSkyldner?: string;
     initiellType?: Skyldnertype;
     initiellKravfilter?: Kravfilter;
-    action: string;
 }
 
 export default function SkyldnerSøkeskjema({
+    onSubmit,
+    isLoading = false,
     initiellSkyldner = "",
     initiellType = "fødselsnummer",
     initiellKravfilter = "ALLE",
-    action,
 }: SkyldnerSearchFormProps) {
+    const [skyldner, setSkyldner] = useState(initiellSkyldner);
+    const [type, setType] = useState<Skyldnertype>(initiellType);
+    const [kravfilter, setKravfilter] =
+        useState<Kravfilter>(initiellKravfilter);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (skyldner.trim()) {
+            onSubmit({
+                skyldner: skyldner.trim(),
+                type,
+                kravfilter,
+            });
+        }
+    };
+
     return (
-        <form role="search" action={action}>
+        <form role="search" onSubmit={handleSubmit}>
             <VStack gap="4">
                 <Search
-                    name="skyldner"
                     label={
                         <Heading level="2" size="medium">
                             Søk etter skyldner
                         </Heading>
                     }
                     hideLabel={false}
-                    defaultValue={initiellSkyldner}
+                    value={skyldner}
+                    onChange={setSkyldner}
+                    disabled={isLoading}
                 />
                 <RadioGroup
-                    name="type"
                     legend="Velg skyldnertype"
-                    defaultValue={initiellType}
+                    value={type}
+                    onChange={setType}
                 >
-                    <Radio value={"fødselsnummer" as Skyldnertype}>
-                        Fødselsnummer
-                    </Radio>
-                    <Radio value={"orgnummer" as Skyldnertype}>Orgnummer</Radio>
+                    <Radio value="fødselsnummer">Fødselsnummer</Radio>
+                    <Radio value="orgnummer">Orgnummer</Radio>
                 </RadioGroup>
                 <RadioGroup
-                    name="kravfilter"
                     legend="Velg kravfilter"
-                    defaultValue={initiellKravfilter}
+                    value={kravfilter}
+                    onChange={setKravfilter}
                 >
-                    <Radio value={"ALLE" as Kravfilter}>Alle</Radio>
-                    <Radio value={"ÅPNE" as Kravfilter}>Åpne</Radio>
-                    <Radio value={"LUKKEDE" as Kravfilter}>Lukkede</Radio>
-                    <Radio value={"INGEN" as Kravfilter}>Ingen</Radio>
+                    <Radio value="ALLE">Alle</Radio>
+                    <Radio value="ÅPNE">Åpne</Radio>
+                    <Radio value="LUKKEDE">Lukkede</Radio>
+                    <Radio value="INGEN">Ingen</Radio>
                 </RadioGroup>
             </VStack>
         </form>

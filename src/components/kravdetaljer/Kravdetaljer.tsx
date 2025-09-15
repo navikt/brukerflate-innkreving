@@ -22,8 +22,12 @@ export default function Kravdetaljer(props: KravdetaljerProps) {
 
             <KravgrunnlagSection kravgrunnlag={props.kravgrunnlag} />
             <KravlinjerSection kravlinjer={props.kravlinjer} />
-            <InnbetalingerSection innbetalingPlassertMotKrav={props.innbetalingPlassertMotKrav} />
-            <TilleggsinformasjonSection tilleggsinformasjon={props.tilleggsinformasjon} />
+            <InnbetalingerSection
+                innbetalingPlassertMotKrav={props.innbetalingPlassertMotKrav}
+            />
+            <TilleggsinformasjonSection
+                tilleggsinformasjon={props.tilleggsinformasjon}
+            />
             <AvvikSection avvik={props.avvik} />
             <OppdragsgiverSection oppdragsgiver={props.oppdragsgiver} />
             <SkyldnerSection skyldner={props.skyldner} />

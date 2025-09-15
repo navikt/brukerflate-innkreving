@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as KravoversiktRouteImport } from './routes/kravoversikt'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as KravoversiktResultatRouteImport } from './routes/kravoversikt.resultat'
+import { Route as KravoversiktKravdetaljerKravIdRouteImport } from './routes/kravoversikt/kravdetaljer/$kravId'
 
 const KravoversiktRoute = KravoversiktRouteImport.update({
   id: '/kravoversikt',
@@ -23,34 +23,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KravoversiktResultatRoute = KravoversiktResultatRouteImport.update({
-  id: '/resultat',
-  path: '/resultat',
-  getParentRoute: () => KravoversiktRoute,
-} as any)
+const KravoversiktKravdetaljerKravIdRoute =
+  KravoversiktKravdetaljerKravIdRouteImport.update({
+    id: '/kravdetaljer/$kravId',
+    path: '/kravdetaljer/$kravId',
+    getParentRoute: () => KravoversiktRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/kravoversikt': typeof KravoversiktRouteWithChildren
-  '/kravoversikt/resultat': typeof KravoversiktResultatRoute
+  '/kravoversikt/kravdetaljer/$kravId': typeof KravoversiktKravdetaljerKravIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/kravoversikt': typeof KravoversiktRouteWithChildren
-  '/kravoversikt/resultat': typeof KravoversiktResultatRoute
+  '/kravoversikt/kravdetaljer/$kravId': typeof KravoversiktKravdetaljerKravIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/kravoversikt': typeof KravoversiktRouteWithChildren
-  '/kravoversikt/resultat': typeof KravoversiktResultatRoute
+  '/kravoversikt/kravdetaljer/$kravId': typeof KravoversiktKravdetaljerKravIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/kravoversikt' | '/kravoversikt/resultat'
+  fullPaths: '/' | '/kravoversikt' | '/kravoversikt/kravdetaljer/$kravId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/kravoversikt' | '/kravoversikt/resultat'
-  id: '__root__' | '/' | '/kravoversikt' | '/kravoversikt/resultat'
+  to: '/' | '/kravoversikt' | '/kravoversikt/kravdetaljer/$kravId'
+  id: '__root__' | '/' | '/kravoversikt' | '/kravoversikt/kravdetaljer/$kravId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -74,22 +75,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/kravoversikt/resultat': {
-      id: '/kravoversikt/resultat'
-      path: '/resultat'
-      fullPath: '/kravoversikt/resultat'
-      preLoaderRoute: typeof KravoversiktResultatRouteImport
+    '/kravoversikt/kravdetaljer/$kravId': {
+      id: '/kravoversikt/kravdetaljer/$kravId'
+      path: '/kravdetaljer/$kravId'
+      fullPath: '/kravoversikt/kravdetaljer/$kravId'
+      preLoaderRoute: typeof KravoversiktKravdetaljerKravIdRouteImport
       parentRoute: typeof KravoversiktRoute
     }
   }
 }
 
 interface KravoversiktRouteChildren {
-  KravoversiktResultatRoute: typeof KravoversiktResultatRoute
+  KravoversiktKravdetaljerKravIdRoute: typeof KravoversiktKravdetaljerKravIdRoute
 }
 
 const KravoversiktRouteChildren: KravoversiktRouteChildren = {
-  KravoversiktResultatRoute: KravoversiktResultatRoute,
+  KravoversiktKravdetaljerKravIdRoute: KravoversiktKravdetaljerKravIdRoute,
 }
 
 const KravoversiktRouteWithChildren = KravoversiktRoute._addFileChildren(

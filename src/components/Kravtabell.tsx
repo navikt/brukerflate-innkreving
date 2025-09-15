@@ -1,23 +1,14 @@
 import { Table } from "@navikt/ds-react";
+import { Link as RouterLink } from "@tanstack/react-router";
 import { Kravoversikt } from "../server/hentKravoversikt";
-import React, { useState } from "react";
-
-type KravIdentifikator = Kravoversikt["krav"][number]["kravidentifikator"];
+import React from "react";
+import { Route as KravoversiktRoute } from "../routes/kravoversikt";
 
 interface KravtabellProps {
     krav: Kravoversikt["krav"];
-    ExpandableContent: React.ComponentType<{
-        id: string;
-        type: KravIdentifikator["type"];
-    }>;
 }
 
-export default function Kravtabell({
-    krav,
-    ExpandableContent,
-}: KravtabellProps) {
-    const [hoveredRowKeys, setHoveredRowKeys] = useState<Set<string>>(new Set());
-
+export default function Kravtabell({ krav }: KravtabellProps) {
     return (
         <Table>
             <Table.Header>
@@ -36,33 +27,23 @@ export default function Kravtabell({
                     const rowKey = `${id}-${type}-${i}`;
 
                     return (
-                        <Table.ExpandableRow
+                        <RouterLink
                             key={rowKey}
-                            content={
-                                hoveredRowKeys.has(rowKey) ?
-                                    <ExpandableContent id={id} type={type} />
-                                :   null
-                            }
-                            expandOnRowClick
-                            onMouseEnter={() =>
-                                setHoveredRowKeys((prev) => {
-                                    if (prev.has(rowKey)) {
-                                        return prev;
-                                    }
-                                    const next = new Set(prev);
-                                    next.add(rowKey);
-                                    return next;
-                                })
-                            }
+                            from={KravoversiktRoute.fullPath}
+                            to="/kravoversikt/kravdetaljer/$kravId"
+                            params={{ kravId: id }}
+                            search={{ type }}
                         >
-                            <Table.HeaderCell scope="row">
-                                {id ?? "Manlger kravidentifikator"}
-                            </Table.HeaderCell>
-                            <Table.HeaderCell scope="row">
-                                {type}
-                            </Table.HeaderCell>
-                            <Table.DataCell>{kravtype}</Table.DataCell>
-                        </Table.ExpandableRow>
+                            <Table.Row>
+                                <Table.HeaderCell scope="row">
+                                    {id ?? "Manlger kravidentifikator"}
+                                </Table.HeaderCell>
+                                <Table.HeaderCell scope="row">
+                                    {type}
+                                </Table.HeaderCell>
+                                <Table.DataCell>{kravtype}</Table.DataCell>
+                            </Table.Row>
+                        </RouterLink>
                     );
                 })}
             </Table.Body>

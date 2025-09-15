@@ -9,5 +9,6 @@ export const SkyldnerSchema = z.object({
     kravfilter: KravfilterSchema.default("ALLE"),
 });
 
+export type SkyldnerData = z.infer<typeof SkyldnerSchema>;
 export type Skyldnertype = z.infer<typeof SkyldnertypeSchema>;
 export type Kravfilter = z.infer<typeof KravfilterSchema>;
