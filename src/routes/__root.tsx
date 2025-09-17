@@ -59,11 +59,10 @@ function RootComponent() {
                             navIdent={bruker.navIdent}
                         />
                     </InternalHeader>
-                    <Page.Block as="main" gutters>
+                    <Page.Block as="main" gutters className="mt-6">
                         <Outlet />
                     </Page.Block>
                     <TanStackRouterDevtools position="bottom-right" />
-                    {/*<ReactQueryDevtools buttonPosition="bottom-left"/>*/}
                 </Page>
             </Theme>
         </RootDocument>
@@ -75,6 +74,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <html>
             <head>
                 <HeadContent />
+                <title>Innkreving</title>
             </head>
             <body>
                 {children}
