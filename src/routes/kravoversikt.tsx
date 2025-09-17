@@ -60,8 +60,6 @@ function Kravoversikt() {
         clearSearchState();
     };
 
-    console.log(searchState);
-
     return (
         <HGrid gap="6" columns="1fr 3fr">
             <div>
