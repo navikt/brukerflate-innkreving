@@ -3,9 +3,15 @@ import { type SkyldnerData, SkyldnerSchema } from "../types/skyldner";
 
 const SEARCH_STATE_KEY = "kravoversikt-search-state";
 
+const defaultSearchState: SkyldnerData = {
+    skyldner: "",
+    type: "fødselsnummer",
+    kravfilter: "ALLE",
+};
+
 export function useSearchState() {
     const [searchState, setSearchState] = useState<SkyldnerData>(
-        SkyldnerSchema.parse({}),
+        defaultSearchState,
     );
 
     useEffect(() => {
@@ -13,7 +19,7 @@ export function useSearchState() {
         setSearchState(
             saved ?
                 SkyldnerSchema.parse(JSON.parse(saved))
-            :   SkyldnerSchema.parse({}),
+            :   defaultSearchState,
         );
     }, []);
 
@@ -24,9 +30,8 @@ export function useSearchState() {
     };
 
     const clearSearchState = () => {
-        const defaultState = SkyldnerSchema.parse({});
-        setSearchState(defaultState);
-        sessionStorage.setItem(SEARCH_STATE_KEY, JSON.stringify(defaultState));
+        setSearchState(defaultSearchState);
+        sessionStorage.setItem(SEARCH_STATE_KEY, JSON.stringify(defaultSearchState));
     };
 
     return {
