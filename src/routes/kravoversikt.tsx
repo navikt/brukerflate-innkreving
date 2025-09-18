@@ -3,8 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
     Alert,
+    BoxNew,
     Heading,
     HGrid,
+    Loader,
     Radio,
     RadioGroup,
     Search,
@@ -63,55 +65,78 @@ function Kravoversikt() {
     return (
         <HGrid gap="6" columns="1fr 3fr">
             <div>
-                <form role="search" onSubmit={handleSubmit}>
-                    <VStack gap="4">
-                        <Search
-                            name="skyldner"
-                            label={
-                                <Heading level="2" size="medium">
-                                    Søk etter skyldner
-                                </Heading>
-                            }
-                            hideLabel={false}
-                            value={skyldner}
-                            onChange={setSkyldner}
-                            onClear={handleClear}
-                            disabled={kravoversiktQuery.isLoading}
-                        />
-                        <RadioGroup
-                            name="type"
-                            legend="Velg skyldnertype"
-                            value={skyldnertype}
-                            onChange={(value) =>
-                                setSkyldnertype(value as Skyldnertype)
-                            }
+                <VStack gap="6">
+                    <BoxNew
+                        padding="space-16"
+                        borderColor="accent-subtle"
+                        borderWidth="1"
+                        borderRadius="large"
+                    >
+                        <form role="search" onSubmit={handleSubmit}>
+                            <VStack gap="4">
+                                <Search
+                                    name="skyldner"
+                                    label={
+                                        <Heading level="2" size="medium">
+                                            Søk etter skyldner
+                                        </Heading>
+                                    }
+                                    hideLabel={false}
+                                    value={skyldner}
+                                    onChange={setSkyldner}
+                                    onClear={handleClear}
+                                    disabled={kravoversiktQuery.isLoading}
+                                />
+                                <RadioGroup
+                                    name="type"
+                                    legend="Velg skyldnertype"
+                                    value={skyldnertype}
+                                    onChange={(value) =>
+                                        setSkyldnertype(value as Skyldnertype)
+                                    }
+                                >
+                                    <Radio value="fødselsnummer">
+                                        Fødselsnummer
+                                    </Radio>
+                                    <Radio value="orgnummer">Orgnummer</Radio>
+                                </RadioGroup>
+                                <RadioGroup
+                                    name="kravfilter"
+                                    legend="Velg kravfilter"
+                                    value={kravfilter}
+                                    onChange={(value) =>
+                                        setKravfilter(value as Kravfilter)
+                                    }
+                                >
+                                    <Radio value="ALLE">Alle</Radio>
+                                    <Radio value="ÅPNE">Åpne</Radio>
+                                    <Radio value="LUKKEDE">Lukkede</Radio>
+                                    <Radio value="INGEN">Ingen</Radio>
+                                </RadioGroup>
+                            </VStack>
+                        </form>
+                    </BoxNew>
+                    {(kravoversiktQuery.data || kravoversiktQuery.isLoading || kravoversiktQuery.error) && (
+                        <BoxNew
+                            padding="space-16"
+                            borderColor="accent-subtle"
+                            borderWidth="1"
+                            borderRadius="large"
                         >
-                            <Radio value="fødselsnummer">Fødselsnummer</Radio>
-                            <Radio value="orgnummer">Orgnummer</Radio>
-                        </RadioGroup>
-                        <RadioGroup
-                            name="kravfilter"
-                            legend="Velg kravfilter"
-                            value={kravfilter}
-                            onChange={(value) =>
-                                setKravfilter(value as Kravfilter)
-                            }
-                        >
-                            <Radio value="ALLE">Alle</Radio>
-                            <Radio value="ÅPNE">Åpne</Radio>
-                            <Radio value="LUKKEDE">Lukkede</Radio>
-                            <Radio value="INGEN">Ingen</Radio>
-                        </RadioGroup>
-                    </VStack>
-                </form>
-                {kravoversiktQuery.data && (
-                    <Kravtabell krav={kravoversiktQuery.data.krav} />
-                )}
-                {kravoversiktQuery.error && (
-                    <Alert variant="error">
-                        Feil ved søk: {kravoversiktQuery.error.message}
-                    </Alert>
-                )}
+                            {kravoversiktQuery.data && (
+                                <Kravtabell krav={kravoversiktQuery.data.krav} />
+                            )}
+                            {kravoversiktQuery.isLoading && (
+                                <Loader size="2xlarge" />
+                            )}
+                            {kravoversiktQuery.error && (
+                                <Alert variant="error">
+                                    Feil ved søk: {kravoversiktQuery.error.message}
+                                </Alert>
+                            )}
+                        </BoxNew>
+                    )}
+                </VStack>
             </div>
             <Outlet />
         </HGrid>

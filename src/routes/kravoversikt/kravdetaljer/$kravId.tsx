@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { Alert, Loader } from "@navikt/ds-react";
+import { Alert, BoxNew, Loader } from "@navikt/ds-react";
 import useKravdetaljer from "../../../queries/useKravdetaljer";
 import Kravdetaljer from "../../../components/kravdetaljer/Kravdetaljer";
 
@@ -20,18 +20,25 @@ function KravdetaljerPage() {
 
     const kravdetaljer = useKravdetaljer({ id: kravId, type });
 
-    if (kravdetaljer.status === "pending") {
-        return <Loader size="3xlarge" title="Henter kravdetaljer..." />;
-    }
-
-    if (kravdetaljer.status === "error") {
-        return (
-            <Alert variant="error">
-                Feilet ved henting av kravdetaljer:{" "}
-                {kravdetaljer.error?.message}
-            </Alert>
-        );
-    }
-
-    return <Kravdetaljer {...kravdetaljer.data} id={kravId} type={type} />;
+    return (
+        <BoxNew
+            padding="space-16"
+            borderColor="accent-subtle"
+            borderWidth="1"
+            borderRadius="large"
+        >
+            {kravdetaljer.data && (
+                <Kravdetaljer {...kravdetaljer.data} id={kravId} type={type} />
+            )}
+            {kravdetaljer.isPending && (
+                <Loader size="3xlarge" title="Henter kravdetaljer" />
+            )}
+            {kravdetaljer.isError && (
+                <Alert variant="error">
+                    Feilet ved henting av kravdetaljer:{" "}
+                    {kravdetaljer.error?.message}
+                </Alert>
+            )}
+        </BoxNew>
+    );
 }
