@@ -11,7 +11,9 @@ WORKDIR /app
 # Set up pnpm environment
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+USER root
 RUN corepack enable
+USER node
 
 # Copy package manager files first for better caching
 COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc.template ./
