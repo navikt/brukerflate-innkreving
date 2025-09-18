@@ -1,4 +1,4 @@
-import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 
 interface AvvikSectionProps {
     avvik?: {
@@ -17,11 +17,7 @@ export default function AvvikSection({ avvik }: AvvikSectionProps) {
             <Heading size="medium" level="3">
                 Avvik
             </Heading>
-            <Box
-                padding="4"
-                borderWidth="2"
-                borderRadius="xlarge"
-            >
+            <BoxNew padding="4" borderWidth="2" borderRadius="xlarge">
                 <VStack gap="1">
                     <Heading size="small" level="4">
                         Avvikstype
@@ -33,7 +29,7 @@ export default function AvvikSection({ avvik }: AvvikSectionProps) {
                     </Heading>
                     <BodyShort>{avvik.utdypendeAvviksbeskrivelse}</BodyShort>
                 </VStack>
-            </Box>
+            </BoxNew>
         </>
     );
 }

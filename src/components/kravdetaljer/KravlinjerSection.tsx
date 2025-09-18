@@ -1,4 +1,4 @@
-import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 
 interface KravlinjerSectionProps {
     kravlinjer: Array<{
@@ -14,7 +14,9 @@ interface KravlinjerSectionProps {
     }>;
 }
 
-export default function KravlinjerSection({ kravlinjer }: KravlinjerSectionProps) {
+export default function KravlinjerSection({
+    kravlinjer,
+}: KravlinjerSectionProps) {
     return (
         <>
             <Heading size="medium" level="3">
@@ -22,7 +24,7 @@ export default function KravlinjerSection({ kravlinjer }: KravlinjerSectionProps
             </Heading>
             {kravlinjer.map((kravlinje, index) => {
                 return (
-                    <Box
+                    <BoxNew
                         key={index}
                         padding="4"
                         borderWidth="2"
@@ -37,25 +39,41 @@ export default function KravlinjerSection({ kravlinjer }: KravlinjerSectionProps
                             <Heading size="small" level="4">
                                 Opprinnelig beløp
                             </Heading>
-                            <BodyShort>{kravlinje.opprinneligBeløp.toLocaleString('nb-NO', { minimumFractionDigits: 2 })} kr</BodyShort>
+                            <BodyShort>
+                                {kravlinje.opprinneligBeløp.toLocaleString(
+                                    "nb-NO",
+                                    { minimumFractionDigits: 2 },
+                                )}{" "}
+                                kr
+                            </BodyShort>
 
                             <Heading size="small" level="4">
                                 Gjenstående beløp
                             </Heading>
-                            <BodyShort>{kravlinje.gjenståendeBeløp.toLocaleString('nb-NO', { minimumFractionDigits: 2 })} kr</BodyShort>
+                            <BodyShort>
+                                {kravlinje.gjenståendeBeløp.toLocaleString(
+                                    "nb-NO",
+                                    { minimumFractionDigits: 2 },
+                                )}{" "}
+                                kr
+                            </BodyShort>
 
                             {kravlinje.kravlinjeBeskrivelse && (
                                 <>
                                     <Heading size="small" level="4">
                                         Beskrivelse
                                     </Heading>
-                                    {kravlinje.kravlinjeBeskrivelse.spraakTekst?.map((tekst, i) => (
-                                        <BodyShort key={i}>{tekst.tekst}</BodyShort>
-                                    ))}
+                                    {kravlinje.kravlinjeBeskrivelse.spraakTekst?.map(
+                                        (tekst, i) => (
+                                            <BodyShort key={i}>
+                                                {tekst.tekst}
+                                            </BodyShort>
+                                        ),
+                                    )}
                                 </>
                             )}
                         </VStack>
-                    </Box>
+                    </BoxNew>
                 );
             })}
         </>

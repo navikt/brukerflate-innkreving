@@ -1,4 +1,4 @@
-import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 
 interface KravgrunnlagSectionProps {
     kravgrunnlag: {
@@ -8,17 +8,15 @@ interface KravgrunnlagSectionProps {
     };
 }
 
-export default function KravgrunnlagSection({ kravgrunnlag }: KravgrunnlagSectionProps) {
+export default function KravgrunnlagSection({
+    kravgrunnlag,
+}: KravgrunnlagSectionProps) {
     return (
         <>
             <Heading size="medium" level="3">
                 Kravgrunnlag
             </Heading>
-            <Box
-                padding="4"
-                borderWidth="2"
-                borderRadius="xlarge"
-            >
+            <BoxNew padding="4" borderWidth="2" borderRadius="xlarge">
                 <VStack gap="1">
                     <Heading size="small" level="4">
                         Dato når krav var besluttet hos oppdragsgiver
@@ -32,7 +30,9 @@ export default function KravgrunnlagSection({ kravgrunnlag }: KravgrunnlagSectio
                             <Heading size="small" level="4">
                                 Oppdragsgivers kravidentifikator
                             </Heading>
-                            <BodyShort>{kravgrunnlag.oppdragsgiversKravidentifikator}</BodyShort>
+                            <BodyShort>
+                                {kravgrunnlag.oppdragsgiversKravidentifikator}
+                            </BodyShort>
                         </>
                     )}
 
@@ -41,11 +41,13 @@ export default function KravgrunnlagSection({ kravgrunnlag }: KravgrunnlagSectio
                             <Heading size="small" level="4">
                                 Oppdragsgivers saksreferanse
                             </Heading>
-                            <BodyShort>{kravgrunnlag.oppdragsgiversSaksreferanse}</BodyShort>
+                            <BodyShort>
+                                {kravgrunnlag.oppdragsgiversSaksreferanse}
+                            </BodyShort>
                         </>
                     )}
                 </VStack>
-            </Box>
+            </BoxNew>
         </>
     );
 }

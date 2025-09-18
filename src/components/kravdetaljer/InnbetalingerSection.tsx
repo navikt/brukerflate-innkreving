@@ -1,4 +1,4 @@
-import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 
 interface InnbetalingerSectionProps {
     innbetalingPlassertMotKrav?: Array<{
@@ -9,8 +9,13 @@ interface InnbetalingerSectionProps {
     }>;
 }
 
-export default function InnbetalingerSection({ innbetalingPlassertMotKrav }: InnbetalingerSectionProps) {
-    if (!innbetalingPlassertMotKrav || innbetalingPlassertMotKrav.length === 0) {
+export default function InnbetalingerSection({
+    innbetalingPlassertMotKrav,
+}: InnbetalingerSectionProps) {
+    if (
+        !innbetalingPlassertMotKrav ||
+        innbetalingPlassertMotKrav.length === 0
+    ) {
         return null;
     }
 
@@ -20,7 +25,7 @@ export default function InnbetalingerSection({ innbetalingPlassertMotKrav }: Inn
                 Innbetalinger
             </Heading>
             {innbetalingPlassertMotKrav.map((innbetaling, index) => (
-                <Box
+                <BoxNew
                     key={index}
                     padding="4"
                     borderWidth="2"
@@ -40,14 +45,22 @@ export default function InnbetalingerSection({ innbetalingPlassertMotKrav }: Inn
                         <Heading size="small" level="4">
                             Innbetalt beløp
                         </Heading>
-                        <BodyShort>{innbetaling.innbetaltBeloep?.toLocaleString('nb-NO', { minimumFractionDigits: 2 }) ?? '-'} kr</BodyShort>
+                        <BodyShort>
+                            {innbetaling.innbetaltBeloep?.toLocaleString(
+                                "nb-NO",
+                                { minimumFractionDigits: 2 },
+                            ) ?? "-"}{" "}
+                            kr
+                        </BodyShort>
 
                         <Heading size="small" level="4">
                             Innbetalings-ID
                         </Heading>
-                        <BodyShort>{innbetaling.innbetalingsIdentifikator}</BodyShort>
+                        <BodyShort>
+                            {innbetaling.innbetalingsIdentifikator}
+                        </BodyShort>
                     </VStack>
-                </Box>
+                </BoxNew>
             ))}
         </>
     );

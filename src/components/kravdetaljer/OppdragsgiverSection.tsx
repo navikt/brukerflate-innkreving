@@ -1,4 +1,4 @@
-import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 
 interface OppdragsgiverSectionProps {
     oppdragsgiver?: {
@@ -7,7 +7,9 @@ interface OppdragsgiverSectionProps {
     };
 }
 
-export default function OppdragsgiverSection({ oppdragsgiver }: OppdragsgiverSectionProps) {
+export default function OppdragsgiverSection({
+    oppdragsgiver,
+}: OppdragsgiverSectionProps) {
     if (!oppdragsgiver) {
         return null;
     }
@@ -17,11 +19,7 @@ export default function OppdragsgiverSection({ oppdragsgiver }: OppdragsgiverSec
             <Heading size="medium" level="3">
                 Oppdragsgiver
             </Heading>
-            <Box
-                padding="4"
-                borderWidth="2"
-                borderRadius="xlarge"
-            >
+            <BoxNew padding="4" borderWidth="2" borderRadius="xlarge">
                 <VStack gap="1">
                     <Heading size="small" level="4">
                         Organisasjonsnavn
@@ -33,7 +31,7 @@ export default function OppdragsgiverSection({ oppdragsgiver }: OppdragsgiverSec
                     </Heading>
                     <BodyShort>{oppdragsgiver.organisasjonsnummer}</BodyShort>
                 </VStack>
-            </Box>
+            </BoxNew>
         </>
     );
 }

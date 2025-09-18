@@ -1,4 +1,4 @@
-import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 
 interface SkyldnerSectionProps {
     skyldner?: {
@@ -17,11 +17,7 @@ export default function SkyldnerSection({ skyldner }: SkyldnerSectionProps) {
             <Heading size="medium" level="3">
                 Skyldner
             </Heading>
-            <Box
-                padding="4"
-                borderWidth="2"
-                borderRadius="xlarge"
-            >
+            <BoxNew padding="4" borderWidth="2" borderRadius="xlarge">
                 <VStack gap="1">
                     <Heading size="small" level="4">
                         Navn
@@ -33,7 +29,7 @@ export default function SkyldnerSection({ skyldner }: SkyldnerSectionProps) {
                     </Heading>
                     <BodyShort>{skyldner.identifikator}</BodyShort>
                 </VStack>
-            </Box>
+            </BoxNew>
         </>
     );
 }
