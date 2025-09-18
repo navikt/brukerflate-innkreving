@@ -54,4 +54,4 @@ COPY --from=build /app/.output /app/.output
 # Use non-root user for security
 USER node
 
-CMD ["node", ".output/server/index.mjs"]
+CMD [".output/server/index.mjs"]
