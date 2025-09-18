@@ -64,7 +64,7 @@ function Kravoversikt() {
 
     return (
         <HGrid gap="6" columns="1fr 3fr">
-            <div>
+            <div className="sticky top-0 self-start max-h-screen overflow-y-auto">
                 <VStack gap="6">
                     <BoxNew
                         padding="space-16"
@@ -124,7 +124,9 @@ function Kravoversikt() {
                             borderRadius="large"
                         >
                             {kravoversiktQuery.data && (
-                                <Kravtabell krav={kravoversiktQuery.data.krav} />
+                                <div className="overflow-x-auto">
+                                    <Kravtabell krav={kravoversiktQuery.data.krav} />
+                                </div>
                             )}
                             {kravoversiktQuery.isLoading && (
                                 <Loader size="2xlarge" />
