@@ -1,30 +1,55 @@
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:22 AS base
+# Use dev variant for building (includes npm, shell, package managers)
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:22-dev AS base-dev
 
-FROM base AS deps
+# Use production variant for runtime (minimal, no npm/shell)
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:22 AS base-prod
+
+# Dependencies stage
+FROM base-dev AS deps
 WORKDIR /app
+
+# Set up pnpm environment
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN npm install -g corepack \
-    corepack enable
+RUN corepack enable
+
+# Copy package manager files first for better caching
 COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc.template ./
+
+# Handle GitHub token substitution and fetch dependencies
 RUN --mount=type=secret,id=github_npm_token,env=GITHUB_NPM_TOKEN \
     sed "s/<YOUR_GITHUB_TOKEN>/${GITHUB_NPM_TOKEN}/g" .npmrc.template > .npmrc && \
     pnpm fetch
+
+# Copy package.json and install dependencies
 COPY package.json ./
 RUN pnpm install --offline --frozen-lockfile
 
-FROM deps AS build
+# Build stage
+FROM base-dev AS build
 WORKDIR /app
+
+# Copy installed dependencies
 COPY --from=deps /app/node_modules ./node_modules
-COPY tsconfig.json vite.config.ts ./
+
+# Copy build configuration and source code
+COPY package.json tsconfig.json vite.config.ts ./
 COPY src/ ./src/
+
+# Build the application
 RUN pnpm run build
 
-FROM base
+# Production stage - use minimal production image
+FROM base-prod AS production
 WORKDIR /app
-COPY --from=build /app/node_modules /app/node_modules
-COPY --from=build /app/.output /app/.output
 
+# Set production environment
 ENV NODE_ENV=production
 
-CMD [".output/server/index.mjs"]
+# Copy only production dependencies and built application
+COPY --from=build /app/.output /app/.output
+
+# Use non-root user for security
+USER node
+
+CMD ["node", ".output/server/index.mjs"]
