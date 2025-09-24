@@ -34,14 +34,14 @@ export function BrukerDropdown({
                 <Dropdown.Menu.List>
                     <Dropdown.Menu.List.Item
                         as={Link}
-                        href="/oauth2/login?redirect=/kravoversikt"
+                        href="/oauth2/login?prompt=select_account"
                     >
                         Bytt bruker <Spacer />{" "}
                         <PersonGroupIcon aria-hidden fontSize="1.5rem" />
                     </Dropdown.Menu.List.Item>
                     <Dropdown.Menu.List.Item
                         as={Link}
-                        href="/oauth2/logout?redirect=/kravoversikt"
+                        href="/oauth2/logout?prompt=select_account"
                     >
                         Logg ut <Spacer />{" "}
                         <LeaveIcon aria-hidden fontSize="1.5rem" />
