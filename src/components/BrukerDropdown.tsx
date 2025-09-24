@@ -41,7 +41,7 @@ export function BrukerDropdown({
                     </Dropdown.Menu.List.Item>
                     <Dropdown.Menu.List.Item
                         as={Link}
-                        href="/oauth2/logout?prompt=select_account"
+                        href="/oauth2/logout"
                     >
                         Logg ut <Spacer />{" "}
                         <LeaveIcon aria-hidden fontSize="1.5rem" />
