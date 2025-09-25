@@ -15,6 +15,8 @@ const Krav = z.object({
     kravtype: z.string(),
 });
 
+export type Krav = z.infer<typeof Krav>;
+
 const Kravoversikt = z.object({
     krav: z.array(Krav),
 });

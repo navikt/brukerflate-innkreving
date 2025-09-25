@@ -12,7 +12,7 @@ import {
     Search,
     VStack,
 } from "@navikt/ds-react";
-import { hentKravoversikt } from "../server/hentKravoversikt";
+import { hentKravoversikt, Krav } from "../server/hentKravoversikt";
 import Kravtabell from "../components/Kravtabell";
 import { useSearchState } from "../hooks/useSearchState";
 import { type Kravfilter, type Skyldnertype } from "../types/skyldner";
@@ -64,7 +64,7 @@ function Kravoversikt() {
 
     return (
         <HGrid gap="6" columns="1fr 3fr">
-            <div className="sticky top-0 self-start max-h-screen overflow-y-auto">
+            <div className="top-0 sticky max-h-screen self-start overflow-y-auto">
                 <VStack gap="6">
                     <BoxNew
                         padding="space-16"
@@ -116,24 +116,25 @@ function Kravoversikt() {
                             </VStack>
                         </form>
                     </BoxNew>
-                    {(kravoversiktQuery.data || kravoversiktQuery.isLoading || kravoversiktQuery.error) && (
+                    {(kravoversiktQuery.data ||
+                        kravoversiktQuery.isLoading ||
+                        kravoversiktQuery.error) && (
                         <BoxNew
                             padding="space-16"
                             borderColor="accent-subtle"
                             borderWidth="1"
                             borderRadius="large"
                         >
-                            {kravoversiktQuery.data && (
-                                <div className="overflow-x-auto">
-                                    <Kravtabell krav={kravoversiktQuery.data.krav} />
-                                </div>
-                            )}
+                            <ConditionalKravtabell
+                                krav={kravoversiktQuery.data?.krav}
+                            />
                             {kravoversiktQuery.isLoading && (
                                 <Loader size="2xlarge" />
                             )}
                             {kravoversiktQuery.error && (
                                 <Alert variant="error">
-                                    Feil ved søk: {kravoversiktQuery.error.message}
+                                    Feil ved søk:{" "}
+                                    {kravoversiktQuery.error.message}
                                 </Alert>
                             )}
                         </BoxNew>
@@ -142,5 +143,21 @@ function Kravoversikt() {
             </div>
             <Outlet />
         </HGrid>
+    );
+}
+
+function ConditionalKravtabell({ krav }: { krav?: Krav[] }) {
+    if (krav === undefined) {
+        return null;
+    }
+
+    if (krav.length === 0) {
+        return <Alert variant="info">Fant ingen krav</Alert>;
+    }
+
+    return (
+        <div className="overflow-x-auto">
+            <Kravtabell krav={krav} />
+        </div>
     );
 }
