@@ -1,14 +1,12 @@
 import { z } from "zod";
 
-const SkyldnertypeSchema = z.enum(["fødselsnummer", "orgnummer"]);
+const SøketypeSchema = z.enum(["SKYLDNER", "NAV", "SKATTEETATEN"]);
 const KravfilterSchema = z.enum(["ALLE", "ÅPNE", "LUKKEDE", "INGEN"]);
 
-export const SkyldnerSchema = z.object({
-    skyldner: z.coerce.string().default(""),
-    type: SkyldnertypeSchema.default("fødselsnummer"),
+export const SøkSchema = z.object({
+    søketekst: z.coerce.string().default(""),
+    søketype: SøketypeSchema.default("SKYLDNER"),
     kravfilter: KravfilterSchema.default("ALLE"),
 });
 
-export type SkyldnerData = z.infer<typeof SkyldnerSchema>;
-export type Skyldnertype = z.infer<typeof SkyldnertypeSchema>;
-export type Kravfilter = z.infer<typeof KravfilterSchema>;
+export type Søk = z.infer<typeof SøkSchema>;

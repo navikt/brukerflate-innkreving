@@ -1,19 +1,17 @@
 import { Table } from "@navikt/ds-react";
-import { useNavigate } from "@tanstack/react-router";
 import { Kravoversikt } from "../server/hentKravoversikt";
 import React from "react";
-import { Route as KravoversiktRoute } from "../routes/kravoversikt";
+import { Route as KravdetaljerRoute } from "../routes/kravoversikt/kravdetaljer/$kravId";
 
 interface KravtabellProps {
     krav: Kravoversikt["krav"];
 }
 
 export default function Kravtabell({ krav }: KravtabellProps) {
-    const navigate = useNavigate({ from: KravoversiktRoute.fullPath });
+    const navigate = KravdetaljerRoute.useNavigate();
 
     const handleRowClick = (id: string, type: string) => {
         navigate({
-            to: "/kravoversikt/kravdetaljer/$kravId",
             params: { kravId: id },
             search: { type: type as "SKATTEETATEN" | "NAV" },
         }).catch((error) => {
@@ -21,7 +19,11 @@ export default function Kravtabell({ krav }: KravtabellProps) {
         });
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent, id: string, type: string) => {
+    const handleKeyDown = (
+        e: React.KeyboardEvent,
+        id: string,
+        type: string,
+    ) => {
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             handleRowClick(id, type);

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createServerFn } from "@tanstack/react-start";
-import { SkyldnerSchema } from "../types/skyldner";
+import { SøkSchema } from "../types/skyldner";
 import { texasMiddleware } from "./middleware/texasMiddleware";
 
 const Krav = z.object({
@@ -24,7 +24,7 @@ const Kravoversikt = z.object({
 export type Kravoversikt = z.infer<typeof Kravoversikt>;
 
 export const hentKravoversikt = createServerFn()
-    .validator(SkyldnerSchema)
+    .validator(SøkSchema)
     .middleware([texasMiddleware])
     .handler(async ({ data, context }) => {
         const kravoversiktUrl =
@@ -37,8 +37,8 @@ export const hentKravoversikt = createServerFn()
                 Authorization: `Bearer ${context.oboToken}`,
             },
             body: JSON.stringify({
-                id: data.skyldner,
-                type: data.type,
+                søketekst: data.søketekst,
+                søketype: data.søketype,
                 kravfilter: data.kravfilter,
             }),
         });

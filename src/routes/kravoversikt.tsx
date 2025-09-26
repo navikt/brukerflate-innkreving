@@ -1,6 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import {
     Alert,
     BoxNew,
@@ -14,52 +13,43 @@ import {
 } from "@navikt/ds-react";
 import { hentKravoversikt, Krav } from "../server/hentKravoversikt";
 import Kravtabell from "../components/Kravtabell";
-import { useSearchState } from "../hooks/useSearchState";
-import { type Kravfilter, type Skyldnertype } from "../types/skyldner";
+import { Søk } from "../types/skyldner";
+import { Route as KravdetaljerRoute } from "./kravoversikt/kravdetaljer/$kravId";
 
 export const Route = createFileRoute("/kravoversikt")({
     component: Kravoversikt,
 });
 
 function Kravoversikt() {
-    const { searchState, updateSearchState, clearSearchState } =
-        useSearchState();
-
-    // Form state to prevent re-renders during typing/selection
-    const [skyldner, setSkyldner] = useState(searchState.skyldner);
-    const [skyldnertype, setSkyldnertype] = useState(searchState.type);
-    const [kravfilter, setKravfilter] = useState(searchState.kravfilter);
-
-    // Sync form state when searchState changes (from sessionStorage)
-    useEffect(() => {
-        setSkyldner(searchState.skyldner);
-        setSkyldnertype(searchState.type);
-        setKravfilter(searchState.kravfilter);
-    }, [searchState.skyldner, searchState.type, searchState.kravfilter]);
-
-    const kravoversiktQuery = useQuery({
-        queryKey: ["kravoversikt", searchState],
-        queryFn: () => hentKravoversikt({ data: searchState }),
-        enabled: !!searchState.skyldner?.trim(),
-        staleTime: 5 * 60 * 1000,
+    const kravoversiktMutation = useMutation({
+        mutationFn: (søk: Søk) => hentKravoversikt({ data: søk }),
     });
+
+    const kravdetaljerNavigate = KravdetaljerRoute.useNavigate();
+
+    const søketekstName = "søketekst";
+    const søketypeName = "søketype";
+    const kravfilterName = "kravfilter";
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (skyldner.trim()) {
-            updateSearchState({
-                skyldner: skyldner.trim(),
-                type: skyldnertype,
-                kravfilter,
+        const formData = new FormData(e.currentTarget);
+        const søk = {
+            søketekst: formData.get(søketekstName),
+            søketype: formData.get(søketypeName),
+            kravfilter: formData.get(kravfilterName),
+        } as Søk;
+
+        // Om brukeren søker på skyldner, vises en tabell med krav
+        if (søk.søketype === "SKYLDNER") {
+            kravoversiktMutation.mutate(søk);
+            // Om brukeren søker på kravidentifikator, navigeres direkte til kravdetaljer
+        } else {
+            kravdetaljerNavigate({
+                search: { type: søk.søketype },
+                params: { kravId: søk.søketekst },
             });
         }
-    };
-
-    const handleClear = () => {
-        setSkyldner("");
-        setSkyldnertype("fødselsnummer");
-        setKravfilter("ALLE");
-        clearSearchState();
     };
 
     return (
@@ -75,38 +65,34 @@ function Kravoversikt() {
                         <form role="search" onSubmit={handleSubmit}>
                             <VStack gap="4">
                                 <Search
-                                    name="skyldner"
+                                    name={søketekstName}
                                     label={
                                         <Heading level="2" size="medium">
-                                            Søk etter skyldner
+                                            Søk etter innkrevingskrav
                                         </Heading>
                                     }
                                     hideLabel={false}
-                                    value={skyldner}
-                                    onChange={setSkyldner}
-                                    onClear={handleClear}
-                                    disabled={kravoversiktQuery.isLoading}
+                                    disabled={kravoversiktMutation.isPending}
                                 />
                                 <RadioGroup
-                                    name="type"
-                                    legend="Velg skyldnertype"
-                                    value={skyldnertype}
-                                    onChange={(value) =>
-                                        setSkyldnertype(value as Skyldnertype)
-                                    }
+                                    name={søketypeName}
+                                    legend="Velg søketype"
+                                    defaultValue="SKYLDNER"
                                 >
-                                    <Radio value="fødselsnummer">
-                                        Fødselsnummer
+                                    <Radio value="SKYLDNER">
+                                        Skyldner (fnr/orgnr)
                                     </Radio>
-                                    <Radio value="orgnummer">Orgnummer</Radio>
+                                    <Radio value="NAV">
+                                        Nav-kravidentifikator
+                                    </Radio>
+                                    <Radio value="SKATTEETATEN">
+                                        Skatteetaten-kravidentifikator
+                                    </Radio>
                                 </RadioGroup>
                                 <RadioGroup
-                                    name="kravfilter"
+                                    name={kravfilterName}
                                     legend="Velg kravfilter"
-                                    value={kravfilter}
-                                    onChange={(value) =>
-                                        setKravfilter(value as Kravfilter)
-                                    }
+                                    defaultValue="ALLE"
                                 >
                                     <Radio value="ALLE">Alle</Radio>
                                     <Radio value="ÅPNE">Åpne</Radio>
@@ -116,25 +102,27 @@ function Kravoversikt() {
                             </VStack>
                         </form>
                     </BoxNew>
-                    {(kravoversiktQuery.data ||
-                        kravoversiktQuery.isLoading ||
-                        kravoversiktQuery.error) && (
+                    {(kravoversiktMutation.data ||
+                        kravoversiktMutation.isPending ||
+                        kravoversiktMutation.error) && (
                         <BoxNew
                             padding="space-16"
                             borderColor="accent-subtle"
                             borderWidth="1"
                             borderRadius="large"
                         >
-                            <ConditionalKravtabell
-                                krav={kravoversiktQuery.data?.krav}
-                            />
-                            {kravoversiktQuery.isLoading && (
+                            {kravoversiktMutation.data && (
+                                <ConditionalKravtabell
+                                    krav={kravoversiktMutation.data.krav}
+                                />
+                            )}
+                            {kravoversiktMutation.isPending && (
                                 <Loader size="2xlarge" />
                             )}
-                            {kravoversiktQuery.error && (
+                            {kravoversiktMutation.error && (
                                 <Alert variant="error">
                                     Feil ved søk:{" "}
-                                    {kravoversiktQuery.error.message}
+                                    {kravoversiktMutation.error.message}
                                 </Alert>
                             )}
                         </BoxNew>
@@ -146,11 +134,7 @@ function Kravoversikt() {
     );
 }
 
-function ConditionalKravtabell({ krav }: { krav?: Krav[] }) {
-    if (krav === undefined) {
-        return null;
-    }
-
+function ConditionalKravtabell({ krav }: { krav: Krav[] }) {
     if (krav.length === 0) {
         return <Alert variant="info">Fant ingen krav</Alert>;
     }
