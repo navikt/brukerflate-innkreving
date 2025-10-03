@@ -2,9 +2,8 @@ import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 
 interface KravgrunnlagSectionProps {
     kravgrunnlag: {
-        datoNårKravVarBesluttetHosOppdragsgiver: string;
-        oppdragsgiversKravidentifikator?: string;
-        oppdragsgiversSaksreferanse?: string;
+        oppdragsgiversKravidentifikator: string;
+        oppdragsgiversReferanse: string;
     };
 }
 
@@ -19,33 +18,18 @@ export default function KravgrunnlagSection({
             <BoxNew padding="4" borderWidth="2" borderRadius="xlarge">
                 <VStack gap="1">
                     <Heading size="small" level="4">
-                        Dato når krav var besluttet hos oppdragsgiver
+                        Oppdragsgivers kravidentifikator
                     </Heading>
                     <BodyShort>
-                        {kravgrunnlag.datoNårKravVarBesluttetHosOppdragsgiver}
+                        {kravgrunnlag.oppdragsgiversKravidentifikator}
                     </BodyShort>
 
-                    {kravgrunnlag.oppdragsgiversKravidentifikator && (
-                        <>
-                            <Heading size="small" level="4">
-                                Oppdragsgivers kravidentifikator
-                            </Heading>
-                            <BodyShort>
-                                {kravgrunnlag.oppdragsgiversKravidentifikator}
-                            </BodyShort>
-                        </>
-                    )}
-
-                    {kravgrunnlag.oppdragsgiversSaksreferanse && (
-                        <>
-                            <Heading size="small" level="4">
-                                Oppdragsgivers saksreferanse
-                            </Heading>
-                            <BodyShort>
-                                {kravgrunnlag.oppdragsgiversSaksreferanse}
-                            </BodyShort>
-                        </>
-                    )}
+                    <Heading size="small" level="4">
+                        Oppdragsgivers referanse
+                    </Heading>
+                    <BodyShort>
+                        {kravgrunnlag.oppdragsgiversReferanse}
+                    </BodyShort>
                 </VStack>
             </BoxNew>
         </>

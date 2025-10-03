@@ -10,10 +10,11 @@ interface KravtabellProps {
 export default function Kravtabell({ krav }: KravtabellProps) {
     const navigate = KravdetaljerRoute.useNavigate();
 
-    const handleRowClick = (id: string, type: string) => {
+    const handleRowClick = (navId: string) => {
+        // Use NAV identifier for navigation
         navigate({
-            params: { kravId: id },
-            search: { type: type as "SKATTEETATEN" | "NAV" },
+            params: { kravId: navId },
+            search: { type: "NAV" },
         }).catch((error) => {
             console.error("Navigation failed:", error);
         });
@@ -21,12 +22,11 @@ export default function Kravtabell({ krav }: KravtabellProps) {
 
     const handleKeyDown = (
         e: React.KeyboardEvent,
-        id: string,
-        type: string,
+        navId: string,
     ) => {
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            handleRowClick(id, type);
+            handleRowClick(navId);
         }
     };
 
@@ -34,17 +34,19 @@ export default function Kravtabell({ krav }: KravtabellProps) {
         <Table>
             <Table.Header>
                 <Table.Row>
-                    <Table.HeaderCell scope="col" colSpan={2}>
-                        Kravidentifikator
+                    <Table.HeaderCell scope="col">
+                        NAV-kravidentifikator
                     </Table.HeaderCell>
                     <Table.HeaderCell scope="col">Kravtype</Table.HeaderCell>
+                    <Table.HeaderCell scope="col" align="right">
+                        Gjenstående beløp
+                    </Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
                 {krav.map((krav, i) => {
-                    const { kravidentifikator, kravtype } = krav;
-                    const { id, type } = kravidentifikator;
-                    const rowKey = `${id}-${type}-${i}`;
+                    const { navKravidentifikator, kravtype, gjenståendeBeløp } = krav;
+                    const rowKey = `${navKravidentifikator}-${i}`;
 
                     return (
                         <Table.Row
@@ -52,15 +54,20 @@ export default function Kravtabell({ krav }: KravtabellProps) {
                             className="cursor-pointer"
                             tabIndex={0}
                             role="button"
-                            onClick={() => handleRowClick(id, type)}
-                            onKeyDown={(e) => handleKeyDown(e, id, type)}
-                            aria-label={`Vis detaljer for krav ${id ?? "uten identifikator"} av type ${type}`}
+                            onClick={() => handleRowClick(navKravidentifikator)}
+                            onKeyDown={(e) => handleKeyDown(e, navKravidentifikator)}
+                            aria-label={`Vis detaljer for krav ${navKravidentifikator}`}
                         >
                             <Table.HeaderCell scope="row">
-                                {id ?? "Mangler kravidentifikator"}
+                                {navKravidentifikator}
                             </Table.HeaderCell>
-                            <Table.DataCell>{type}</Table.DataCell>
                             <Table.DataCell>{kravtype}</Table.DataCell>
+                            <Table.DataCell align="right">
+                                {new Intl.NumberFormat('nb-NO', {
+                                    style: 'currency',
+                                    currency: 'NOK',
+                                }).format(gjenståendeBeløp)}
+                            </Table.DataCell>
                         </Table.Row>
                     );
                 })}

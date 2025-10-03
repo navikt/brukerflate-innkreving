@@ -22,14 +22,14 @@ export default function Kravdetaljer(props: KravdetaljerProps) {
 
             <SkyldnerSection skyldner={props.skyldner} />
             <OppdragsgiverSection oppdragsgiver={props.oppdragsgiver} />
-            <KravgrunnlagSection kravgrunnlag={props.kravgrunnlag} />
-            <KravlinjerSection kravlinjer={props.kravlinjer} />
+            <KravgrunnlagSection kravgrunnlag={props.krav.kravgrunnlag} />
+            <KravlinjerSection kravlinjer={props.krav.kravlinjer} />
             <AvvikSection avvik={props.avvik} />
             <InnbetalingerSection
-                innbetalingPlassertMotKrav={props.innbetalingPlassertMotKrav}
+                innbetalingerPlassertMotKrav={props.krav.innbetalingerPlassertMotKrav}
             />
             <TilleggsinformasjonSection
-                tilleggsinformasjon={props.tilleggsinformasjon}
+                tilleggsinformasjon={props.krav.tilleggsinformasjon}
             />
         </VStack>
     );

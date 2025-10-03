@@ -4,21 +4,33 @@ import { SøkSchema } from "../types/skyldner";
 import { texasMiddleware } from "./middleware/texasMiddleware";
 
 const Krav = z.object({
-    kravidentifikator: z.object({
-        type: z
-            .string()
-            .transform((v) => v.toUpperCase())
-            .pipe(z.enum(["SKATTEETATEN", "NAV"])),
-        // TODO: Fjern når endepunktet returnerer faktiske verdier
-        id: z.string().nonempty().catch("87b5a5c6-17ea-413a-ad80-b6c3406188fa"),
-    }),
+    skeKravidentifikator: z.string(),
+    navKravidentifikator: z.string(),
+    navReferanse: z.string().nullable(),
     kravtype: z.string(),
+    kravbeskrivelse: z.record(z.string(), z.string()),
+    gjenståendeBeløp: z.number(),
+});
+
+const Oppdragsgiver = z.object({
+    organisasjonsnummer: z.string(),
+    organisasjonsnavn: z.string(),
+});
+
+const Skyldner = z.object({
+    identifikator: z.string(),
+    skyldnersNavn: z.string().nullable(),
 });
 
 export type Krav = z.infer<typeof Krav>;
+export type Oppdragsgiver = z.infer<typeof Oppdragsgiver>;
+export type Skyldner = z.infer<typeof Skyldner>;
 
 const Kravoversikt = z.object({
+    oppdragsgiver: Oppdragsgiver,
     krav: z.array(Krav),
+    gjenståendeBeløpForSkyldner: z.number(),
+    skyldner: Skyldner,
 });
 
 export type Kravoversikt = z.infer<typeof Kravoversikt>;
@@ -37,8 +49,7 @@ export const hentKravoversikt = createServerFn()
                 Authorization: `Bearer ${context.oboToken}`,
             },
             body: JSON.stringify({
-                søketekst: data.søketekst,
-                søketype: data.søketype,
+                skyldner: data.søketekst,
                 kravfilter: data.kravfilter,
             }),
         });

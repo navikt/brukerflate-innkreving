@@ -5,12 +5,7 @@ interface KravlinjerSectionProps {
         kravlinjetype: string;
         opprinneligBeløp: number;
         gjenståendeBeløp: number;
-        kravlinjeBeskrivelse?: {
-            spraakTekst?: Array<{
-                spraak?: string;
-                tekst?: string;
-            }>;
-        };
+        kravlinjeBeskrivelse: Record<string, string>;
     }>;
 }
 
@@ -58,20 +53,14 @@ export default function KravlinjerSection({
                                 kr
                             </BodyShort>
 
-                            {kravlinje.kravlinjeBeskrivelse && (
-                                <>
-                                    <Heading size="small" level="4">
-                                        Beskrivelse
-                                    </Heading>
-                                    {kravlinje.kravlinjeBeskrivelse.spraakTekst?.map(
-                                        (tekst, i) => (
-                                            <BodyShort key={i}>
-                                                {tekst.tekst}
-                                            </BodyShort>
-                                        ),
-                                    )}
-                                </>
-                            )}
+                            <Heading size="small" level="4">
+                                Beskrivelse
+                            </Heading>
+                            <BodyShort>
+                                {kravlinje.kravlinjeBeskrivelse["nb"] ||
+                                    kravlinje.kravlinjeBeskrivelse["en"] ||
+                                    "Ingen beskrivelse tilgjengelig"}
+                            </BodyShort>
                         </VStack>
                     </BoxNew>
                 );

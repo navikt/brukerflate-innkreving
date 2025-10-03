@@ -2,41 +2,104 @@ import { Plugin } from "vite";
 
 // Mock data for kravoversikt
 const mockKravoversiktData = {
+    oppdragsgiver: {
+        organisasjonsnummer: "889640782",
+        organisasjonsnavn: "NAV Arbeid og ytelser",
+    },
+    skyldner: {
+        identifikator: "12345678901",
+        skyldnersNavn: "Ola Nordmann",
+    },
+    gjenståendeBeløpForSkyldner: 25500.0,
     krav: [
         {
-            kravidentifikator: {
-                type: "SKATTEETATEN",
-                id: "87b5a5c6-17ea-413a-ad80-b6c3406188fa",
-            },
+            skeKravidentifikator: "87b5a5c6-17ea-413a-ad80-b6c3406188fa",
+            navKravidentifikator: "NAV-SKE-2023-001234",
+            navReferanse: "Vedtak 15.01.2023",
             kravtype: "Tilbakebetaling av skatt",
+            kravbeskrivelse: {
+                nb: "Tilbakebetaling av for mye utbetalt skatt for 2023",
+                en: "Repayment of overpaid tax for 2023",
+            },
+            gjenståendeBeløp: 15000.0,
         },
         {
-            kravidentifikator: {
-                type: "NAV",
-                id: "12345678-1234-1234-1234-123456789012",
-            },
+            skeKravidentifikator: "98c6b6d7-28fb-524b-be91-c7d4517299fb",
+            navKravidentifikator: "12345678-1234-1234-1234-123456789012",
+            navReferanse: null,
             kravtype: "Tilbakebetaling av dagpenger",
+            kravbeskrivelse: {
+                nb: "Tilbakebetaling av urettmessig mottatte dagpenger",
+                en: "Repayment of wrongfully received unemployment benefits",
+            },
+            gjenståendeBeløp: 10500.0,
         },
     ],
 };
 
 // Mock data for kravdetaljer
 const mockKravdetaljerData = {
-    kravgrunnlag: {
-        datoNårKravVarBesluttetHosOppdragsgiver: "2023-01-15",
+    krav: {
+        forfallsdato: "2023-12-31",
+        foreldelsesdato: "2028-12-31",
+        fastsettelsesdato: "2023-01-15",
+        kravtype: "Tilbakebetaling av skatt",
+        opprinneligBeløp: 15000.0,
+        gjenståendeBeløp: 10000.0,
+        skatteetatensKravidentifikator: "87b5a5c6-17ea-413a-ad80-b6c3406188fa",
+        kravlinjer: [
+            {
+                kravlinjetype: "HOVEDKRAV",
+                opprinneligBeløp: 14000.0,
+                gjenståendeBeløp: 9500.0,
+                kravlinjeBeskrivelse: {
+                    nb: "Tilbakebetaling av for mye utbetalt skatt",
+                    en: "Repayment of overpaid tax",
+                },
+            },
+            {
+                kravlinjetype: "RENTER",
+                opprinneligBeløp: 1000.0,
+                gjenståendeBeløp: 500.0,
+                kravlinjeBeskrivelse: {
+                    nb: "Renter på hovedkrav",
+                    en: "Interest on main claim",
+                },
+            },
+        ],
+        kravgrunnlag: {
+            oppdragsgiversKravidentifikator: "SKE-2023-001234",
+            oppdragsgiversReferanse: "Vedtak 15.01.2023",
+        },
+        innbetalingerPlassertMotKrav: [
+            {
+                innbetalingsIdentifikator: "INNBET-2023-001",
+                innbetalingstype: "Bankoverføring",
+                innbetalingsdato: "2023-07-20",
+                innbetaltBeløp: 5000.0,
+            },
+        ],
+        tilleggsinformasjon: {
+            type: "Nav",
+            ytelserForAvregning: {
+                valuta: "NOK",
+                beløp: 2000,
+            },
+            tilbakekrevingsperiode: {
+                fom: "2023-01-01",
+                tom: "2023-12-31",
+            },
+        },
     },
-    kravlinjer: [
-        {
-            kravlinjetype: "HOVEDKRAV",
-            opprinneligBeløp: 15000,
-            gjenståendeBeløp: 10000,
-        },
-        {
-            kravlinjetype: "RENTER",
-            opprinneligBeløp: 500,
-            gjenståendeBeløp: 500,
-        },
-    ],
+    oppdragsgiver: {
+        organisasjonsnummer: "889640782",
+        organisasjonsnavn: "NAV Arbeid og ytelser",
+    },
+    skyldner: {
+        identifikator: "12345678901",
+        skyldnersNavn: "Ola Nordmann",
+    },
+    avvik: null,
 };
 
 export function mockKravPlugin(): Plugin {

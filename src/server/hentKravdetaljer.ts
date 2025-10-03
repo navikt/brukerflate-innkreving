@@ -9,62 +9,89 @@ const KravdetaljerRequestSchema = z.object({
 
 export type KravdetaljerRequest = z.infer<typeof KravdetaljerRequestSchema>;
 
-// TODO: Fjern standardverdier når APIet returnerer dataen
+const Kravgrunnlag = z.object({
+    oppdragsgiversKravidentifikator: z.string(),
+    oppdragsgiversReferanse: z.string(),
+});
+
+const Kravlinje = z.object({
+    kravlinjetype: z.string(),
+    opprinneligBeløp: z.number(),
+    gjenståendeBeløp: z.number(),
+    kravlinjeBeskrivelse: z.record(z.string(), z.string()),
+});
+
+const InnbetalingPlassertMotKrav = z.object({
+    innbetalingsIdentifikator: z.string(),
+    innbetalingstype: z.string(),
+    innbetalingsdato: z.string(),
+    innbetaltBeløp: z.number(),
+});
+
+const PeriodeMedTvangsmulkt = z.object({
+    fom: z.string(),
+    tom: z.string(),
+});
+
+const YtelseForAvregningBeløp = z.object({
+    valuta: z.string(),
+    beløp: z.number(),
+});
+
+const Tilbakekrevingsperiode = z.object({
+    fom: z.string(),
+    tom: z.string(),
+});
+
+const Tilleggsinformasjon = z.object({
+    type: z.string(),
+    periode: PeriodeMedTvangsmulkt.nullable().optional(),
+    stoppdatoForLøpendeMulkt: z.string().nullable().optional(),
+    ytelserForAvregning: YtelseForAvregningBeløp.nullable().optional(),
+    tilbakekrevingsperiode: Tilbakekrevingsperiode.nullable().optional(),
+});
+
+const KravDetalj = z.object({
+    forfallsdato: z.string(),
+    foreldelsesdato: z.string(),
+    fastsettelsesdato: z.string(),
+    kravtype: z.string(),
+    opprinneligBeløp: z.number(),
+    gjenståendeBeløp: z.number(),
+    skatteetatensKravidentifikator: z.string(),
+    kravlinjer: z.array(Kravlinje),
+    kravgrunnlag: Kravgrunnlag,
+    innbetalingerPlassertMotKrav: z.array(InnbetalingPlassertMotKrav),
+    tilleggsinformasjon: Tilleggsinformasjon.nullable().optional(),
+});
+
+const Oppdragsgiver = z.object({
+    organisasjonsnummer: z.string(),
+    organisasjonsnavn: z.string(),
+});
+
+const Skyldner = z.object({
+    identifikator: z.string(),
+    skyldnersNavn: z.string().nullable(),
+});
+
+const Avvik = z.object({
+    avvikstype: z.string(),
+    utdypendeAvviksbeskrivelse: z.string(),
+});
+
 const KravdetaljerSchema = z.object({
-    kravgrunnlag: z.object({
-        datoNårKravVarBesluttetHosOppdragsgiver: z.string(),
-        oppdragsgiversKravidentifikator: z.string().optional().default("OG-REF-9876"),
-        oppdragsgiversSaksreferanse: z.string().optional().default("SAK-2025-001"),
-    }),
-    kravlinjer: z.array(
-        z.object({
-            kravlinjetype: z.string(),
-            opprinneligBeløp: z.number(),
-            gjenståendeBeløp: z.number(),
-            kravlinjeBeskrivelse: z.object({
-                spraakTekst: z.array(
-                    z.object({
-                        spraak: z.string().optional().default("nb"),
-                        tekst: z.string().optional().default("Beskrivelse av kravlinje"),
-                    })
-                ).optional().default([{ spraak: "nb", tekst: "Beskrivelse av kravlinje" }]),
-            }).optional().default({ spraakTekst: [{ spraak: "nb", tekst: "Beskrivelse av kravlinje" }] }),
-        }),
-    ),
-    innbetalingPlassertMotKrav: z.array(
-        z.object({
-            innbetalingsIdentifikator: z.string().optional().default("INNBET-XYZ-1"),
-            innbetalingstype: z.string().optional().default("Innbetaling"),
-            innbetalingsdato: z.string().optional().default("2025-07-20"),
-            innbetaltBeloep: z.number().optional().default(5000.00),
-        })
-    ).optional().default([{
-        innbetalingsIdentifikator: "INNBET-XYZ-1",
-        innbetalingstype: "Innbetaling",
-        innbetalingsdato: "2025-07-20",
-        innbetaltBeloep: 5000.00
-    }]),
-    tilleggsinformasjon: z.object({
-        tilleggsinformasjonNav: z.object({
-            vedtaksId: z.string().optional().default("NAV-VEDTAK-456"),
-            ytelsestype: z.string().optional().default("Dagpenger"),
-        }).optional().default({ vedtaksId: "NAV-VEDTAK-456", ytelsestype: "Dagpenger" }),
-    }).optional().default({ tilleggsinformasjonNav: { vedtaksId: "NAV-VEDTAK-456", ytelsestype: "Dagpenger" } }),
-    avvik: z.object({
-        avvikstype: z.string().optional().default("tekniskfeil"),
-        utdypendeAvviksbeskrivelse: z.string().optional().default("En teknisk feil har oppstått. Vennligst prøv igjen senere."),
-    }).optional().default({ avvikstype: "tekniskfeil", utdypendeAvviksbeskrivelse: "En teknisk feil har oppstått. Vennligst prøv igjen senere." }),
-    oppdragsgiver: z.object({
-        organisasjonsnummer: z.string().optional().default("987654321"),
-        organisasjonsnavn: z.string().optional().default("Skatteetaten"),
-    }).optional().default({ organisasjonsnummer: "987654321", organisasjonsnavn: "Skatteetaten" }),
-    skyldner: z.object({
-        identifikator: z.string().optional().default("12345678910"),
-        skyldnersNavn: z.string().optional().default("Ola Nordmann"),
-    }).optional().default({ identifikator: "12345678910", skyldnersNavn: "Ola Nordmann" }),
+    krav: KravDetalj,
+    oppdragsgiver: Oppdragsgiver,
+    skyldner: Skyldner,
+    avvik: Avvik.nullable().optional(),
 });
 
 export type Kravdetaljer = z.infer<typeof KravdetaljerSchema>;
+export type Kravlinje = z.infer<typeof Kravlinje>;
+export type InnbetalingPlassertMotKrav = z.infer<typeof InnbetalingPlassertMotKrav>;
+export type Tilleggsinformasjon = z.infer<typeof Tilleggsinformasjon>;
+export type Avvik = z.infer<typeof Avvik>;
 
 const hentKravdetaljer = createServerFn()
     .validator(KravdetaljerRequestSchema)
@@ -87,7 +114,7 @@ const hentKravdetaljer = createServerFn()
         );
 
         if (!response.ok) {
-            throw new Error("Feilet under henting av kravoversikt");
+            throw new Error(`Feilet under henting av kravdetaljer: ${response.status} ${response.statusText}`);
         } else {
             return KravdetaljerSchema.parse(await response.json());
         }

@@ -1,20 +1,20 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 
 interface InnbetalingerSectionProps {
-    innbetalingPlassertMotKrav?: Array<{
-        innbetalingsIdentifikator?: string;
-        innbetalingstype?: string;
-        innbetalingsdato?: string;
-        innbetaltBeloep?: number;
+    innbetalingerPlassertMotKrav: Array<{
+        innbetalingsIdentifikator: string;
+        innbetalingstype: string;
+        innbetalingsdato: string;
+        innbetaltBeløp: number;
     }>;
 }
 
 export default function InnbetalingerSection({
-    innbetalingPlassertMotKrav,
+    innbetalingerPlassertMotKrav,
 }: InnbetalingerSectionProps) {
     if (
-        !innbetalingPlassertMotKrav ||
-        innbetalingPlassertMotKrav.length === 0
+        !innbetalingerPlassertMotKrav ||
+        innbetalingerPlassertMotKrav.length === 0
     ) {
         return null;
     }
@@ -24,7 +24,7 @@ export default function InnbetalingerSection({
             <Heading size="medium" level="3">
                 Innbetalinger
             </Heading>
-            {innbetalingPlassertMotKrav.map((innbetaling, index) => (
+            {innbetalingerPlassertMotKrav.map((innbetaling, index) => (
                 <BoxNew
                     key={index}
                     padding="4"
@@ -32,6 +32,11 @@ export default function InnbetalingerSection({
                     borderRadius="xlarge"
                 >
                     <VStack gap="1">
+                        <Heading size="small" level="4">
+                            Innbetalingsidentifikator
+                        </Heading>
+                        <BodyShort>{innbetaling.innbetalingsIdentifikator}</BodyShort>
+
                         <Heading size="small" level="4">
                             Innbetalingstype
                         </Heading>
@@ -46,18 +51,11 @@ export default function InnbetalingerSection({
                             Innbetalt beløp
                         </Heading>
                         <BodyShort>
-                            {innbetaling.innbetaltBeloep?.toLocaleString(
+                            {innbetaling.innbetaltBeløp.toLocaleString(
                                 "nb-NO",
                                 { minimumFractionDigits: 2 },
-                            ) ?? "-"}{" "}
+                            )}{" "}
                             kr
-                        </BodyShort>
-
-                        <Heading size="small" level="4">
-                            Innbetalings-ID
-                        </Heading>
-                        <BodyShort>
-                            {innbetaling.innbetalingsIdentifikator}
                         </BodyShort>
                     </VStack>
                 </BoxNew>
