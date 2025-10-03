@@ -7,6 +7,7 @@ import TilleggsinformasjonSection from "./TilleggsinformasjonSection";
 import AvvikSection from "./AvvikSection";
 import OppdragsgiverSection from "./OppdragsgiverSection";
 import SkyldnerSection from "./SkyldnerSection";
+import KravInfoSection from "./KravInfoSection";
 
 interface KravdetaljerProps extends KravdetaljerResponse {
     id: string;
@@ -20,16 +21,22 @@ export default function Kravdetaljer(props: KravdetaljerProps) {
                 Krav
             </Heading>
 
-            <SkyldnerSection skyldner={props.skyldner} />
+            <SkyldnerSection
+                skyldner={{
+                    identifikator: props.skyldner.identifikator,
+                    skyldnersNavn: props.skyldner.skyldnersNavn ?? undefined,
+                }}
+            />
             <OppdragsgiverSection oppdragsgiver={props.oppdragsgiver} />
+            <KravInfoSection krav={props.krav} />
             <KravgrunnlagSection kravgrunnlag={props.krav.kravgrunnlag} />
             <KravlinjerSection kravlinjer={props.krav.kravlinjer} />
-            <AvvikSection avvik={props.avvik} />
+            <AvvikSection avvik={props.avvik ?? undefined} />
             <InnbetalingerSection
                 innbetalingerPlassertMotKrav={props.krav.innbetalingerPlassertMotKrav}
             />
             <TilleggsinformasjonSection
-                tilleggsinformasjon={props.krav.tilleggsinformasjon}
+                tilleggsinformasjon={props.krav.tilleggsinformasjon ?? undefined}
             />
         </VStack>
     );

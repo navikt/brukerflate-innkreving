@@ -1,7 +1,9 @@
 import { Plugin } from "vite";
+import type { Kravoversikt } from "../server/hentKravoversikt";
+import type { Kravdetaljer } from "../server/hentKravdetaljer";
 
 // Mock data for kravoversikt
-const mockKravoversiktData = {
+const mockKravoversiktData: Kravoversikt = {
     oppdragsgiver: {
         organisasjonsnummer: "889640782",
         organisasjonsnavn: "NAV Arbeid og ytelser",
@@ -38,7 +40,7 @@ const mockKravoversiktData = {
 };
 
 // Mock data for kravdetaljer
-const mockKravdetaljerData = {
+const mockKravdetaljerData: Kravdetaljer = {
     krav: {
         forfallsdato: "2023-12-31",
         foreldelsesdato: "2028-12-31",
@@ -68,7 +70,7 @@ const mockKravdetaljerData = {
             },
         ],
         kravgrunnlag: {
-            oppdragsgiversKravidentifikator: "SKE-2023-001234",
+            oppdragsgiversKravidentifikator: "NAV-SKE-2023-001234",
             oppdragsgiversReferanse: "Vedtak 15.01.2023",
         },
         innbetalingerPlassertMotKrav: [
@@ -89,6 +91,8 @@ const mockKravdetaljerData = {
                 fom: "2023-01-01",
                 tom: "2023-12-31",
             },
+            periode: null,
+            stoppdatoForLøpendeMulkt: null,
         },
     },
     oppdragsgiver: {
@@ -100,6 +104,93 @@ const mockKravdetaljerData = {
         skyldnersNavn: "Ola Nordmann",
     },
     avvik: null,
+};
+
+// Mock data for kravdetaljer with Brønnøysund type
+const mockKravdetaljerDataBronnoy: Kravdetaljer = {
+    krav: {
+        forfallsdato: "2024-06-30",
+        foreldelsesdato: "2029-06-30",
+        fastsettelsesdato: "2024-01-10",
+        kravtype: "Tvangsmulkt",
+        opprinneligBeløp: 50000.0,
+        gjenståendeBeløp: 45000.0,
+        skatteetatensKravidentifikator: "98c6b6d7-28fb-524b-be91-c7d4517299fb",
+        kravlinjer: [
+            {
+                kravlinjetype: "TVANGSMULKT",
+                opprinneligBeløp: 50000.0,
+                gjenståendeBeløp: 45000.0,
+                kravlinjeBeskrivelse: {
+                    nb: "Tvangsmulkt for manglende etterlevelse",
+                    en: "Penalty for non-compliance",
+                },
+            },
+        ],
+        kravgrunnlag: {
+            oppdragsgiversKravidentifikator: "BRREG-2024-005678",
+            oppdragsgiversReferanse: "Vedtak 10.01.2024",
+        },
+        innbetalingerPlassertMotKrav: [
+            {
+                innbetalingsIdentifikator: "INNBET-2024-002",
+                innbetalingstype: "Bankoverføring",
+                innbetalingsdato: "2024-03-15",
+                innbetaltBeløp: 5000.0,
+            },
+        ],
+        tilleggsinformasjon: {
+            type: "BrønnøysundRegistrene",
+            periode: {
+                fom: "2024-01-01",
+                tom: "2024-12-31",
+            },
+            stoppdatoForLøpendeMulkt: "2024-06-01",
+            ytelserForAvregning: null,
+            tilbakekrevingsperiode: null,
+        },
+    },
+    oppdragsgiver: {
+        organisasjonsnummer: "974760673",
+        organisasjonsnavn: "Brønnøysundregistrene",
+    },
+    skyldner: {
+        identifikator: "987654321",
+        skyldnersNavn: "Kari Nordmann",
+    },
+    avvik: null,
+};
+
+// Mock data with avvik
+const mockKravdetaljerDataWithAvvik: Kravdetaljer = {
+    krav: {
+        forfallsdato: "2023-12-31",
+        foreldelsesdato: "2028-12-31",
+        fastsettelsesdato: "2023-01-15",
+        kravtype: "Tilbakebetaling av skatt",
+        opprinneligBeløp: 15000.0,
+        gjenståendeBeløp: 10000.0,
+        skatteetatensKravidentifikator: "error-case-123",
+        kravlinjer: [],
+        kravgrunnlag: {
+            oppdragsgiversKravidentifikator: "ERROR-2023-001234",
+            oppdragsgiversReferanse: "Vedtak 15.01.2023",
+        },
+        innbetalingerPlassertMotKrav: [],
+        tilleggsinformasjon: null,
+    },
+    oppdragsgiver: {
+        organisasjonsnummer: "889640782",
+        organisasjonsnavn: "NAV Arbeid og ytelser",
+    },
+    skyldner: {
+        identifikator: "12345678901",
+        skyldnersNavn: null,
+    },
+    avvik: {
+        avvikstype: "tekniskfeil",
+        utdypendeAvviksbeskrivelse: "Det oppstod en teknisk feil ved henting av kravdata. Vennligst prøv igjen senere.",
+    },
 };
 
 export function mockKravPlugin(): Plugin {
@@ -163,10 +254,18 @@ export function mockKravPlugin(): Plugin {
                             const requestData = JSON.parse(body);
                             console.log("Mock kravdetaljer request:", requestData);
 
+                            // Return different mock data based on the krav ID
+                            let responseData = mockKravdetaljerData;
+                            if (requestData.id === "98c6b6d7-28fb-524b-be91-c7d4517299fb") {
+                                responseData = mockKravdetaljerDataBronnoy;
+                            } else if (requestData.id === "error-case") {
+                                responseData = mockKravdetaljerDataWithAvvik;
+                            }
+
                             // Return mock data
                             res.statusCode = 200;
                             res.setHeader("Content-Type", "application/json");
-                            res.end(JSON.stringify(mockKravdetaljerData));
+                            res.end(JSON.stringify(responseData));
                         } catch (error) {
                             console.error("Error in mock kravdetaljer handler:", error);
                             res.statusCode = 500;
