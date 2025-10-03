@@ -11,7 +11,10 @@ import {
     Search,
     VStack,
 } from "@navikt/ds-react";
-import { hentKravoversikt, Krav, Kravoversikt as KravoversiktType } from "../server/hentKravoversikt";
+import {
+    hentKravoversikt,
+    Kravoversikt as KravoversiktType,
+} from "../server/hentKravoversikt";
 import Kravtabell from "../components/Kravtabell";
 import SkyldnerInfo from "../components/SkyldnerInfo";
 import { Søk } from "../types/skyldner";
@@ -46,6 +49,8 @@ function Kravoversikt() {
             kravoversiktMutation.mutate(søk);
             // Om brukeren søker på kravidentifikator, navigeres direkte til kravdetaljer
         } else {
+            // Reset mutation data to clear the krav list
+            kravoversiktMutation.reset();
             kravdetaljerNavigate({
                 search: { type: søk.søketype },
                 params: { kravId: søk.søketekst },
@@ -135,7 +140,11 @@ function Kravoversikt() {
     );
 }
 
-function ConditionalKravtabell({ kravoversikt }: { kravoversikt: KravoversiktType }) {
+function ConditionalKravtabell({
+    kravoversikt,
+}: {
+    kravoversikt: KravoversiktType;
+}) {
     if (kravoversikt.krav.length === 0) {
         return <Alert variant="info">Fant ingen krav</Alert>;
     }
@@ -144,7 +153,9 @@ function ConditionalKravtabell({ kravoversikt }: { kravoversikt: KravoversiktTyp
         <VStack gap="4">
             <SkyldnerInfo
                 skyldner={kravoversikt.skyldner}
-                gjenståendeBeløpForSkyldner={kravoversikt.gjenståendeBeløpForSkyldner}
+                gjenståendeBeløpForSkyldner={
+                    kravoversikt.gjenståendeBeløpForSkyldner
+                }
             />
             <div className="overflow-x-auto">
                 <Kravtabell krav={kravoversikt.krav} />
