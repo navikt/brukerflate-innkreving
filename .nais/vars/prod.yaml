@@ -1,0 +1,9 @@
+ingresses:
+  - https://brukerflate-innkreving.ansatt.nav.no
+
+env:
+  TILBAKEKREVING_TARGET: "api://prod-gcp.utenlandsadresser.tilbakekreving/.default"
+
+replicas:
+  min: 2
+  max: 4

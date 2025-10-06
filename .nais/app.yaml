@@ -7,10 +7,17 @@ metadata:
         texas.nais.io/enabled: "true"
 spec:
     ingresses:
-        - https://brukerflate-innkreving.intern.dev.nav.no
+        {{#each ingresses}}
+        - {{this}}
+        {{/each}}
     replicas:
-        max: 1
-        min: 1
+        max: {{replicas.max}}
+        min: {{replicas.min}}
+    env:
+        {{#each env}}
+        - name: {{@key}}
+          value: {{this}}
+        {{/each}}
     resources:
         requests:
             cpu: 50m
