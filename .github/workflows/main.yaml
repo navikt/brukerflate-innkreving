@@ -29,6 +29,8 @@ jobs:
                 team: utenlandsadresser
                 build_secrets: |
                     github_npm_token=${{ secrets.READER_TOKEN }}
+                identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+                project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     deploy:
         strategy:
             matrix:
@@ -36,9 +38,7 @@ jobs:
         needs: build_and_push
         runs-on: ubuntu-latest
         permissions:
-            contents: read
             id-token: write
-            actions: read
         environment: ${{ matrix.environment }}
         steps:
             - uses: actions/checkout@v5
