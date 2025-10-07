@@ -30,7 +30,7 @@ jobs:
     deploy:
         strategy:
             matrix:
-                environment: [dev, prod]
+                environment: [dev-gpc, prod-gcp]
         needs: build_and_push
         runs-on: ubuntu-latest
         permissions:
