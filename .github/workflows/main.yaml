@@ -30,7 +30,7 @@ jobs:
     deploy:
         strategy:
             matrix:
-                environment: [dev-gpc, prod-gcp]
+                environment: [dev-gcp, prod-gcp]
         needs: build_and_push
         runs-on: ubuntu-latest
         permissions:
@@ -43,7 +43,7 @@ jobs:
             - name: Deploy to {{ matrix.environment }}
               uses: nais/deploy/actions/deploy@v2
               env:
-                  CLUSTER: ${{ matrix.environment }}-gcp
+                  CLUSTER: ${{ matrix.environment }}
                   RESOURCE: .nais/app.yaml
                   VAR: "image=${{ needs.build_and_push.outputs.image }}"
                   VARS: ".nais/vars/${{ matrix.environment }}.yaml"
