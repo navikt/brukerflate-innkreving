@@ -4,48 +4,52 @@ on:
         branches:
             - main
 jobs:
-    build_and_push:
-      runs-on: ubuntu-latest
-      permissions:
-          contents: read
-          id-token: write
-          actions: read
-      outputs:
-          image: ${{ steps.docker-build-push.outputs.image }}
-      steps:
-          - uses: actions/checkout@v4
-            with:
-                fetch-depth: 0 # Fetch all history for what-changed action
-          - name: Determine what to do
-            id: changed-files
-            uses: "nais/what-changed@main"
-            with:
-                files: .nais/app.yaml
-          - name: Build and push image and SBOM to OCI registry
-            if: steps.changed-files.outputs.changed != 'only-inputs'
-            uses: nais/docker-build-push@v0
-            id: docker-build-push
-            with:
-                team: utenlandsadresser
-                build_secrets: |
-                    github_npm_token=${{ secrets.READER_TOKEN }}
-                identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-                project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-    deploy:
-        strategy:
-            matrix:
-                environment: [dev-gcp, prod-gcp]
-        needs: build_and_push
+    build:
+        name: Build and push
         runs-on: ubuntu-latest
         permissions:
+            contents: read
             id-token: write
-        environment: ${{ matrix.environment }}
+            actions: read
+        outputs:
+            image: ${{ steps.docker-build-push.outputs.image }}
+            telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
         steps:
-            - uses: actions/checkout@v5
-            - name: Deploy to ${{ matrix.environment }}
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # Fetch all history for what-changed action
+            - name: Determine what to do
+              id: changed-files
+              uses: "nais/what-changed@main"
+              with:
+                  files: .nais/app.yaml
+            - name: Build and push image and SBOM to OCI registry
+              if: steps.changed-files.outputs.changed != 'only-inputs'
+              uses: nais/docker-build-push@v0
+              id: docker-build-push
+              with:
+                  team: utenlandsadresser
+                  build_secrets: |
+                      github_npm_token=${{ secrets.READER_TOKEN }}
+                  identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+                  project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+
+    deploy:
+        name: Deploy to ${{ matrix.cluster }}
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+        strategy:
+            matrix:
+                cluster: [dev-gcp, prod-gcp]
+        steps:
+            - uses: actions/checkout@v4
+            - name: Deploy to Nais
               uses: nais/deploy/actions/deploy@v2
               env:
-                  CLUSTER: ${{ matrix.environment }}
+                  CLUSTER: ${{ matrix.cluster }}
                   RESOURCE: .nais/app.yaml
-                  VAR: "image=${{ needs.build_and_push.outputs.image }}"
-                  VARS: ".nais/vars/${{ matrix.environment }}.yaml"
+                  WORKLOAD_IMAGE: ${{ needs.build.outputs.image }}
+                  TELEMETRY: ${{ needs.build.outputs.telemetry }}
