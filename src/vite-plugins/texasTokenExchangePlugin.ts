@@ -25,6 +25,8 @@ export function texasTokenExchangePlugin(): Plugin {
         configResolved() {
             // Set the NAIS_TOKEN_EXCHANGE_ENDPOINT environment variable to use the Vite server
             process.env.NAIS_TOKEN_EXCHANGE_ENDPOINT = `http://localhost:5173${tokenExchangePath}`;
+            process.env.TILBAKEKREVING_TARGET =
+                "api://dev-gcp.utenlandsadresser.tilbakekreving/.default";
             console.log(
                 `Set NAIS_TOKEN_EXCHANGE_ENDPOINT to ${process.env.NAIS_TOKEN_EXCHANGE_ENDPOINT}`,
             );
@@ -47,7 +49,10 @@ export function texasTokenExchangePlugin(): Plugin {
                             // Validate the request
                             if (!requestData.user_token) {
                                 res.statusCode = 400;
-                                res.setHeader("Content-Type", "application/json");
+                                res.setHeader(
+                                    "Content-Type",
+                                    "application/json",
+                                );
                                 res.end(
                                     JSON.stringify({
                                         error: "Missing user_token",
@@ -89,7 +94,9 @@ export function texasTokenExchangePlugin(): Plugin {
                 }
             });
 
-            console.log(`Mock token exchange endpoint available at ${process.env.NAIS_TOKEN_EXCHANGE_ENDPOINT}`);
+            console.log(
+                `Mock token exchange endpoint available at ${process.env.NAIS_TOKEN_EXCHANGE_ENDPOINT}`,
+            );
         },
     };
 }
