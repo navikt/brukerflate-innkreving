@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
 import {
     Alert,
     BoxNew,
@@ -11,23 +10,19 @@ import {
     Search,
     VStack,
 } from "@navikt/ds-react";
-import {
-    hentKravoversikt,
-    Kravoversikt as KravoversiktType,
-} from "../server/hentKravoversikt";
+import { Kravoversikt as KravoversiktType } from "../server/hentKravoversikt";
 import Kravtabell from "../components/Kravtabell";
 import SkyldnerInfo from "../components/SkyldnerInfo";
 import { Søk } from "../types/skyldner";
 import { Route as KravdetaljerRoute } from "./kravoversikt/kravdetaljer/$kravId";
+import useKravoversikt from "../queries/useKravoversikt";
 
 export const Route = createFileRoute("/kravoversikt")({
     component: Kravoversikt,
 });
 
 function Kravoversikt() {
-    const kravoversiktMutation = useMutation({
-        mutationFn: (søk: Søk) => hentKravoversikt({ data: søk }),
-    });
+    const kravoversikt = useKravoversikt();
 
     const kravdetaljerNavigate = KravdetaljerRoute.useNavigate();
 
@@ -46,11 +41,11 @@ function Kravoversikt() {
 
         // Om brukeren søker på skyldner, vises en tabell med krav
         if (søk.søketype === "SKYLDNER") {
-            kravoversiktMutation.mutate(søk);
+            kravoversikt.mutate(søk);
             // Om brukeren søker på kravidentifikator, navigeres direkte til kravdetaljer
         } else {
             // Reset mutation data to clear the krav list
-            kravoversiktMutation.reset();
+            kravoversikt.reset();
             kravdetaljerNavigate({
                 search: { type: søk.søketype },
                 params: { kravId: søk.søketekst },
@@ -78,7 +73,7 @@ function Kravoversikt() {
                                         </Heading>
                                     }
                                     hideLabel={false}
-                                    disabled={kravoversiktMutation.isPending}
+                                    disabled={kravoversikt.isPending}
                                 />
                                 <RadioGroup
                                     name={søketypeName}
@@ -108,27 +103,27 @@ function Kravoversikt() {
                             </VStack>
                         </form>
                     </BoxNew>
-                    {(kravoversiktMutation.data ||
-                        kravoversiktMutation.isPending ||
-                        kravoversiktMutation.error) && (
+                    {(kravoversikt.data ||
+                        kravoversikt.isPending ||
+                        kravoversikt.error) && (
                         <BoxNew
                             padding="space-16"
                             borderColor="accent-subtle"
                             borderWidth="1"
                             borderRadius="large"
                         >
-                            {kravoversiktMutation.data && (
+                            {kravoversikt.data && (
                                 <ConditionalKravtabell
-                                    kravoversikt={kravoversiktMutation.data}
+                                    kravoversikt={kravoversikt.data}
                                 />
                             )}
-                            {kravoversiktMutation.isPending && (
+                            {kravoversikt.isPending && (
                                 <Loader size="2xlarge" />
                             )}
-                            {kravoversiktMutation.error && (
+                            {kravoversikt.error && (
                                 <Alert variant="error">
                                     Feil ved søk:{" "}
-                                    {kravoversiktMutation.error.message}
+                                    {kravoversikt.error.message}
                                 </Alert>
                             )}
                         </BoxNew>
