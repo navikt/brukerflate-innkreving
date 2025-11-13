@@ -39,6 +39,7 @@ export const Route = createRootRouteWithContext<{
         ],
     }),
     loader: () => hentBruker(),
+    staleTime: Infinity,
     component: RootComponent,
 });
 

@@ -15,5 +15,6 @@ export default function useKravdetaljer(
             kravdetaljerRequest.type,
         ],
         queryFn: () => kravdetaljer({ data: kravdetaljerRequest }),
+        refetchOnWindowFocus: false,
     });
 }
