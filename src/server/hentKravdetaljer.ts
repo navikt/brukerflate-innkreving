@@ -7,6 +7,34 @@ const KravdetaljerRequestSchema = z.object({
     type: z.enum(["SKATTEETATEN", "NAV"]),
 });
 
+const hentKravdetaljer = createServerFn()
+    .validator(KravdetaljerRequestSchema)
+    .middleware([texasMiddleware])
+    .handler(async ({ data, context }) => {
+        const kravdetaljerUrl =
+            process.env.KRAVDETALJER_API_URL ||
+            "http://tilbakekreving/internal/kravdetaljer";
+        const response = await fetch(kravdetaljerUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${context.oboToken}`,
+            },
+            body: JSON.stringify({
+                id: data.id,
+                type: data.type,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Feilet under henting av kravdetaljer: ${response.status} ${response.statusText}`,
+            );
+        } else {
+            return KravdetaljerSchema.parse(await response.json());
+        }
+    });
+
 export type KravdetaljerRequest = z.infer<typeof KravdetaljerRequestSchema>;
 
 const Kravgrunnlag = z.object({
@@ -86,38 +114,8 @@ const KravdetaljerSchema = z.object({
     skyldner: Skyldner,
     avvik: Avvik.nullable().optional(),
 });
-
 export type Kravdetaljer = z.infer<typeof KravdetaljerSchema>;
-export type Kravlinje = z.infer<typeof Kravlinje>;
-export type InnbetalingPlassertMotKrav = z.infer<typeof InnbetalingPlassertMotKrav>;
-export type Tilleggsinformasjon = z.infer<typeof Tilleggsinformasjon>;
+
 export type Avvik = z.infer<typeof Avvik>;
-
-const hentKravdetaljer = createServerFn()
-    .validator(KravdetaljerRequestSchema)
-    .middleware([texasMiddleware])
-    .handler(async ({ data, context }) => {
-        const kravdetaljerUrl = process.env.KRAVDETALJER_API_URL || "http://tilbakekreving/internal/kravdetaljer";
-        const response = await fetch(
-            kravdetaljerUrl,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${context.oboToken}`,
-                },
-                body: JSON.stringify({
-                    id: data.id,
-                    type: data.type,
-                }),
-            },
-        );
-
-        if (!response.ok) {
-            throw new Error(`Feilet under henting av kravdetaljer: ${response.status} ${response.statusText}`);
-        } else {
-            return KravdetaljerSchema.parse(await response.json());
-        }
-    });
 
 export default hentKravdetaljer;
