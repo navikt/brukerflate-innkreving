@@ -1,10 +1,10 @@
 import { createMiddleware } from "@tanstack/react-start";
-import { getHeader } from "@tanstack/react-start/server";
+import { getRequestHeader } from "@tanstack/react-start/server";
 
 export const authorizationHeaderMiddleware = createMiddleware({
     type: "function",
 }).server(async ({ next }) => {
-    const authorizationHeader = getHeader("Authorization");
+    const authorizationHeader = getRequestHeader("Authorization");
 
     if (authorizationHeader === undefined) {
         throw new Error("Ingen autorisasjonsheader finnes i forespørselen.");

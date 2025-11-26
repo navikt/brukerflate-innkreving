@@ -11,7 +11,7 @@ import viteReact from "@vitejs/plugin-react";
 export default defineConfig({
     plugins: [
         tsconfigPaths(),
-        tanstackStart({ customViteReactPlugin: true }),
+        tanstackStart(),
         viteReact(),
         tailwindcss(),
         // Only add these plugins in development mode

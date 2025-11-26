@@ -48,10 +48,17 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-# Copy only production dependencies and built application
-COPY --from=build /app/.output /app/.output
-
-# Use non-root user for security
+# Set up pnpm for running srvx
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+USER root
+RUN corepack enable
 USER node
 
-CMD [".output/server/index.mjs"]
+# Copy built application (both server and client)
+COPY --from=build /app/dist /app/dist
+
+# Expose port 3000 (default for srvx)
+EXPOSE 3000
+
+CMD ["pnpx", "srvx", "--prod", "-s", "dist/client", "dist/server/server.js"]
