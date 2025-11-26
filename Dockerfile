@@ -48,12 +48,7 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-# Set up pnpm for running srvx
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-USER root
-RUN corepack enable
-USER node
+RUN npm install -g srvx@0.9.6
 
 # Copy built application (both server and client)
 COPY --from=build /app/dist /app/dist
@@ -61,4 +56,7 @@ COPY --from=build /app/dist /app/dist
 # Expose port 3000 (default for srvx)
 EXPOSE 3000
 
-CMD ["pnpx", "srvx", "--prod", "-s", "dist/client", "dist/server/server.js"]
+# Use non-root user for security
+USER node
+
+CMD ["srvx", "--prod", "-s", "dist/client", "dist/server/server.js"]
