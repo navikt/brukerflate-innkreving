@@ -41,6 +41,10 @@ COPY src/ ./src/
 # Build the application
 RUN pnpm run build
 
+FROM base-dev AS srvx-install
+WORKDIR /srvx
+RUN npm install srvx@0.9.6
+
 # Production stage - use minimal production image
 FROM base-prod AS production
 WORKDIR /app
@@ -48,7 +52,7 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-RUN npm install -g srvx@0.9.6
+COPY --from=srvx-install /srvx/node_modules /app/node_modules
 
 # Copy built application (both server and client)
 COPY --from=build /app/dist /app/dist
@@ -59,4 +63,4 @@ EXPOSE 3000
 # Use non-root user for security
 USER node
 
-CMD ["srvx", "--prod", "-s", "dist/client", "dist/server/server.js"]
+CMD ["node_modules/.bin/srvx", "--prod", "-s", "dist/client", "dist/server/server.js"]
