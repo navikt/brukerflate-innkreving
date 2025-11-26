@@ -76,9 +76,6 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
-      srvx:
-        specifier: ^0.9.6
-        version: 0.9.6
       zod:
         specifier: ^4.1.13
         version: 4.1.13
