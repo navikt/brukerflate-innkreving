@@ -4,7 +4,7 @@ import { SøkSchema } from "../types/skyldner";
 import { texasMiddleware } from "./middleware/texasMiddleware";
 
 export const hentKravoversikt = createServerFn()
-    .validator(SøkSchema)
+    .inputValidator(SøkSchema)
     .middleware([texasMiddleware])
     .handler(async ({ data, context }) => {
         const kravoversiktUrl =
@@ -42,7 +42,7 @@ const Krav = z.object({
 
 const Oppdragsgiver = z.object({
     organisasjonsnummer: z.string(),
-    organisasjonsnavn: z.string(),
+    organisasjonsnavn: z.string().nullable(),
 });
 
 const Skyldner = z.object({

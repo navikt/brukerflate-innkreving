@@ -8,7 +8,7 @@ const KravdetaljerRequestSchema = z.object({
 });
 
 const hentKravdetaljer = createServerFn()
-    .validator(KravdetaljerRequestSchema)
+    .inputValidator(KravdetaljerRequestSchema)
     .middleware([texasMiddleware])
     .handler(async ({ data, context }) => {
         const kravdetaljerUrl =
