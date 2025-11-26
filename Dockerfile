@@ -67,4 +67,4 @@ EXPOSE 3000
 # Use non-root user for security
 USER node
 
-CMD ["node_modules/.bin/srvx", "--prod", "-s", "dist/client", "dist/server/server.js"]
+CMD ["node_modules/srvx/dist/cli.mjs", "--prod", "-s", "dist/client", "dist/server/server.js"]
