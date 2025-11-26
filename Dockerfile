@@ -41,9 +41,12 @@ COPY src/ ./src/
 # Build the application
 RUN pnpm run build
 
-FROM base-dev AS srvx-install
-WORKDIR /srvx
-RUN npm install srvx@0.9.6
+# Production dependencies stage - reuse fetched packages from deps stage
+FROM deps AS prod-deps
+WORKDIR /app
+
+# Install only production dependencies (already fetched in deps stage)
+RUN pnpm install --prod --offline --frozen-lockfile
 
 # Production stage - use minimal production image
 FROM base-prod AS production
@@ -52,7 +55,8 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-COPY --from=srvx-install /srvx/node_modules /app/node_modules
+# Copy production dependencies (includes React, TanStack, srvx, etc.)
+COPY --from=prod-deps /app/node_modules /app/node_modules
 
 # Copy built application (both server and client)
 COPY --from=build /app/dist /app/dist
