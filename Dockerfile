@@ -12,11 +12,12 @@ WORKDIR /app
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 USER root
+RUN chown node:node /app
 RUN corepack enable
 USER node
 
 # Copy package manager files first for better caching
-COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc.template ./
+COPY --chown=node:node pnpm-lock.yaml pnpm-workspace.yaml .npmrc.template ./
 
 # Handle GitHub token substitution and fetch dependencies
 RUN --mount=type=secret,id=github_npm_token,env=GITHUB_NPM_TOKEN \
@@ -24,7 +25,7 @@ RUN --mount=type=secret,id=github_npm_token,env=GITHUB_NPM_TOKEN \
     pnpm fetch
 
 # Copy package.json and install dependencies
-COPY package.json ./
+COPY --chown=node:node package.json ./
 RUN pnpm install --offline --frozen-lockfile
 
 # Build stage
@@ -32,11 +33,13 @@ FROM base-dev AS build
 WORKDIR /app
 
 # Copy installed dependencies
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 
 # Copy build configuration and source code
-COPY package.json tsconfig.json vite.config.ts ./
-COPY src/ ./src/
+COPY --chown=node:node package.json tsconfig.json vite.config.ts ./
+COPY --chown=node:node src/ ./src/
+
+USER node
 
 # Build the application
 RUN pnpm run build
@@ -49,7 +52,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # Copy only production dependencies and built application
-COPY --from=build /app/.output /app/.output
+COPY --from=build --chown=node:node /app/.output /app/.output
 
 # Use non-root user for security
 USER node
