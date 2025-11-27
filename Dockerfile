@@ -41,13 +41,6 @@ COPY src/ ./src/
 # Build the application
 RUN pnpm run build
 
-# Production dependencies stage - reuse fetched packages from deps stage
-FROM deps AS prod-deps
-WORKDIR /app
-
-# Install only production dependencies (already fetched in deps stage)
-RUN pnpm install --prod --offline --frozen-lockfile
-
 # Production stage - use minimal production image
 FROM base-prod AS production
 WORKDIR /app
@@ -55,16 +48,10 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-# Copy production dependencies (includes React, TanStack, srvx, etc.)
-COPY --from=prod-deps /app/node_modules /app/node_modules
-
-# Copy built application (both server and client)
-COPY --from=build /app/dist /app/dist
-
-# Expose port 3000 (default for srvx)
-EXPOSE 3000
+# Copy only production dependencies and built application
+COPY --from=build /app/.output /app/.output
 
 # Use non-root user for security
 USER node
 
-CMD ["node_modules/srvx/dist/cli.mjs", "--prod", "-s", "dist/client", "dist/server/server.js"]
+CMD [".output/server/index.mjs"]

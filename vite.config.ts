@@ -7,6 +7,7 @@ import { texasTokenExchangePlugin } from "./src/vite-plugins/texasTokenExchangeP
 import { mockKravPlugin } from "./src/vite-plugins/mockKravPlugin";
 import tailwindcss from "@tailwindcss/vite";
 import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
 
 export default defineConfig({
     plugins: [
@@ -18,5 +19,6 @@ export default defineConfig({
         { ...injectAuthHeaderPlugin(), apply: "serve" },
         { ...texasTokenExchangePlugin(), apply: "serve" },
         { ...mockKravPlugin(), apply: "serve" },
+        nitro(),
     ],
 });
