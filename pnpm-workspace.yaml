@@ -2,3 +2,5 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
   - esbuild
+
+minimumReleaseAge: 10080 # 7 dager i minutter
