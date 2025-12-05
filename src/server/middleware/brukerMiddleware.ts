@@ -3,13 +3,6 @@ import { authorizationHeaderMiddleware } from "./authorizationHeaderMiddleware";
 import { decodeJwt } from "jose";
 import { z } from "zod";
 
-const BrukerJwt = z.object({
-    NAVident: z.string(),
-    preferred_username: z.string(),
-    name: z.string(),
-    groups: z.array(z.string()),
-});
-
 export const brukerMiddleware = createMiddleware({ type: "function" })
     .middleware([authorizationHeaderMiddleware])
     .server(async ({ next, context }) => {
@@ -32,3 +25,10 @@ export const brukerMiddleware = createMiddleware({ type: "function" })
             },
         });
     });
+
+const BrukerJwt = z.object({
+    NAVident: z.string(),
+    preferred_username: z.string(),
+    name: z.string(),
+    groups: z.array(z.string()),
+});

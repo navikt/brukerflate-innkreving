@@ -7,10 +7,10 @@ export const authorizationHeaderMiddleware = createMiddleware({
     const authorizationHeader = getRequestHeader("Authorization");
 
     if (authorizationHeader === undefined) {
-        throw new Error("Ingen autorisasjonsheader finnes i forespørselen.");
+        throw new Error("Ingen autorisasjonsheader i forespørselen.");
     }
 
-    const bearerToken = authorizationHeader.split(" ").at(1);
+    const bearerToken = authorizationHeader.replace(/^Bearer\s+/i, "");
 
     if (bearerToken === undefined) {
         throw new Error("Autorisasjonsheaderen er feilformatert.");

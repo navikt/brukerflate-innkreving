@@ -49,10 +49,6 @@ const Skyldner = z.object({
     identifikator: z.string(),
     skyldnersNavn: z.string().nullable(),
 });
-export type Krav = z.infer<typeof Krav>;
-export type Oppdragsgiver = z.infer<typeof Oppdragsgiver>;
-
-export type Skyldner = z.infer<typeof Skyldner>;
 
 const Kravoversikt = z.object({
     oppdragsgiver: Oppdragsgiver,

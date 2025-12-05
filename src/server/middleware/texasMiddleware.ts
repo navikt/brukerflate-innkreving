@@ -2,12 +2,6 @@ import { createMiddleware } from "@tanstack/react-start";
 import { z } from "zod";
 import { authorizationHeaderMiddleware } from "./authorizationHeaderMiddleware";
 
-const TexasResponse = z.object({
-    access_token: z.string(),
-    expires_in: z.number(),
-    token_type: z.string(),
-});
-
 export const texasMiddleware = createMiddleware({ type: "function" })
     .middleware([authorizationHeaderMiddleware])
     .server(async ({ next, context }) => {
@@ -34,7 +28,7 @@ export const texasMiddleware = createMiddleware({ type: "function" })
 
         if (!response.ok) {
             throw new Error(
-                `Klarte ikke å veksle token: ${await response.text()}`,
+                `Klarte ikke å veksle token med Texas: ${await response.text()}`,
             );
         }
 
@@ -46,3 +40,9 @@ export const texasMiddleware = createMiddleware({ type: "function" })
             },
         });
     });
+
+const TexasResponse = z.object({
+    access_token: z.string(),
+    expires_in: z.number(),
+    token_type: z.string(),
+});

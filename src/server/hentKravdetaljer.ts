@@ -39,7 +39,7 @@ export type KravdetaljerRequest = z.infer<typeof KravdetaljerRequestSchema>;
 
 const Kravgrunnlag = z.object({
     oppdragsgiversKravidentifikator: z.string(),
-    oppdragsgiversReferanse: z.string(),
+    oppdragsgiversReferanse: z.string().nullable(),
 });
 
 const Kravlinje = z.object({
@@ -80,8 +80,8 @@ const Tilleggsinformasjon = z.object({
 });
 
 const KravDetalj = z.object({
-    forfallsdato: z.string(),
-    foreldelsesdato: z.string(),
+    forfallsdato: z.string().nullable(),
+    foreldelsesdato: z.string().nullable(),
     fastsettelsesdato: z.string(),
     kravtype: z.string(),
     opprinneligBeløp: z.number(),
@@ -95,7 +95,7 @@ const KravDetalj = z.object({
 
 const Oppdragsgiver = z.object({
     organisasjonsnummer: z.string(),
-    organisasjonsnavn: z.string(),
+    organisasjonsnavn: z.string().nullable(),
 });
 
 const Skyldner = z.object({
