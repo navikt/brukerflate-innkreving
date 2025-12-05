@@ -7,9 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { InternalHeader, Page, Spacer, Theme } from "@navikt/ds-react";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import navCss from "@navikt/ds-css/darkside?url";
 import appCss from "../style/app.css?url";
-import tailwind from "../style/tailwind.css?url";
 import favicon from "../favicon.png?url";
 import { QueryClient } from "@tanstack/react-query";
 import { hentBruker } from "../server/hentBruker";
@@ -32,8 +30,6 @@ export const Route = createRootRouteWithContext<{
             },
         ],
         links: [
-            { rel: "stylesheet", href: navCss, type: "text/css" },
-            { rel: "stylesheet", href: tailwind, type: "text/css" },
             { rel: "stylesheet", href: appCss, type: "text/css" },
             { rel: "icon", href: favicon, type: "image/png" },
         ],

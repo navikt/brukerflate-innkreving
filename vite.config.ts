@@ -19,6 +19,6 @@ export default defineConfig({
         { ...injectAuthHeaderPlugin(), apply: "serve" },
         { ...texasTokenExchangePlugin(), apply: "serve" },
         { ...mockKravPlugin(), apply: "serve" },
-        nitro(),
+        { ...nitro(), apply: "build" },
     ],
 });
