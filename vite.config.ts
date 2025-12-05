@@ -15,10 +15,10 @@ export default defineConfig({
         tanstackStart(),
         viteReact(),
         tailwindcss(),
+        { ...nitro(), apply: "build" },
         // Only add these plugins in development mode
         { ...injectAuthHeaderPlugin(), apply: "serve" },
         { ...texasTokenExchangePlugin(), apply: "serve" },
         { ...mockKravPlugin(), apply: "serve" },
-        { ...nitro(), apply: "build" },
     ],
 });
