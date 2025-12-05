@@ -1,18 +1,7 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { KravDetalj } from "../../server/hentKravdetaljer";
 
-interface KravInfoSectionProps {
-    krav: {
-        forfallsdato: string;
-        foreldelsesdato: string;
-        fastsettelsesdato: string;
-        kravtype: string;
-        opprinneligBeløp: number;
-        gjenståendeBeløp: number;
-        skatteetatensKravidentifikator: string;
-    };
-}
-
-export default function KravInfoSection({ krav }: KravInfoSectionProps) {
+export default function KravInfoSection(krav: KravDetalj) {
     return (
         <>
             <Heading size="medium" level="3">
@@ -37,7 +26,8 @@ export default function KravInfoSection({ krav }: KravInfoSectionProps) {
                         {krav.opprinneligBeløp.toLocaleString("nb-NO", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
-                        })} NOK
+                        })}{" "}
+                        NOK
                     </BodyShort>
 
                     <Heading size="small" level="4">
@@ -47,7 +37,8 @@ export default function KravInfoSection({ krav }: KravInfoSectionProps) {
                         {krav.gjenståendeBeløp.toLocaleString("nb-NO", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
-                        })} NOK
+                        })}{" "}
+                        NOK
                     </BodyShort>
 
                     <Heading size="small" level="4">
@@ -69,4 +60,3 @@ export default function KravInfoSection({ krav }: KravInfoSectionProps) {
         </>
     );
 }
-

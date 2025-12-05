@@ -27,16 +27,20 @@ export default function Kravdetaljer(props: KravdetaljerProps) {
                     skyldnersNavn: props.skyldner.skyldnersNavn ?? undefined,
                 }}
             />
-            <OppdragsgiverSection oppdragsgiver={props.oppdragsgiver} />
-            <KravInfoSection krav={props.krav} />
-            <KravgrunnlagSection kravgrunnlag={props.krav.kravgrunnlag} />
+            <OppdragsgiverSection {...props.oppdragsgiver} />
+            <KravInfoSection {...props.krav} />
+            <KravgrunnlagSection {...props.krav.kravgrunnlag} />
             <KravlinjerSection kravlinjer={props.krav.kravlinjer} />
             <AvvikSection avvik={props.avvik ?? undefined} />
             <InnbetalingerSection
-                innbetalingerPlassertMotKrav={props.krav.innbetalingerPlassertMotKrav}
+                innbetalingerPlassertMotKrav={
+                    props.krav.innbetalingerPlassertMotKrav
+                }
             />
             <TilleggsinformasjonSection
-                tilleggsinformasjon={props.krav.tilleggsinformasjon ?? undefined}
+                tilleggsinformasjon={
+                    props.krav.tilleggsinformasjon ?? undefined
+                }
             />
         </VStack>
     );

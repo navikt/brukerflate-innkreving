@@ -1,15 +1,7 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { Oppdragsgiver } from "../../server/hentKravdetaljer";
 
-interface OppdragsgiverSectionProps {
-    oppdragsgiver?: {
-        organisasjonsnummer?: string;
-        organisasjonsnavn?: string;
-    };
-}
-
-export default function OppdragsgiverSection({
-    oppdragsgiver,
-}: OppdragsgiverSectionProps) {
+export default function OppdragsgiverSection(oppdragsgiver: Oppdragsgiver) {
     if (!oppdragsgiver) {
         return null;
     }

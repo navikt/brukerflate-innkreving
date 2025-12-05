@@ -114,8 +114,10 @@ const KravdetaljerSchema = z.object({
     skyldner: Skyldner,
     avvik: Avvik.nullable().optional(),
 });
-export type Kravdetaljer = z.infer<typeof KravdetaljerSchema>;
+export type Oppdragsgiver = z.infer<typeof Oppdragsgiver>;
+export type KravDetalj = z.infer<typeof KravDetalj>;
+export type Kravgrunnlag = z.infer<typeof Kravgrunnlag>;
 
-export type Avvik = z.infer<typeof Avvik>;
+export type Kravdetaljer = z.infer<typeof KravdetaljerSchema>;
 
 export default hentKravdetaljer;
