@@ -31,12 +31,17 @@ export const hentKravoversikt = createServerFn()
         }
     });
 
+const Kravbeskrivelse = z.object({
+    språk: z.string(),
+    tekst: z.string(),
+});
+
 const Krav = z.object({
     skeKravidentifikator: z.string(),
     navKravidentifikator: z.string(),
     navReferanse: z.string().nullable(),
     kravtype: z.string(),
-    kravbeskrivelse: z.record(z.string(), z.string()),
+    kravbeskrivelse: z.array(Kravbeskrivelse),
     gjenståendeBeløp: z.number(),
 });
 

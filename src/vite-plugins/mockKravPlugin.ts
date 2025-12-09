@@ -19,10 +19,12 @@ const mockKravoversiktData: Kravoversikt = {
             navKravidentifikator: "NAV-SKE-2023-001234",
             navReferanse: "Vedtak 15.01.2023",
             kravtype: "Tilbakebetaling av skatt",
-            kravbeskrivelse: {
-                nb: "Tilbakebetaling av for mye utbetalt skatt for 2023",
-                en: "Repayment of overpaid tax for 2023",
-            },
+            kravbeskrivelse: [
+                {
+                    språk: "nb",
+                    tekst: "Tilbakebetaling av for mye utbetalt skatt for 2023",
+                },
+            ],
             gjenståendeBeløp: 15000.0,
         },
         {
@@ -30,10 +32,16 @@ const mockKravoversiktData: Kravoversikt = {
             navKravidentifikator: "12345678-1234-1234-1234-123456789012",
             navReferanse: null,
             kravtype: "Tilbakebetaling av dagpenger",
-            kravbeskrivelse: {
-                nb: "Tilbakebetaling av urettmessig mottatte dagpenger",
-                en: "Repayment of wrongfully received unemployment benefits",
-            },
+            kravbeskrivelse: [
+                {
+                    språk: "nb",
+                    tekst: "Tilbakebetaling av urettmessig mottatte dagpenger",
+                },
+                {
+                    språk: "en",
+                    tekst: "Repayment of wrongfully received unemployment benefits",
+                },
+            ],
             gjenståendeBeløp: 10500.0,
         },
     ],
@@ -189,7 +197,8 @@ const mockKravdetaljerDataWithAvvik: Kravdetaljer = {
     },
     avvik: {
         avvikstype: "tekniskfeil",
-        utdypendeAvviksbeskrivelse: "Det oppstod en teknisk feil ved henting av kravdata. Vennligst prøv igjen senere.",
+        utdypendeAvviksbeskrivelse:
+            "Det oppstod en teknisk feil ved henting av kravdata. Vennligst prøv igjen senere.",
     },
 };
 
@@ -205,8 +214,12 @@ export function mockKravPlugin(): Plugin {
             process.env.KRAVOVERSIKT_API_URL = `http://localhost:5173${kravoversiktPath}`;
             process.env.KRAVDETALJER_API_URL = `http://localhost:5173${kravdetaljerPath}`;
 
-            console.log(`Set KRAVOVERSIKT_API_URL to ${process.env.KRAVOVERSIKT_API_URL}`);
-            console.log(`Set KRAVDETALJER_API_URL to ${process.env.KRAVDETALJER_API_URL}`);
+            console.log(
+                `Set KRAVOVERSIKT_API_URL to ${process.env.KRAVOVERSIKT_API_URL}`,
+            );
+            console.log(
+                `Set KRAVDETALJER_API_URL to ${process.env.KRAVDETALJER_API_URL}`,
+            );
         },
         configureServer(server) {
             // Add middleware to intercept requests to krav endpoints
@@ -225,17 +238,27 @@ export function mockKravPlugin(): Plugin {
                         try {
                             // Parse the request body (optional validation)
                             const requestData = JSON.parse(body);
-                            console.log("Mock kravoversikt request:", requestData);
+                            console.log(
+                                "Mock kravoversikt request:",
+                                requestData,
+                            );
 
                             // Return mock data
                             res.statusCode = 200;
                             res.setHeader("Content-Type", "application/json");
                             res.end(JSON.stringify(mockKravoversiktData));
                         } catch (error) {
-                            console.error("Error in mock kravoversikt handler:", error);
+                            console.error(
+                                "Error in mock kravoversikt handler:",
+                                error,
+                            );
                             res.statusCode = 500;
                             res.setHeader("Content-Type", "application/json");
-                            res.end(JSON.stringify({ error: "Internal server error" }));
+                            res.end(
+                                JSON.stringify({
+                                    error: "Internal server error",
+                                }),
+                            );
                         }
                     });
                     return;
@@ -252,11 +275,17 @@ export function mockKravPlugin(): Plugin {
                         try {
                             // Parse the request body (optional validation)
                             const requestData = JSON.parse(body);
-                            console.log("Mock kravdetaljer request:", requestData);
+                            console.log(
+                                "Mock kravdetaljer request:",
+                                requestData,
+                            );
 
                             // Return different mock data based on the krav ID
                             let responseData = mockKravdetaljerData;
-                            if (requestData.id === "98c6b6d7-28fb-524b-be91-c7d4517299fb") {
+                            if (
+                                requestData.id ===
+                                "98c6b6d7-28fb-524b-be91-c7d4517299fb"
+                            ) {
                                 responseData = mockKravdetaljerDataBronnoy;
                             } else if (requestData.id === "error-case") {
                                 responseData = mockKravdetaljerDataWithAvvik;
@@ -267,10 +296,17 @@ export function mockKravPlugin(): Plugin {
                             res.setHeader("Content-Type", "application/json");
                             res.end(JSON.stringify(responseData));
                         } catch (error) {
-                            console.error("Error in mock kravdetaljer handler:", error);
+                            console.error(
+                                "Error in mock kravdetaljer handler:",
+                                error,
+                            );
                             res.statusCode = 500;
                             res.setHeader("Content-Type", "application/json");
-                            res.end(JSON.stringify({ error: "Internal server error" }));
+                            res.end(
+                                JSON.stringify({
+                                    error: "Internal server error",
+                                }),
+                            );
                         }
                     });
                     return;
@@ -280,7 +316,9 @@ export function mockKravPlugin(): Plugin {
                 next();
             });
 
-            console.log("Mock krav endpoints available for kravoversikt and kravdetaljer");
+            console.log(
+                "Mock krav endpoints available for kravoversikt and kravdetaljer",
+            );
         },
     };
 }
