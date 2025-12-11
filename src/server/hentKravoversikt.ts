@@ -24,7 +24,7 @@ export const hentKravoversikt = createServerFn()
 
         if (!response.ok) {
             throw new Error(
-                `Feilet under henting av kravoversikt: ${response.status} ${response.statusText} - ${await response.text()}`,
+                "Det skjedde en feil under henting av kravoversikt.",
             );
         } else {
             return Kravoversikt.parse(await response.json());

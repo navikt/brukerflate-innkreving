@@ -28,7 +28,7 @@ const hentKravdetaljer = createServerFn()
 
         if (!response.ok) {
             throw new Error(
-                `Feilet under henting av kravdetaljer: ${response.status} ${response.statusText}`,
+                "Det skjedde en feil under henting av kravdetaljer.",
             );
         } else {
             if (response.status === 204) {
