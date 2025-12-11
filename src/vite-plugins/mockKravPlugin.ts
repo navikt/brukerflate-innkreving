@@ -1,4 +1,6 @@
 import { Plugin } from "vite";
+import { buffer } from "node:stream/consumers";
+import { resolveDevServerBaseUrl } from "./devServerUrl";
 import type { Kravoversikt } from "../server/hentKravoversikt";
 import type { Kravdetaljer } from "../server/hentKravdetaljer";
 
@@ -209,116 +211,88 @@ export function mockKravPlugin(): Plugin {
 
     return {
         name: "vite-plugin-mock-krav",
-        configResolved() {
-            // Set the environment variables to use the Vite server
-            process.env.KRAVOVERSIKT_API_URL = `http://localhost:5173${kravoversiktPath}`;
-            process.env.KRAVDETALJER_API_URL = `http://localhost:5173${kravdetaljerPath}`;
-
-            console.log(
-                `Set KRAVOVERSIKT_API_URL to ${process.env.KRAVOVERSIKT_API_URL}`,
-            );
-            console.log(
-                `Set KRAVDETALJER_API_URL to ${process.env.KRAVDETALJER_API_URL}`,
-            );
-        },
+        apply: "serve",
         configureServer(server) {
+            server.httpServer?.once("listening", () => {
+                const base = resolveDevServerBaseUrl(server);
+                process.env.KRAVOVERSIKT_API_URL ||= `${base}${kravoversiktPath}`;
+                process.env.KRAVDETALJER_API_URL ||= `${base}${kravdetaljerPath}`;
+
+                console.log(
+                    `Set KRAVOVERSIKT_API_URL to ${process.env.KRAVOVERSIKT_API_URL}`,
+                );
+                console.log(
+                    `Set KRAVDETALJER_API_URL to ${process.env.KRAVDETALJER_API_URL}`,
+                );
+            });
+
             // Add middleware to intercept requests to krav endpoints
             server.middlewares.use(async (req, res, next) => {
                 // Parse the URL to check if it's one of our mock endpoints
                 const url = req.url || "";
 
                 // Handle kravoversikt endpoint
-                if (url.includes(kravoversiktPath) && req.method === "POST") {
-                    let body = "";
-                    req.on("data", (chunk) => {
-                        body += chunk.toString();
-                    });
+                if (url === kravoversiktPath && req.method === "POST") {
+                    try {
+                        const buf = await buffer(req);
+                        const requestData = JSON.parse(buf.toString() || "{}");
+                        console.log("Mock kravoversikt request:", requestData);
 
-                    req.on("end", () => {
-                        try {
-                            // Parse the request body (optional validation)
-                            const requestData = JSON.parse(body);
-                            console.log(
-                                "Mock kravoversikt request:",
-                                requestData,
-                            );
-
-                            // Return mock data
-                            res.statusCode = 200;
-                            res.setHeader("Content-Type", "application/json");
-                            res.end(JSON.stringify(mockKravoversiktData));
-                        } catch (error) {
-                            console.error(
-                                "Error in mock kravoversikt handler:",
-                                error,
-                            );
-                            res.statusCode = 500;
-                            res.setHeader("Content-Type", "application/json");
-                            res.end(
-                                JSON.stringify({
-                                    error: "Internal server error",
-                                }),
-                            );
-                        }
-                    });
+                        res.statusCode = 200;
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(JSON.stringify(mockKravoversiktData));
+                    } catch (error) {
+                        console.error(
+                            "Error in mock kravoversikt handler:",
+                            error,
+                        );
+                        res.statusCode = 500;
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(
+                            JSON.stringify({ error: "Internal server error" }),
+                        );
+                    }
                     return;
                 }
 
                 // Handle kravdetaljer endpoint
-                if (url.includes(kravdetaljerPath) && req.method === "POST") {
-                    let body = "";
-                    req.on("data", (chunk) => {
-                        body += chunk.toString();
-                    });
+                if (url === kravdetaljerPath && req.method === "POST") {
+                    try {
+                        const buf = await buffer(req);
+                        const requestData = JSON.parse(buf.toString() || "{}");
+                        console.log("Mock kravdetaljer request:", requestData);
 
-                    req.on("end", () => {
-                        try {
-                            // Parse the request body (optional validation)
-                            const requestData = JSON.parse(body);
-                            console.log(
-                                "Mock kravdetaljer request:",
-                                requestData,
-                            );
-
-                            // Return different mock data based on the krav ID
-                            let responseData = mockKravdetaljerData;
-                            if (
-                                requestData.id ===
-                                "98c6b6d7-28fb-524b-be91-c7d4517299fb"
-                            ) {
-                                responseData = mockKravdetaljerDataBronnoy;
-                            } else if (requestData.id === "error-case") {
-                                responseData = mockKravdetaljerDataWithAvvik;
-                            }
-
-                            // Return mock data
-                            res.statusCode = 200;
-                            res.setHeader("Content-Type", "application/json");
-                            res.end(JSON.stringify(responseData));
-                        } catch (error) {
-                            console.error(
-                                "Error in mock kravdetaljer handler:",
-                                error,
-                            );
-                            res.statusCode = 500;
-                            res.setHeader("Content-Type", "application/json");
-                            res.end(
-                                JSON.stringify({
-                                    error: "Internal server error",
-                                }),
-                            );
+                        // Return different mock data based on the krav ID
+                        let responseData = mockKravdetaljerData;
+                        if (
+                            requestData.id ===
+                            "98c6b6d7-28fb-524b-be91-c7d4517299fb"
+                        ) {
+                            responseData = mockKravdetaljerDataBronnoy;
+                        } else if (requestData.id === "error-case") {
+                            responseData = mockKravdetaljerDataWithAvvik;
                         }
-                    });
+
+                        res.statusCode = 200;
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(JSON.stringify(responseData));
+                    } catch (error) {
+                        console.error(
+                            "Error in mock kravdetaljer handler:",
+                            error,
+                        );
+                        res.statusCode = 500;
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(
+                            JSON.stringify({ error: "Internal server error" }),
+                        );
+                    }
                     return;
                 }
 
                 // Pass through for all other requests
                 next();
             });
-
-            console.log(
-                "Mock krav endpoints available for kravoversikt and kravdetaljer",
-            );
         },
     };
 }

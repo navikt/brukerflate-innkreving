@@ -2,6 +2,7 @@ import { Plugin } from "vite";
 import { SignJWT } from "jose";
 import { TextEncoder } from "util";
 import { buffer } from "node:stream/consumers";
+import { resolveDevServerBaseUrl } from "./devServerUrl";
 
 // Create a mock Texas token
 const createMockTexasToken = async () => {
@@ -24,22 +25,7 @@ export function texasTokenExchangePlugin(): Plugin {
         apply: "serve",
         configureServer(server) {
             server.httpServer?.once("listening", () => {
-                const url =
-                    server.resolvedUrls?.local?.[0] ??
-                    server.resolvedUrls?.network?.[0] ??
-                    (() => {
-                        const addr = server.httpServer?.address();
-                        if (addr && typeof addr === "object") {
-                            const host =
-                                server.config.server?.host || "localhost";
-                            const protocol =
-                                server.config.server?.https ? "https" : "http";
-                            return `${protocol}://${host}:${addr.port}`;
-                        }
-                        return `http://localhost:${server.config.server?.port ?? 5173}`;
-                    })();
-
-                const base = url.replace(/\/$/, "");
+                const base = resolveDevServerBaseUrl(server);
                 process.env.NAIS_TOKEN_EXCHANGE_ENDPOINT ||= `${base}${tokenExchangePath}`;
                 process.env.TILBAKEKREVING_TARGET ||=
                     "api://dev-gcp.utenlandsadresser.tilbakekreving/.default";
