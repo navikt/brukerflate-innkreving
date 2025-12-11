@@ -15,11 +15,11 @@ export default defineConfig({
         tanstackStart(),
         viteReact(),
         tailwindcss(),
-        //
+        // Blir kun lagt til ved kjøring av vite build
         nitro().map((plugin) => ({ ...plugin, apply: "build" })),
-        // Only add these plugins in development mode
+        // Blir kun lagt til ved kjøring av vite dev
         injectAuthHeaderPlugin(),
-        { ...texasTokenExchangePlugin(), apply: "serve" },
-        { ...mockKravPlugin(), apply: "serve" },
+        texasTokenExchangePlugin(),
+        mockKravPlugin(),
     ],
 });

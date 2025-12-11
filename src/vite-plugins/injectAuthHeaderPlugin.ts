@@ -25,6 +25,7 @@ export function injectAuthHeaderPlugin(): Plugin {
 
     return {
         name: "vite-plugin-dev-auth",
+        apply: "serve",
         configureServer(server) {
             server.middlewares.use(async (req, _res, next) => {
                 // Only add the header if it doesn't already exist
