@@ -31,6 +31,9 @@ const hentKravdetaljer = createServerFn()
                 `Feilet under henting av kravdetaljer: ${response.status} ${response.statusText}`,
             );
         } else {
+            if (response.status === 204) {
+                return null;
+            }
             return KravdetaljerSchema.parse(await response.json());
         }
     });

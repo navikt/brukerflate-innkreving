@@ -61,6 +61,12 @@ export function mockKravPlugin(): Plugin {
                         const requestData = JSON.parse(buf.toString() || "{}");
                         console.log("Mock kravdetaljer request:", requestData);
 
+                        if (requestData.id === "empty") {
+                            res.statusCode = 204;
+                            res.end();
+                            return;
+                        }
+
                         const idToDetaljer: Record<string, Kravdetaljer> = {
                             "87b5a5c6-17ea-413a-ad80-b6c3406188fa":
                                 mockKravdetaljerData, // skeKravidentifikator

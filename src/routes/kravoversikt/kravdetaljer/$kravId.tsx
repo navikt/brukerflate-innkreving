@@ -30,6 +30,9 @@ function KravdetaljerPage() {
             {kravdetaljer.data && (
                 <Kravdetaljer {...kravdetaljer.data} id={kravId} type={type} />
             )}
+            {kravdetaljer.data === null && (
+                <Alert variant="info">Fant ingen krav</Alert>
+            )}
             {kravdetaljer.isPending && (
                 <Loader size="3xlarge" title="Henter kravdetaljer" />
             )}
