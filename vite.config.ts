@@ -18,7 +18,7 @@ export default defineConfig({
         //
         nitro().map((plugin) => ({ ...plugin, apply: "build" })),
         // Only add these plugins in development mode
-        { ...injectAuthHeaderPlugin(), apply: "serve" },
+        injectAuthHeaderPlugin(),
         { ...texasTokenExchangePlugin(), apply: "serve" },
         { ...mockKravPlugin(), apply: "serve" },
     ],
