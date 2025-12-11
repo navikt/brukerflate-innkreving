@@ -4,6 +4,107 @@ import { resolveDevServerBaseUrl } from "./devServerUrl";
 import type { Kravoversikt } from "../server/hentKravoversikt";
 import type { Kravdetaljer } from "../server/hentKravdetaljer";
 
+export function mockKravPlugin(): Plugin {
+    const kravoversiktPath = "/internal/kravoversikt";
+    const kravdetaljerPath = "/internal/kravdetaljer";
+
+    return {
+        name: "vite-plugin-mock-krav",
+        apply: "serve",
+        configureServer(server) {
+            server.httpServer?.once("listening", () => {
+                const base = resolveDevServerBaseUrl(server);
+                process.env.KRAVOVERSIKT_API_URL ||= `${base}${kravoversiktPath}`;
+                process.env.KRAVDETALJER_API_URL ||= `${base}${kravdetaljerPath}`;
+
+                console.log(
+                    `Set KRAVOVERSIKT_API_URL to ${process.env.KRAVOVERSIKT_API_URL}`,
+                );
+                console.log(
+                    `Set KRAVDETALJER_API_URL to ${process.env.KRAVDETALJER_API_URL}`,
+                );
+            });
+
+            // Add middleware to intercept requests to krav endpoints
+            server.middlewares.use(async (req, res, next) => {
+                // Parse the URL to check if it's one of our mock endpoints
+                const url = req.url || "";
+
+                // Handle kravoversikt endpoint
+                if (url === kravoversiktPath && req.method === "POST") {
+                    try {
+                        const buf = await buffer(req);
+                        const requestData = JSON.parse(buf.toString() || "{}");
+                        console.log("Mock kravoversikt request:", requestData);
+
+                        res.statusCode = 200;
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(JSON.stringify(mockKravoversiktData));
+                    } catch (error) {
+                        console.error(
+                            "Error in mock kravoversikt handler:",
+                            error,
+                        );
+                        res.statusCode = 500;
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(
+                            JSON.stringify({ error: "Internal server error" }),
+                        );
+                    }
+                    return;
+                }
+
+                // Handle kravdetaljer endpoint
+                if (url === kravdetaljerPath && req.method === "POST") {
+                    try {
+                        const buf = await buffer(req);
+                        const requestData = JSON.parse(buf.toString() || "{}");
+                        console.log("Mock kravdetaljer request:", requestData);
+
+                        const idToDetaljer: Record<string, Kravdetaljer> = {
+                            "87b5a5c6-17ea-413a-ad80-b6c3406188fa":
+                                mockKravdetaljerData, // skeKravidentifikator
+                            "NAV-SKE-2023-001234": mockKravdetaljerData, // navKravidentifikator
+
+                            "98c6b6d7-28fb-524b-be91-c7d4517299fb":
+                                mockKravdetaljerDataBronnoy, // skeKravidentifikator
+                            "12345678-1234-1234-1234-123456789012":
+                                mockKravdetaljerDataBronnoy, // navKravidentifikator
+
+                            "0f0e9d8c-7b6a-4a3b-9c2d-1a0b9c8d7e6f":
+                                mockKravdetaljerDataWithAvvik, // skeKravidentifikator (avvik)
+                            "NAV-SKE-2024-009876":
+                                mockKravdetaljerDataWithAvvik, // navKravidentifikator (avvik)
+                        };
+
+                        const responseData =
+                            idToDetaljer[requestData.id] ??
+                            mockKravdetaljerData;
+
+                        res.statusCode = 200;
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(JSON.stringify(responseData));
+                    } catch (error) {
+                        console.error(
+                            "Error in mock kravdetaljer handler:",
+                            error,
+                        );
+                        res.statusCode = 500;
+                        res.setHeader("Content-Type", "application/json");
+                        res.end(
+                            JSON.stringify({ error: "Internal server error" }),
+                        );
+                    }
+                    return;
+                }
+
+                // Pass through for all other requests
+                next();
+            });
+        },
+    };
+}
+
 // Mock data for kravoversikt
 const mockKravoversiktData: Kravoversikt = {
     oppdragsgiver: {
@@ -45,6 +146,19 @@ const mockKravoversiktData: Kravoversikt = {
                 },
             ],
             gjenståendeBeløp: 10500.0,
+        },
+        {
+            skeKravidentifikator: "0f0e9d8c-7b6a-4a3b-9c2d-1a0b9c8d7e6f",
+            navKravidentifikator: "NAV-SKE-2024-009876",
+            navReferanse: "Vedtak 20.02.2024",
+            kravtype: "Tilbakebetaling (test avvik)",
+            kravbeskrivelse: [
+                {
+                    språk: "nb",
+                    tekst: "Test-sak for å verifisere håndtering av avvik i kravdetaljer",
+                },
+            ],
+            gjenståendeBeløp: 0.0,
         },
     ],
 };
@@ -180,10 +294,10 @@ const mockKravdetaljerDataWithAvvik: Kravdetaljer = {
         kravtype: "Tilbakebetaling av skatt",
         opprinneligBeløp: 15000.0,
         gjenståendeBeløp: 10000.0,
-        skatteetatensKravidentifikator: "error-case-123",
+        skatteetatensKravidentifikator: "0f0e9d8c-7b6a-4a3b-9c2d-1a0b9c8d7e6f",
         kravlinjer: [],
         kravgrunnlag: {
-            oppdragsgiversKravidentifikator: "ERROR-2023-001234",
+            oppdragsgiversKravidentifikator: "NAV-SKE-2024-009876",
             oppdragsgiversReferanse: "Vedtak 15.01.2023",
         },
         innbetalingerPlassertMotKrav: [],
@@ -203,96 +317,3 @@ const mockKravdetaljerDataWithAvvik: Kravdetaljer = {
             "Det oppstod en teknisk feil ved henting av kravdata. Vennligst prøv igjen senere.",
     },
 };
-
-export function mockKravPlugin(): Plugin {
-    // Define the paths for our mock endpoints
-    const kravoversiktPath = "/internal/kravoversikt";
-    const kravdetaljerPath = "/internal/kravdetaljer";
-
-    return {
-        name: "vite-plugin-mock-krav",
-        apply: "serve",
-        configureServer(server) {
-            server.httpServer?.once("listening", () => {
-                const base = resolveDevServerBaseUrl(server);
-                process.env.KRAVOVERSIKT_API_URL ||= `${base}${kravoversiktPath}`;
-                process.env.KRAVDETALJER_API_URL ||= `${base}${kravdetaljerPath}`;
-
-                console.log(
-                    `Set KRAVOVERSIKT_API_URL to ${process.env.KRAVOVERSIKT_API_URL}`,
-                );
-                console.log(
-                    `Set KRAVDETALJER_API_URL to ${process.env.KRAVDETALJER_API_URL}`,
-                );
-            });
-
-            // Add middleware to intercept requests to krav endpoints
-            server.middlewares.use(async (req, res, next) => {
-                // Parse the URL to check if it's one of our mock endpoints
-                const url = req.url || "";
-
-                // Handle kravoversikt endpoint
-                if (url === kravoversiktPath && req.method === "POST") {
-                    try {
-                        const buf = await buffer(req);
-                        const requestData = JSON.parse(buf.toString() || "{}");
-                        console.log("Mock kravoversikt request:", requestData);
-
-                        res.statusCode = 200;
-                        res.setHeader("Content-Type", "application/json");
-                        res.end(JSON.stringify(mockKravoversiktData));
-                    } catch (error) {
-                        console.error(
-                            "Error in mock kravoversikt handler:",
-                            error,
-                        );
-                        res.statusCode = 500;
-                        res.setHeader("Content-Type", "application/json");
-                        res.end(
-                            JSON.stringify({ error: "Internal server error" }),
-                        );
-                    }
-                    return;
-                }
-
-                // Handle kravdetaljer endpoint
-                if (url === kravdetaljerPath && req.method === "POST") {
-                    try {
-                        const buf = await buffer(req);
-                        const requestData = JSON.parse(buf.toString() || "{}");
-                        console.log("Mock kravdetaljer request:", requestData);
-
-                        // Return different mock data based on the krav ID
-                        let responseData = mockKravdetaljerData;
-                        if (
-                            requestData.id ===
-                            "98c6b6d7-28fb-524b-be91-c7d4517299fb"
-                        ) {
-                            responseData = mockKravdetaljerDataBronnoy;
-                        } else if (requestData.id === "error-case") {
-                            responseData = mockKravdetaljerDataWithAvvik;
-                        }
-
-                        res.statusCode = 200;
-                        res.setHeader("Content-Type", "application/json");
-                        res.end(JSON.stringify(responseData));
-                    } catch (error) {
-                        console.error(
-                            "Error in mock kravdetaljer handler:",
-                            error,
-                        );
-                        res.statusCode = 500;
-                        res.setHeader("Content-Type", "application/json");
-                        res.end(
-                            JSON.stringify({ error: "Internal server error" }),
-                        );
-                    }
-                    return;
-                }
-
-                // Pass through for all other requests
-                next();
-            });
-        },
-    };
-}
