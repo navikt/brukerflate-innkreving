@@ -2,6 +2,7 @@ import { createMiddleware } from "@tanstack/react-start";
 import { authorizationHeaderMiddleware } from "./authorizationHeaderMiddleware";
 import { decodeJwt } from "jose";
 import { z } from "zod";
+import { redirect } from "@tanstack/react-router";
 
 export const brukerMiddleware = createMiddleware({ type: "function" })
     .middleware([authorizationHeaderMiddleware])
@@ -12,6 +13,10 @@ export const brukerMiddleware = createMiddleware({ type: "function" })
 
         if (!bruker.success) {
             throw new Error(`Feil format på brukers JWT: ${bruker.error}`);
+        }
+
+        if (bruker.data.exp < Date.now() / 1000) {
+            throw redirect({ href: "/oauth2/login" });
         }
 
         return await next({
@@ -31,4 +36,5 @@ const BrukerJwt = z.object({
     preferred_username: z.string(),
     name: z.string(),
     groups: z.array(z.string()),
+    exp: z.number(),
 });

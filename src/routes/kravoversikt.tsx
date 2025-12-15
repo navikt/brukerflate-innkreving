@@ -46,7 +46,7 @@ function Kravoversikt() {
         } else {
             // Reset mutation data to clear the krav list
             kravoversikt.reset();
-            kravdetaljerNavigate({
+            await kravdetaljerNavigate({
                 search: { type: søk.søketype },
                 params: { kravId: søk.søketekst },
             });
