@@ -89,7 +89,7 @@ const KravDetalj = z.object({
     kravtype: z.string(),
     opprinneligBeløp: z.number(),
     gjenståendeBeløp: z.number(),
-    skatteetatensKravidentifikator: z.string(),
+    skatteetatensKravidentifikator: z.string().nullable(),
     kravlinjer: z.array(Kravlinje),
     kravgrunnlag: Kravgrunnlag,
     innbetalingerPlassertMotKrav: z.array(InnbetalingPlassertMotKrav),

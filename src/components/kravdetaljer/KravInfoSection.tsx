@@ -1,4 +1,4 @@
-import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
 import { KravDetalj } from "../../server/hentKravdetaljer";
 
 export default function KravInfoSection(krav: KravDetalj) {
@@ -17,7 +17,14 @@ export default function KravInfoSection(krav: KravDetalj) {
                     <Heading size="small" level="4">
                         Skatteetatens kravidentifikator
                     </Heading>
-                    <BodyShort>{krav.skatteetatensKravidentifikator}</BodyShort>
+                    {krav.skatteetatensKravidentifikator ?
+                        <BodyShort>
+                            {krav.skatteetatensKravidentifikator}
+                        </BodyShort>
+                    :   <Alert variant="info">
+                            Skatteetatens kravidentifikator mangler
+                        </Alert>
+                    }
 
                     <Heading size="small" level="4">
                         Opprinnelig beløp
