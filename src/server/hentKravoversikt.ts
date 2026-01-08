@@ -37,7 +37,7 @@ const Kravbeskrivelse = z.object({
 });
 
 const Krav = z.object({
-    skeKravidentifikator: z.string(),
+    skeKravidentifikator: z.string().nullable(),
     navKravidentifikator: z.string(),
     navReferanse: z.string().nullable(),
     kravtype: z.string(),
