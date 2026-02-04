@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import hentKravdetaljer, {
-    KravdetaljerRequest,
-} from "../server/hentKravdetaljer";
+import hentKravdetaljer from "../server/hentKravdetaljer";
 import { useServerFn } from "@tanstack/react-start";
+import { HentKravdetaljerJsonRequest } from "../generated/model";
 
 export default function useKravdetaljer(
-    kravdetaljerRequest: KravdetaljerRequest,
+    kravdetaljerRequest: HentKravdetaljerJsonRequest,
 ) {
     const kravdetaljer = useServerFn(hentKravdetaljer);
     return useQuery({

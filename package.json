@@ -8,7 +8,10 @@
     "scripts": {
         "dev": "vite dev",
         "build": "vite build && tsc --noEmit",
-        "start": "node .output/server/index.mjs"
+        "start": "node .output/server/index.mjs",
+        "generate:api": "orval",
+        "generate:api:watch": "orval --watch",
+        "postinstall": "pnpm generate:api"
     },
     "repository": {
         "type": "git",
@@ -44,6 +47,7 @@
     "devDependencies": {
         "@eslint/js": "^9.39.1",
         "@eslint/json": "^0.14.0",
+        "@orval/zod": "^8.2.0",
         "@tailwindcss/vite": "^4.1.17",
         "@types/node": "^24.10.2",
         "@types/react": "^19.2.7",
@@ -53,6 +57,7 @@
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-react": "^7.37.5",
         "globals": "^16.5.0",
+        "orval": "^8.2.0",
         "prettier": "3.7.4",
         "prettier-plugin-tailwindcss": "^0.7.2",
         "tailwindcss": "^4.1.17",

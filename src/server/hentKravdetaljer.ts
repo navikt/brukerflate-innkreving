@@ -1,14 +1,12 @@
-import { z } from "zod";
 import { createServerFn } from "@tanstack/react-start";
 import { texasMiddleware } from "./middleware/texasMiddleware";
-
-const KravdetaljerRequestSchema = z.object({
-    id: z.string(),
-    type: z.enum(["SKATTEETATEN", "NAV"]),
-});
+import {
+    PostInternalKravdetaljerBody,
+    PostInternalKravdetaljerResponse,
+} from "../generated/tilbakekreving/tilbakekrevingAPI";
 
 const hentKravdetaljer = createServerFn()
-    .inputValidator(KravdetaljerRequestSchema)
+    .inputValidator(PostInternalKravdetaljerBody)
     .middleware([texasMiddleware])
     .handler(async ({ data, context }) => {
         const kravdetaljerUrl =
@@ -20,10 +18,7 @@ const hentKravdetaljer = createServerFn()
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${context.oboToken}`,
             },
-            body: JSON.stringify({
-                id: data.id,
-                type: data.type,
-            }),
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {
@@ -34,93 +29,10 @@ const hentKravdetaljer = createServerFn()
             if (response.status === 204) {
                 return null;
             }
-            return KravdetaljerSchema.parse(await response.json());
+            return PostInternalKravdetaljerResponse.parse(
+                await response.json(),
+            );
         }
     });
-
-export type KravdetaljerRequest = z.infer<typeof KravdetaljerRequestSchema>;
-
-const Kravgrunnlag = z.object({
-    oppdragsgiversKravidentifikator: z.string(),
-    oppdragsgiversReferanse: z.string().nullable(),
-});
-
-const Kravlinje = z.object({
-    kravlinjetype: z.string(),
-    opprinneligBeløp: z.number(),
-    gjenståendeBeløp: z.number(),
-    kravlinjeBeskrivelse: z.record(z.string(), z.string()),
-});
-
-const InnbetalingPlassertMotKrav = z.object({
-    innbetalingsIdentifikator: z.string(),
-    innbetalingstype: z.string(),
-    innbetalingsdato: z.string(),
-    innbetaltBeløp: z.number(),
-});
-
-const PeriodeMedTvangsmulkt = z.object({
-    fom: z.string(),
-    tom: z.string(),
-});
-
-const YtelseForAvregningBeløp = z.object({
-    valuta: z.string(),
-    beløp: z.number(),
-});
-
-const Tilbakekrevingsperiode = z.object({
-    fom: z.string(),
-    tom: z.string(),
-});
-
-const Tilleggsinformasjon = z.object({
-    type: z.string(),
-    periode: PeriodeMedTvangsmulkt.nullable().optional(),
-    stoppdatoForLøpendeMulkt: z.string().nullable().optional(),
-    ytelserForAvregning: YtelseForAvregningBeløp.nullable().optional(),
-    tilbakekrevingsperiode: Tilbakekrevingsperiode.nullable().optional(),
-});
-
-const KravDetalj = z.object({
-    forfallsdato: z.string().nullable(),
-    foreldelsesdato: z.string().nullable(),
-    fastsettelsesdato: z.string(),
-    kravtype: z.string(),
-    opprinneligBeløp: z.number(),
-    gjenståendeBeløp: z.number(),
-    skatteetatensKravidentifikator: z.string().nullable(),
-    kravlinjer: z.array(Kravlinje),
-    kravgrunnlag: Kravgrunnlag,
-    innbetalingerPlassertMotKrav: z.array(InnbetalingPlassertMotKrav),
-    tilleggsinformasjon: Tilleggsinformasjon.nullable().optional(),
-});
-
-const Oppdragsgiver = z.object({
-    organisasjonsnummer: z.string(),
-    organisasjonsnavn: z.string().nullable(),
-});
-
-const Skyldner = z.object({
-    identifikator: z.string(),
-    skyldnersNavn: z.string().nullable(),
-});
-
-const Avvik = z.object({
-    avvikstype: z.string(),
-    utdypendeAvviksbeskrivelse: z.string(),
-});
-
-const KravdetaljerSchema = z.object({
-    krav: KravDetalj,
-    oppdragsgiver: Oppdragsgiver,
-    skyldner: Skyldner,
-    avvik: Avvik.nullable().optional(),
-});
-export type Oppdragsgiver = z.infer<typeof Oppdragsgiver>;
-export type KravDetalj = z.infer<typeof KravDetalj>;
-export type Kravgrunnlag = z.infer<typeof Kravgrunnlag>;
-
-export type Kravdetaljer = z.infer<typeof KravdetaljerSchema>;
 
 export default hentKravdetaljer;

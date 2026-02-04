@@ -1,22 +1,8 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { HentKravdetaljerJsonResponseKravTilleggsinformasjon } from "../../generated/model";
 
 interface TilleggsinformasjonSectionProps {
-    tilleggsinformasjon?: {
-        type: string;
-        periode?: {
-            fom: string;
-            tom: string;
-        } | null;
-        stoppdatoForLøpendeMulkt?: string | null;
-        ytelserForAvregning?: {
-            valuta: string;
-            beløp: number;
-        } | null;
-        tilbakekrevingsperiode?: {
-            fom: string;
-            tom: string;
-        } | null;
-    };
+    tilleggsinformasjon?: HentKravdetaljerJsonResponseKravTilleggsinformasjon;
 }
 
 export default function TilleggsinformasjonSection({

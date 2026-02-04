@@ -1,10 +1,10 @@
 import { Table } from "@navikt/ds-react";
-import { Kravoversikt } from "../server/hentKravoversikt";
 import React from "react";
 import { Route as KravdetaljerRoute } from "../routes/kravoversikt/kravdetaljer/$kravId";
+import { HentKravoversiktJsonResponseKravItem } from "../generated/model";
 
 interface KravtabellProps {
-    krav: Kravoversikt["krav"];
+    krav: HentKravoversiktJsonResponseKravItem[];
 }
 
 export default function Kravtabell({ krav }: KravtabellProps) {
@@ -20,10 +20,7 @@ export default function Kravtabell({ krav }: KravtabellProps) {
         });
     };
 
-    const handleKeyDown = (
-        e: React.KeyboardEvent,
-        navId: string,
-    ) => {
+    const handleKeyDown = (e: React.KeyboardEvent, navId: string) => {
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             handleRowClick(navId);
@@ -45,7 +42,8 @@ export default function Kravtabell({ krav }: KravtabellProps) {
             </Table.Header>
             <Table.Body>
                 {krav.map((krav, i) => {
-                    const { navKravidentifikator, kravtype, gjenståendeBeløp } = krav;
+                    const { navKravidentifikator, kravtype, gjenståendeBeløp } =
+                        krav;
                     const rowKey = `${navKravidentifikator}-${i}`;
 
                     return (
@@ -55,7 +53,9 @@ export default function Kravtabell({ krav }: KravtabellProps) {
                             tabIndex={0}
                             role="button"
                             onClick={() => handleRowClick(navKravidentifikator)}
-                            onKeyDown={(e) => handleKeyDown(e, navKravidentifikator)}
+                            onKeyDown={(e) =>
+                                handleKeyDown(e, navKravidentifikator)
+                            }
                             aria-label={`Vis detaljer for krav ${navKravidentifikator}`}
                         >
                             <Table.HeaderCell scope="row">
@@ -63,9 +63,9 @@ export default function Kravtabell({ krav }: KravtabellProps) {
                             </Table.HeaderCell>
                             <Table.DataCell>{kravtype}</Table.DataCell>
                             <Table.DataCell align="right">
-                                {new Intl.NumberFormat('nb-NO', {
-                                    style: 'currency',
-                                    currency: 'NOK',
+                                {new Intl.NumberFormat("nb-NO", {
+                                    style: "currency",
+                                    currency: "NOK",
                                 }).format(gjenståendeBeløp)}
                             </Table.DataCell>
                         </Table.Row>

@@ -1,17 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
 import { Alert, BoxNew, Loader } from "@navikt/ds-react";
 import useKravdetaljer from "../../../queries/useKravdetaljer";
 import Kravdetaljer from "../../../components/kravdetaljer/Kravdetaljer";
-
-// Validation schema for search parameters to get the type
-const KravIdSearchSchema = z.object({
-    type: z.enum(["SKATTEETATEN", "NAV"]),
-});
+import { PostInternalKravdetaljerBody } from "../../../generated/tilbakekreving/tilbakekrevingAPI";
 
 export const Route = createFileRoute("/kravoversikt/kravdetaljer/$kravId")({
     component: KravdetaljerPage,
-    validateSearch: KravIdSearchSchema,
+    validateSearch: PostInternalKravdetaljerBody.pick({ type: true }),
 });
 
 function KravdetaljerPage() {
@@ -28,7 +23,7 @@ function KravdetaljerPage() {
             borderRadius="large"
         >
             {kravdetaljer.data && (
-                <Kravdetaljer {...kravdetaljer.data} id={kravId} type={type} />
+                <Kravdetaljer kravdetaljer={kravdetaljer.data} />
             )}
             {kravdetaljer.data === null && (
                 <Alert variant="info">Fant ingen krav</Alert>

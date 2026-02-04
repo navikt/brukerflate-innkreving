@@ -1,7 +1,13 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
-import { Oppdragsgiver } from "../../server/hentKravdetaljer";
+import { HentKravdetaljerJsonResponseOppdragsgiver } from "../../generated/model";
 
-export default function OppdragsgiverSection(oppdragsgiver: Oppdragsgiver) {
+interface OppdragsgiverSectionProps {
+    oppdragsgiver?: HentKravdetaljerJsonResponseOppdragsgiver;
+}
+
+export default function OppdragsgiverSection({
+    oppdragsgiver,
+}: OppdragsgiverSectionProps) {
     if (!oppdragsgiver) {
         return null;
     }

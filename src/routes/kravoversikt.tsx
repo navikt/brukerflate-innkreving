@@ -10,12 +10,12 @@ import {
     Search,
     VStack,
 } from "@navikt/ds-react";
-import { Kravoversikt as KravoversiktType } from "../server/hentKravoversikt";
 import Kravtabell from "../components/Kravtabell";
 import SkyldnerInfo from "../components/SkyldnerInfo";
 import { Søk } from "../types/skyldner";
 import { Route as KravdetaljerRoute } from "./kravoversikt/kravdetaljer/$kravId";
 import useKravoversikt from "../queries/useKravoversikt";
+import { HentKravoversiktJsonResponse } from "../generated/model";
 
 export const Route = createFileRoute("/kravoversikt")({
     component: Kravoversikt,
@@ -41,7 +41,9 @@ function Kravoversikt() {
 
         // Om brukeren søker på skyldner, vises en tabell med krav
         if (søk.søketype === "SKYLDNER") {
-            kravoversikt.mutate(søk);
+            kravoversikt.mutate({
+                data: { skyldner: søk.søketekst, kravfilter: søk.kravfilter },
+            });
             // Om brukeren søker på kravidentifikator, navigeres direkte til kravdetaljer
         } else {
             // Reset mutation data to clear the krav list
@@ -55,7 +57,7 @@ function Kravoversikt() {
 
     return (
         <HGrid gap="6" columns="1fr 3fr">
-            <div className="top-0 sticky max-h-screen self-start overflow-y-auto">
+            <div className="sticky top-0 max-h-screen self-start overflow-y-auto">
                 <VStack gap="6">
                     <BoxNew
                         padding="space-16"
@@ -122,8 +124,7 @@ function Kravoversikt() {
                             )}
                             {kravoversikt.error && (
                                 <Alert variant="error">
-                                    Feil ved søk:{" "}
-                                    {kravoversikt.error.message}
+                                    Feil ved søk: {kravoversikt.error.message}
                                 </Alert>
                             )}
                         </BoxNew>
@@ -138,7 +139,7 @@ function Kravoversikt() {
 function ConditionalKravtabell({
     kravoversikt,
 }: {
-    kravoversikt: KravoversiktType;
+    kravoversikt: HentKravoversiktJsonResponse;
 }) {
     if (kravoversikt.krav.length === 0) {
         return <Alert variant="info">Fant ingen krav</Alert>;

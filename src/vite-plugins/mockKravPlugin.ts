@@ -1,8 +1,10 @@
 import { Plugin } from "vite";
 import { buffer } from "node:stream/consumers";
 import { resolveDevServerBaseUrl } from "./devServerUrl";
-import type { Kravoversikt } from "../server/hentKravoversikt";
-import type { Kravdetaljer } from "../server/hentKravdetaljer";
+import {
+    HentKravdetaljerJsonResponse,
+    HentKravoversiktJsonResponse,
+} from "../generated/model";
 
 export function mockKravPlugin(): Plugin {
     const kravoversiktPath = "/internal/kravoversikt";
@@ -67,7 +69,10 @@ export function mockKravPlugin(): Plugin {
                             return;
                         }
 
-                        const idToDetaljer: Record<string, Kravdetaljer> = {
+                        const idToDetaljer: Record<
+                            string,
+                            HentKravdetaljerJsonResponse
+                        > = {
                             "87b5a5c6-17ea-413a-ad80-b6c3406188fa":
                                 mockKravdetaljerData, // skeKravidentifikator
                             "NAV-SKE-2023-001234": mockKravdetaljerData, // navKravidentifikator
@@ -112,7 +117,7 @@ export function mockKravPlugin(): Plugin {
 }
 
 // Mock data for kravoversikt
-const mockKravoversiktData: Kravoversikt = {
+const mockKravoversiktData: HentKravoversiktJsonResponse = {
     oppdragsgiver: {
         organisasjonsnummer: "889640782",
         organisasjonsnavn: "NAV Arbeid og ytelser",
@@ -170,7 +175,7 @@ const mockKravoversiktData: Kravoversikt = {
 };
 
 // Mock data for kravdetaljer
-const mockKravdetaljerData: Kravdetaljer = {
+const mockKravdetaljerData: HentKravdetaljerJsonResponse = {
     krav: {
         forfallsdato: "2023-12-31",
         foreldelsesdato: "2028-12-31",
@@ -237,7 +242,7 @@ const mockKravdetaljerData: Kravdetaljer = {
 };
 
 // Mock data for kravdetaljer with Brønnøysund type
-const mockKravdetaljerDataBronnoy: Kravdetaljer = {
+const mockKravdetaljerDataBronnoy: HentKravdetaljerJsonResponse = {
     krav: {
         forfallsdato: "2024-06-30",
         foreldelsesdato: "2029-06-30",
@@ -292,7 +297,7 @@ const mockKravdetaljerDataBronnoy: Kravdetaljer = {
 };
 
 // Mock data with avvik
-const mockKravdetaljerDataWithAvvik: Kravdetaljer = {
+const mockKravdetaljerDataWithAvvik: HentKravdetaljerJsonResponse = {
     krav: {
         forfallsdato: "2023-12-31",
         foreldelsesdato: "2028-12-31",

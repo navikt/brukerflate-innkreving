@@ -1,5 +1,4 @@
 import { Heading, VStack } from "@navikt/ds-react";
-import { Kravdetaljer as KravdetaljerResponse } from "../../server/hentKravdetaljer";
 import KravgrunnlagSection from "./KravgrunnlagSection";
 import KravlinjerSection from "./KravlinjerSection";
 import InnbetalingerSection from "./InnbetalingerSection";
@@ -8,13 +7,13 @@ import AvvikSection from "./AvvikSection";
 import OppdragsgiverSection from "./OppdragsgiverSection";
 import SkyldnerSection from "./SkyldnerSection";
 import KravInfoSection from "./KravInfoSection";
+import { HentKravdetaljerJsonResponse } from "../../generated/model";
 
-interface KravdetaljerProps extends KravdetaljerResponse {
-    id: string;
-    type: "SKATTEETATEN" | "NAV";
+interface KravdetaljerProps {
+    kravdetaljer: HentKravdetaljerJsonResponse;
 }
 
-export default function Kravdetaljer(props: KravdetaljerProps) {
+export default function Kravdetaljer({ kravdetaljer }: KravdetaljerProps) {
     return (
         <VStack gap="2">
             <Heading level="2" size="large">
@@ -23,23 +22,28 @@ export default function Kravdetaljer(props: KravdetaljerProps) {
 
             <SkyldnerSection
                 skyldner={{
-                    identifikator: props.skyldner.identifikator,
-                    skyldnersNavn: props.skyldner.skyldnersNavn ?? undefined,
+                    identifikator: kravdetaljer.skyldner.identifikator,
+                    skyldnersNavn:
+                        kravdetaljer.skyldner.skyldnersNavn ?? undefined,
                 }}
             />
-            <OppdragsgiverSection {...props.oppdragsgiver} />
-            <KravInfoSection {...props.krav} />
-            <KravgrunnlagSection {...props.krav.kravgrunnlag} />
-            <KravlinjerSection kravlinjer={props.krav.kravlinjer} />
-            <AvvikSection avvik={props.avvik ?? undefined} />
+            <OppdragsgiverSection oppdragsgiver={kravdetaljer.oppdragsgiver} />
+            <KravInfoSection krav={kravdetaljer.krav} />
+            <KravgrunnlagSection
+                kravgrunnlag={kravdetaljer.krav.kravgrunnlag}
+            />
+            <KravlinjerSection
+                kravlinjer={kravdetaljer.krav.kravlinjer ?? []}
+            />
+            <AvvikSection avvik={kravdetaljer.avvik ?? undefined} />
             <InnbetalingerSection
                 innbetalingerPlassertMotKrav={
-                    props.krav.innbetalingerPlassertMotKrav
+                    kravdetaljer.krav.innbetalingerPlassertMotKrav ?? []
                 }
             />
             <TilleggsinformasjonSection
                 tilleggsinformasjon={
-                    props.krav.tilleggsinformasjon ?? undefined
+                    kravdetaljer.krav.tilleggsinformasjon ?? undefined
                 }
             />
         </VStack>

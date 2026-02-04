@@ -1,16 +1,22 @@
 import { BodyShort, Heading, HStack, VStack } from "@navikt/ds-react";
-import { Kravoversikt } from "../server/hentKravoversikt";
+import {
+    HentKravoversiktJsonResponse,
+    HentKravoversiktJsonResponseSkyldner,
+} from "../generated/model";
 
 interface SkyldnerInfoProps {
-    skyldner: Kravoversikt["skyldner"];
-    gjenståendeBeløpForSkyldner: Kravoversikt["gjenståendeBeløpForSkyldner"];
+    skyldner: HentKravoversiktJsonResponseSkyldner;
+    gjenståendeBeløpForSkyldner: HentKravoversiktJsonResponse["gjenståendeBeløpForSkyldner"];
 }
 
-export default function SkyldnerInfo({ skyldner, gjenståendeBeløpForSkyldner }: SkyldnerInfoProps) {
+export default function SkyldnerInfo({
+    skyldner,
+    gjenståendeBeløpForSkyldner,
+}: SkyldnerInfoProps) {
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('nb-NO', {
-            style: 'currency',
-            currency: 'NOK',
+        return new Intl.NumberFormat("nb-NO", {
+            style: "currency",
+            currency: "NOK",
         }).format(amount);
     };
 
@@ -27,9 +33,7 @@ export default function SkyldnerInfo({ skyldner, gjenståendeBeløpForSkyldner }
                     <BodyShort>
                         {skyldner.skyldnersNavn || "Navn ikke tilgjengelig"}
                     </BodyShort>
-                    <BodyShort size="small">
-                        {skyldner.identifikator}
-                    </BodyShort>
+                    <BodyShort size="small">{skyldner.identifikator}</BodyShort>
                 </div>
                 <div>
                     <BodyShort size="small" className="text-text-subtle">

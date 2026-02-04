@@ -39,10 +39,7 @@ export function BrukerDropdown({
                         Bytt bruker <Spacer />{" "}
                         <PersonGroupIcon aria-hidden fontSize="1.5rem" />
                     </Dropdown.Menu.List.Item>
-                    <Dropdown.Menu.List.Item
-                        as={Link}
-                        href="/oauth2/logout"
-                    >
+                    <Dropdown.Menu.List.Item as={Link} href="/oauth2/logout">
                         Logg ut <Spacer />{" "}
                         <LeaveIcon aria-hidden fontSize="1.5rem" />
                     </Dropdown.Menu.List.Item>

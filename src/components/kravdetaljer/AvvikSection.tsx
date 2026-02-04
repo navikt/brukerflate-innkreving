@@ -1,10 +1,8 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { HentKravdetaljerJsonResponseAvvik } from "../../generated/model";
 
 interface AvvikSectionProps {
-    avvik?: {
-        avvikstype?: string;
-        utdypendeAvviksbeskrivelse?: string;
-    };
+    avvik?: HentKravdetaljerJsonResponseAvvik;
 }
 
 export default function AvvikSection({ avvik }: AvvikSectionProps) {

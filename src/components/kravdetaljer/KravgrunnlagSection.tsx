@@ -1,7 +1,13 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
-import { Kravgrunnlag } from "../../server/hentKravdetaljer";
+import { HentKravdetaljerJsonResponseKravKravgrunnlag } from "../../generated/model";
 
-export default function KravgrunnlagSection(kravgrunnlag: Kravgrunnlag) {
+interface KravgrunnlagSectionProps {
+    kravgrunnlag: HentKravdetaljerJsonResponseKravKravgrunnlag;
+}
+
+export default function KravgrunnlagSection({
+    kravgrunnlag,
+}: KravgrunnlagSectionProps) {
     return (
         <>
             <Heading size="medium" level="3">

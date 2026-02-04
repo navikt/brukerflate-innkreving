@@ -1,10 +1,12 @@
-import { z } from "zod";
 import { createServerFn } from "@tanstack/react-start";
-import { SøkSchema } from "../types/skyldner";
 import { texasMiddleware } from "./middleware/texasMiddleware";
+import {
+    PostInternalKravoversiktBody,
+    PostInternalKravoversiktResponse,
+} from "../generated/tilbakekreving/tilbakekrevingAPI";
 
-export const hentKravoversikt = createServerFn()
-    .inputValidator(SøkSchema)
+const hentKravoversikt = createServerFn()
+    .inputValidator(PostInternalKravoversiktBody)
     .middleware([texasMiddleware])
     .handler(async ({ data, context }) => {
         const kravoversiktUrl =
@@ -16,10 +18,7 @@ export const hentKravoversikt = createServerFn()
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${context.oboToken}`,
             },
-            body: JSON.stringify({
-                skyldner: data.søketekst,
-                kravfilter: data.kravfilter,
-            }),
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {
@@ -27,39 +26,8 @@ export const hentKravoversikt = createServerFn()
                 "Det skjedde en feil under henting av kravoversikt.",
             );
         } else {
-            return Kravoversikt.parse(await response.json());
+            return PostInternalKravoversiktResponse.parse(await response.json());
         }
     });
 
-const Kravbeskrivelse = z.object({
-    språk: z.string(),
-    tekst: z.string(),
-});
-
-const Krav = z.object({
-    skeKravidentifikator: z.string().nullable(),
-    navKravidentifikator: z.string(),
-    navReferanse: z.string().nullable(),
-    kravtype: z.string(),
-    kravbeskrivelse: z.array(Kravbeskrivelse),
-    gjenståendeBeløp: z.number(),
-});
-
-const Oppdragsgiver = z.object({
-    organisasjonsnummer: z.string(),
-    organisasjonsnavn: z.string().nullable(),
-});
-
-const Skyldner = z.object({
-    identifikator: z.string(),
-    skyldnersNavn: z.string().nullable(),
-});
-
-const Kravoversikt = z.object({
-    oppdragsgiver: Oppdragsgiver,
-    krav: z.array(Krav),
-    gjenståendeBeløpForSkyldner: z.number(),
-    skyldner: Skyldner,
-});
-
-export type Kravoversikt = z.infer<typeof Kravoversikt>;
+export default hentKravoversikt;

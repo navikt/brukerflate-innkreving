@@ -1,7 +1,11 @@
 import { Alert, BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
-import { KravDetalj } from "../../server/hentKravdetaljer";
+import { HentKravdetaljerJsonResponseKrav } from "../../generated/model";
 
-export default function KravInfoSection(krav: KravDetalj) {
+interface KravInfoSectionProps {
+    krav: HentKravdetaljerJsonResponseKrav;
+}
+
+export default function KravInfoSection({ krav }: KravInfoSectionProps) {
     return (
         <>
             <Heading size="medium" level="3">

@@ -1,10 +1,8 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { HentKravdetaljerJsonResponseSkyldner } from "../../generated/model";
 
 interface SkyldnerSectionProps {
-    skyldner?: {
-        identifikator?: string;
-        skyldnersNavn?: string;
-    };
+    skyldner?: HentKravdetaljerJsonResponseSkyldner
 }
 
 export default function SkyldnerSection({ skyldner }: SkyldnerSectionProps) {

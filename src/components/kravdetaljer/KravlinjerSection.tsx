@@ -1,12 +1,8 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { HentKravdetaljerJsonResponseKravKravlinjerItem } from "../../generated/model";
 
 interface KravlinjerSectionProps {
-    kravlinjer: Array<{
-        kravlinjetype: string;
-        opprinneligBeløp: number;
-        gjenståendeBeløp: number;
-        kravlinjeBeskrivelse: Record<string, string>;
-    }>;
+    kravlinjer: HentKravdetaljerJsonResponseKravKravlinjerItem[];
 }
 
 export default function KravlinjerSection({
@@ -42,25 +38,35 @@ export default function KravlinjerSection({
                                 kr
                             </BodyShort>
 
-                            <Heading size="small" level="4">
-                                Gjenstående beløp
-                            </Heading>
-                            <BodyShort>
-                                {kravlinje.gjenståendeBeløp.toLocaleString(
-                                    "nb-NO",
-                                    { minimumFractionDigits: 2 },
-                                )}{" "}
-                                kr
-                            </BodyShort>
+                            {kravlinje.gjenståendeBeløp != null && (
+                                <>
+                                    <Heading size="small" level="4">
+                                        Gjenstående beløp
+                                    </Heading>
+                                    <BodyShort>
+                                        {kravlinje.gjenståendeBeløp.toLocaleString(
+                                            "nb-NO",
+                                            { minimumFractionDigits: 2 },
+                                        )}{" "}
+                                        kr
+                                    </BodyShort>
+                                </>
+                            )}
 
-                            <Heading size="small" level="4">
-                                Beskrivelse
-                            </Heading>
-                            <BodyShort>
-                                {kravlinje.kravlinjeBeskrivelse["nb"] ||
-                                    kravlinje.kravlinjeBeskrivelse["en"] ||
-                                    "Ingen beskrivelse tilgjengelig"}
-                            </BodyShort>
+                            {kravlinje.kravlinjeBeskrivelse && (
+                                <>
+                                    <Heading size="small" level="4">
+                                        Beskrivelse
+                                    </Heading>
+                                    <BodyShort>
+                                        {kravlinje.kravlinjeBeskrivelse["nb"] ||
+                                            kravlinje.kravlinjeBeskrivelse[
+                                                "en"
+                                            ] ||
+                                            "Ingen beskrivelse tilgjengelig"}
+                                    </BodyShort>
+                                </>
+                            )}
                         </VStack>
                     </BoxNew>
                 );

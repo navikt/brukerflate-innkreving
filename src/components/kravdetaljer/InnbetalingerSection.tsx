@@ -1,12 +1,8 @@
 import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { HentKravdetaljerJsonResponseKravInnbetalingerPlassertMotKravItem } from "../../generated/model";
 
 interface InnbetalingerSectionProps {
-    innbetalingerPlassertMotKrav: Array<{
-        innbetalingsIdentifikator: string;
-        innbetalingstype: string;
-        innbetalingsdato: string;
-        innbetaltBeløp: number;
-    }>;
+    innbetalingerPlassertMotKrav: HentKravdetaljerJsonResponseKravInnbetalingerPlassertMotKravItem[];
 }
 
 export default function InnbetalingerSection({
@@ -35,7 +31,9 @@ export default function InnbetalingerSection({
                         <Heading size="small" level="4">
                             Innbetalingsidentifikator
                         </Heading>
-                        <BodyShort>{innbetaling.innbetalingsIdentifikator}</BodyShort>
+                        <BodyShort>
+                            {innbetaling.innbetalingsIdentifikator}
+                        </BodyShort>
 
                         <Heading size="small" level="4">
                             Innbetalingstype
