@@ -15,7 +15,13 @@ jobs:
           telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
       steps:
           - uses: actions/checkout@v5
+          - name: Determine what to do
+            id: changed-files
+            uses: "nais/what-changed@main"
+            with:
+              files: .nais/app.yaml .nais/vars/dev-gcp.yaml .nais/vars/prod-gcp.yaml
           - name: Build and push image and SBOM to OCI registry
+            if: steps.changed-files.outputs.changed != 'only-inputs'
             uses: nais/docker-build-push@v0
             id: docker-build-push
             with:

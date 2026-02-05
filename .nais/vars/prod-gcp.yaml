@@ -7,3 +7,8 @@ env:
 replicas:
   min: 2
   max: 4
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 96Mi

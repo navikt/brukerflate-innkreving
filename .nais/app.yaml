@@ -20,8 +20,8 @@ spec:
         {{/each}}
     resources:
         requests:
-            cpu: 10m
-            memory: 96Mi
+            cpu: {{resources.requests.cpu}}
+            memory: {{resources.requests.memory}}
     accessPolicy:
         outbound:
             rules:
