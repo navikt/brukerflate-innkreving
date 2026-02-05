@@ -1,0 +1,50 @@
+version: 2
+updates:
+  # npm dependencies (pnpm)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 10
+    groups:
+      # Group all @navikt packages together
+      navikt:
+        patterns:
+          - "@navikt/*"
+      # Group TanStack packages together
+      tanstack:
+        patterns:
+          - "@tanstack/*"
+      # Group development dependencies
+      development-dependencies:
+        dependency-type: "development"
+        exclude-patterns:
+          - "@tanstack/*"
+      # Group production dependencies
+      production-dependencies:
+        dependency-type: "production"
+        exclude-patterns:
+          - "@navikt/*"
+          - "@tanstack/*"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    min-days-between-updates: 7
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    min-days-between-updates: 7
