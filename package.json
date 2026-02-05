@@ -10,8 +10,7 @@
         "build": "vite build && tsc --noEmit",
         "start": "node .output/server/index.mjs",
         "generate:api": "orval",
-        "generate:api:watch": "orval --watch",
-        "postinstall": "pnpm generate:api"
+        "generate:api:watch": "orval --watch"
     },
     "repository": {
         "type": "git",
