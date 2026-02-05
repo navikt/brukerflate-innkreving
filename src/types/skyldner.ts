@@ -1,12 +1,15 @@
 import { z } from "zod";
+import { PostInternalKravoversiktBody } from "../generated/tilbakekreving/tilbakekrevingAPI";
 
 const SøketypeSchema = z.enum(["SKYLDNER", "NAV", "SKATTEETATEN"]);
-const KravfilterSchema = z.enum(["ALLE", "ÅPNE", "LUKKEDE", "INGEN"]);
+const KravfilterSchema = PostInternalKravoversiktBody.pick({
+    kravfilter: true,
+});
 
 export const SøkSchema = z.object({
     søketekst: z.coerce.string().default(""),
     søketype: SøketypeSchema.default("SKYLDNER"),
-    kravfilter: KravfilterSchema.default("ALLE"),
+    ...KravfilterSchema.shape,
 });
 
 export type Søk = z.infer<typeof SøkSchema>;

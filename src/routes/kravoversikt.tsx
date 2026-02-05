@@ -10,6 +10,7 @@ import {
     Search,
     VStack,
 } from "@navikt/ds-react";
+import { useForm } from "@tanstack/react-form";
 import Kravtabell from "../components/Kravtabell";
 import SkyldnerInfo from "../components/SkyldnerInfo";
 import { Søk } from "../types/skyldner";
@@ -23,37 +24,31 @@ export const Route = createFileRoute("/kravoversikt")({
 
 function Kravoversikt() {
     const kravoversikt = useKravoversikt();
-
     const kravdetaljerNavigate = KravdetaljerRoute.useNavigate();
 
-    const søketekstName = "søketekst";
-    const søketypeName = "søketype";
-    const kravfilterName = "kravfilter";
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const søk = {
-            søketekst: formData.get(søketekstName),
-            søketype: formData.get(søketypeName),
-            kravfilter: formData.get(kravfilterName),
-        } as Søk;
-
-        // Om brukeren søker på skyldner, vises en tabell med krav
-        if (søk.søketype === "SKYLDNER") {
-            kravoversikt.mutate({
-                data: { skyldner: søk.søketekst, kravfilter: søk.kravfilter },
-            });
-            // Om brukeren søker på kravidentifikator, navigeres direkte til kravdetaljer
-        } else {
-            // Reset mutation data to clear the krav list
-            kravoversikt.reset();
-            await kravdetaljerNavigate({
-                search: { type: søk.søketype },
-                params: { kravId: søk.søketekst },
-            });
-        }
-    };
+    const form = useForm({
+        defaultValues: {
+            søketekst: "",
+            søketype: "SKYLDNER",
+            kravfilter: "ALLE",
+        } as Søk,
+        onSubmit: async ({ value }) => {
+            // Om brukeren søker på skyldner, vises en tabell med krav
+            if (value.søketype === "SKYLDNER") {
+                kravoversikt.mutate({
+                    data: { skyldner: value.søketekst, kravfilter: value.kravfilter },
+                });
+                // Om brukeren søker på kravidentifikator, navigeres direkte til kravdetaljer
+            } else {
+                // Reset mutation data to clear the krav list
+                kravoversikt.reset();
+                await kravdetaljerNavigate({
+                    search: { type: value.søketype },
+                    params: { kravId: value.søketekst },
+                });
+            }
+        },
+    });
 
     return (
         <HGrid gap="6" columns="1fr 3fr">
@@ -65,43 +60,63 @@ function Kravoversikt() {
                         borderWidth="1"
                         borderRadius="large"
                     >
-                        <form role="search" onSubmit={handleSubmit}>
+                        <form
+                            role="search"
+                            onSubmit={async (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                await form.handleSubmit();
+                            }}
+                        >
                             <VStack gap="4">
-                                <Search
-                                    name={søketekstName}
-                                    label={
-                                        <Heading level="2" size="medium">
-                                            Søk etter innkrevingskrav
-                                        </Heading>
-                                    }
-                                    hideLabel={false}
-                                    disabled={kravoversikt.isPending}
-                                />
-                                <RadioGroup
-                                    name={søketypeName}
-                                    legend="Velg søketype"
-                                    defaultValue="SKYLDNER"
-                                >
-                                    <Radio value="SKYLDNER">
-                                        Skyldner (fnr/orgnr)
-                                    </Radio>
-                                    <Radio value="NAV">
-                                        Nav-kravidentifikator
-                                    </Radio>
-                                    <Radio value="SKATTEETATEN">
-                                        Skatteetaten-kravidentifikator
-                                    </Radio>
-                                </RadioGroup>
-                                <RadioGroup
-                                    name={kravfilterName}
-                                    legend="Velg kravfilter"
-                                    defaultValue="ALLE"
-                                >
-                                    <Radio value="ALLE">Alle</Radio>
-                                    <Radio value="ÅPNE">Åpne</Radio>
-                                    <Radio value="LUKKEDE">Lukkede</Radio>
-                                    <Radio value="INGEN">Ingen</Radio>
-                                </RadioGroup>
+                                <form.Field name="søketekst">
+                                    {(field) => (
+                                        <Search
+                                            value={field.state.value}
+                                            onChange={field.handleChange}
+                                            label={
+                                                <Heading level="2" size="medium">
+                                                    Søk etter innkrevingskrav
+                                                </Heading>
+                                            }
+                                            hideLabel={false}
+                                            disabled={kravoversikt.isPending}
+                                        />
+                                    )}
+                                </form.Field>
+                                <form.Field name="søketype">
+                                    {(field) => (
+                                        <RadioGroup
+                                            value={field.state.value}
+                                            onChange={field.handleChange}
+                                            legend="Velg søketype"
+                                        >
+                                            <Radio value="SKYLDNER">
+                                                Skyldner (fnr/orgnr)
+                                            </Radio>
+                                            <Radio value="NAV">
+                                                Nav-kravidentifikator
+                                            </Radio>
+                                            <Radio value="SKATTEETATEN">
+                                                Skatteetaten-kravidentifikator
+                                            </Radio>
+                                        </RadioGroup>
+                                    )}
+                                </form.Field>
+                                <form.Field name="kravfilter">
+                                    {(field) => (
+                                        <RadioGroup
+                                            value={field.state.value}
+                                            onChange={field.handleChange}
+                                            legend="Velg kravfilter"
+                                        >
+                                            <Radio value="ALLE">Alle</Radio>
+                                            <Radio value="ÅPNE">Åpne</Radio>
+                                            <Radio value="LUKKEDE">Lukkede</Radio>
+                                            <Radio value="INGEN">Ingen</Radio>
+                                        </RadioGroup>
+                                    )}
+                                </form.Field>
                             </VStack>
                         </form>
                     </BoxNew>
