@@ -71,7 +71,6 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <html>
             <head>
                 <HeadContent />
-                <title>Innkreving</title>
             </head>
             <body>
                 {children}
