@@ -11,12 +11,11 @@ import { nitro } from "nitro/vite";
 
 export default defineConfig({
     plugins: [
+        nitro().map((plugin) => ({ ...plugin, apply: "build" })),
         tsconfigPaths(),
+        tailwindcss(),
         tanstackStart(),
         viteReact(),
-        tailwindcss(),
-        // Blir kun lagt til ved kjøring av vite build
-        nitro().map((plugin) => ({ ...plugin, apply: "build" })),
         // Blir kun lagt til ved kjøring av vite dev
         injectAuthHeaderPlugin(),
         texasTokenExchangePlugin(),
