@@ -5,7 +5,6 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { injectAuthHeaderPlugin } from "./src/vite-plugins/injectAuthHeaderPlugin";
 import { texasTokenExchangePlugin } from "./src/vite-plugins/texasTokenExchangePlugin";
 import { mockKravPlugin } from "./src/vite-plugins/mockKravPlugin";
-import tailwindcss from "@tailwindcss/vite";
 import viteReact from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
 
@@ -13,7 +12,6 @@ export default defineConfig({
     plugins: [
         nitro().map((plugin) => ({ ...plugin, apply: "build" })),
         tsconfigPaths(),
-        tailwindcss(),
         tanstackStart(),
         viteReact(),
         // Blir kun lagt til ved kjøring av vite dev
