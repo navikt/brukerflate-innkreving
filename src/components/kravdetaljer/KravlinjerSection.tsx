@@ -1,4 +1,4 @@
-import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
 import { HentKravdetaljerJsonResponseKravKravlinjerItem } from "../../generated/model";
 
 interface KravlinjerSectionProps {
@@ -15,13 +15,13 @@ export default function KravlinjerSection({
             </Heading>
             {kravlinjer.map((kravlinje, index) => {
                 return (
-                    <BoxNew
+                    <Box
                         key={index}
-                        padding="4"
+                        padding="space-16"
                         borderWidth="2"
-                        borderRadius="xlarge"
+                        borderRadius="12"
                     >
-                        <VStack gap="1">
+                        <VStack gap="space-4">
                             <Heading size="small" level="4">
                                 Kravlinjetype
                             </Heading>
@@ -68,7 +68,7 @@ export default function KravlinjerSection({
                                 </>
                             )}
                         </VStack>
-                    </BoxNew>
+                    </Box>
                 );
             })}
         </>

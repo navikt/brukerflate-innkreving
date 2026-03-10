@@ -21,13 +21,13 @@ export default function SkyldnerInfo({
     };
 
     return (
-        <VStack gap="3">
+        <VStack gap="space-12">
             <Heading level="3" size="medium">
                 Skyldnerinformasjon
             </Heading>
-            <HStack gap="8" wrap={false}>
+            <HStack gap="space-32" wrap={false}>
                 <div>
-                    <BodyShort size="small" className="text-text-subtle">
+                    <BodyShort size="small" className="text-ax-text-neutral-subtle">
                         Skyldner
                     </BodyShort>
                     <BodyShort>
@@ -36,7 +36,7 @@ export default function SkyldnerInfo({
                     <BodyShort size="small">{skyldner.identifikator}</BodyShort>
                 </div>
                 <div>
-                    <BodyShort size="small" className="text-text-subtle">
+                    <BodyShort size="small" className="text-ax-text-neutral-subtle">
                         Totalt gjenstående beløp
                     </BodyShort>
                     <BodyShort weight="semibold">

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Alert, BoxNew, Loader } from "@navikt/ds-react";
+import { Alert, Box, Loader } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Kravdetaljer from "../../../components/kravdetaljer/Kravdetaljer";
 import { PostInternalKravdetaljerBody } from "../../../generated/tilbakekreving/tilbakekrevingAPI";
@@ -18,26 +18,26 @@ export const Route = createFileRoute("/kravoversikt/kravdetaljer/$kravId")({
             kravdetaljerQueryOptions({ id: kravId, type }),
         ),
     pendingComponent: () => (
-        <BoxNew
+        <Box
             padding="space-16"
             borderColor="accent-subtle"
             borderWidth="1"
-            borderRadius="large"
+            borderRadius="8"
         >
             <Loader size="3xlarge" title="Henter kravdetaljer" />
-        </BoxNew>
+        </Box>
     ),
     errorComponent: ({ error }) => (
-        <BoxNew
+        <Box
             padding="space-16"
             borderColor="accent-subtle"
             borderWidth="1"
-            borderRadius="large"
+            borderRadius="8"
         >
             <Alert variant="error">
                 Feilet ved henting av kravdetaljer: {error.message}
             </Alert>
-        </BoxNew>
+        </Box>
     ),
 });
 
@@ -50,15 +50,15 @@ function KravdetaljerPage() {
     );
 
     return (
-        <BoxNew
+        <Box
             padding="space-16"
             borderColor="accent-subtle"
             borderWidth="1"
-            borderRadius="large"
+            borderRadius="8"
         >
             {data === null ?
                 <Alert variant="info">Fant ingen krav</Alert>
             :   <Kravdetaljer kravdetaljer={data} />}
-        </BoxNew>
+        </Box>
     );
 }

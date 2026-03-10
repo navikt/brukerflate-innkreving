@@ -1,4 +1,4 @@
-import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
 import { HentKravdetaljerJsonResponseSkyldner } from "../../generated/model";
 
 interface SkyldnerSectionProps {
@@ -15,8 +15,8 @@ export default function SkyldnerSection({ skyldner }: SkyldnerSectionProps) {
             <Heading size="medium" level="3">
                 Skyldner
             </Heading>
-            <BoxNew padding="4" borderWidth="2" borderRadius="xlarge">
-                <VStack gap="1">
+            <Box padding="space-16" borderWidth="2" borderRadius="12">
+                <VStack gap="space-4">
                     <Heading size="small" level="4">
                         Navn
                     </Heading>
@@ -27,7 +27,7 @@ export default function SkyldnerSection({ skyldner }: SkyldnerSectionProps) {
                     </Heading>
                     <BodyShort>{skyldner.identifikator}</BodyShort>
                 </VStack>
-            </BoxNew>
+            </Box>
         </>
     );
 }

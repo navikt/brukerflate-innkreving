@@ -1,4 +1,4 @@
-import { BodyShort, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, Box, Heading, VStack } from "@navikt/ds-react";
 import { HentKravdetaljerJsonResponseKravInnbetalingerPlassertMotKravItem } from "../../generated/model";
 
 interface InnbetalingerSectionProps {
@@ -21,13 +21,13 @@ export default function InnbetalingerSection({
                 Innbetalinger
             </Heading>
             {innbetalingerPlassertMotKrav.map((innbetaling, index) => (
-                <BoxNew
+                <Box
                     key={index}
-                    padding="4"
+                    padding="space-16"
                     borderWidth="2"
-                    borderRadius="xlarge"
+                    borderRadius="12"
                 >
-                    <VStack gap="1">
+                    <VStack gap="space-4">
                         <Heading size="small" level="4">
                             Innbetalingsidentifikator
                         </Heading>
@@ -56,7 +56,7 @@ export default function InnbetalingerSection({
                             kr
                         </BodyShort>
                     </VStack>
-                </BoxNew>
+                </Box>
             ))}
         </>
     );

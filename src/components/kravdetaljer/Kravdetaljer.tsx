@@ -15,11 +15,10 @@ interface KravdetaljerProps {
 
 export default function Kravdetaljer({ kravdetaljer }: KravdetaljerProps) {
     return (
-        <VStack gap="2">
+        <VStack gap="space-8">
             <Heading level="2" size="large">
                 Krav
             </Heading>
-
             <SkyldnerSection
                 skyldner={{
                     identifikator: kravdetaljer.skyldner.identifikator,

@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import {
     Alert,
-    BoxNew,
+    Box,
     Heading,
     HGrid,
     Loader,
@@ -51,14 +51,14 @@ function Kravoversikt() {
     });
 
     return (
-        <HGrid gap="6" columns="1fr 3fr">
+        <HGrid gap="space-24" columns="1fr 3fr">
             <div className="sticky top-0 max-h-screen self-start overflow-y-auto">
-                <VStack gap="6">
-                    <BoxNew
+                <VStack gap="space-24">
+                    <Box
                         padding="space-16"
                         borderColor="accent-subtle"
                         borderWidth="1"
-                        borderRadius="large"
+                        borderRadius="8"
                     >
                         <form
                             role="search"
@@ -68,7 +68,7 @@ function Kravoversikt() {
                                 await form.handleSubmit();
                             }}
                         >
-                            <VStack gap="4">
+                            <VStack gap="space-16">
                                 <form.Field name="søketekst">
                                     {(field) => (
                                         <Search
@@ -119,15 +119,15 @@ function Kravoversikt() {
                                 </form.Field>
                             </VStack>
                         </form>
-                    </BoxNew>
+                    </Box>
                     {(kravoversikt.data ||
                         kravoversikt.isPending ||
                         kravoversikt.error) && (
-                        <BoxNew
+                        <Box
                             padding="space-16"
                             borderColor="accent-subtle"
                             borderWidth="1"
-                            borderRadius="large"
+                            borderRadius="8"
                         >
                             {kravoversikt.data && (
                                 <ConditionalKravtabell
@@ -142,7 +142,7 @@ function Kravoversikt() {
                                     Feil ved søk: {kravoversikt.error.message}
                                 </Alert>
                             )}
-                        </BoxNew>
+                        </Box>
                     )}
                 </VStack>
             </div>
@@ -161,7 +161,7 @@ function ConditionalKravtabell({
     }
 
     return (
-        <VStack gap="4">
+        <VStack gap="space-16">
             <SkyldnerInfo
                 skyldner={kravoversikt.skyldner}
                 gjenståendeBeløpForSkyldner={
