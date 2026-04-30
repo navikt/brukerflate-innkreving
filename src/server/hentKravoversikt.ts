@@ -22,6 +22,11 @@ const hentKravoversikt = createServerFn()
         });
 
         if (!response.ok) {
+            if (response.status === 404) {
+               return PostInternalKravoversiktResponse.parse( {
+                   krav: [],
+               });
+            }
             throw new Error(
                 "Det skjedde en feil under henting av kravoversikt.",
             );
