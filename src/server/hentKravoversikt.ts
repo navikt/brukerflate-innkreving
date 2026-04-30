@@ -24,7 +24,16 @@ const hentKravoversikt = createServerFn()
         if (!response.ok) {
             if (response.status === 404) {
                return PostInternalKravoversiktResponse.parse( {
+                   oppdragsgiver: {
+                       organisasjonsnummer: "889640782",
+                       organisasjonsnavn: null,
+                   },
                    krav: [],
+                   gjenståendeBeløpForSkyldner: 0,
+                   skyldner: {
+                       identifikator: data.skyldner,
+                       skyldnersNavn: null,
+                   },
                });
             }
             throw new Error(
