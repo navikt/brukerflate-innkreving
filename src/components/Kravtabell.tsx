@@ -10,20 +10,20 @@ interface KravtabellProps {
 export default function Kravtabell({ krav }: KravtabellProps) {
     const navigate = KravdetaljerRoute.useNavigate();
 
-    const handleRowClick = (navId: string) => {
+    const handleRowClick = (kravIdentifikator: string) => {
         // Use NAV identifier for navigation
         navigate({
-            params: { kravId: navId },
-            search: { type: "NAV" },
+            params: { kravId: kravIdentifikator },
+            search: { type: "SKATTEETATEN" },
         }).catch((error) => {
             console.error("Navigation failed:", error);
         });
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent, navId: string) => {
+    const handleKeyDown = (e: React.KeyboardEvent, kravId: string) => {
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            handleRowClick(navId);
+            handleRowClick(kravId);
         }
     };
 
@@ -42,7 +42,7 @@ export default function Kravtabell({ krav }: KravtabellProps) {
             </Table.Header>
             <Table.Body>
                 {krav.map((krav, i) => {
-                    const { navKravidentifikator, kravtype, gjenståendeBeløp } =
+                    const { skeKravidentifikator, navKravidentifikator, kravtype, gjenståendeBeløp } =
                         krav;
                     const rowKey = `${navKravidentifikator}-${i}`;
 
@@ -52,9 +52,9 @@ export default function Kravtabell({ krav }: KravtabellProps) {
                             className="cursor-pointer"
                             tabIndex={0}
                             role="button"
-                            onClick={() => handleRowClick(navKravidentifikator)}
+                            onClick={() => handleRowClick(skeKravidentifikator)}
                             onKeyDown={(e) =>
-                                handleKeyDown(e, navKravidentifikator)
+                                handleKeyDown(e, skeKravidentifikator)
                             }
                             aria-label={`Vis detaljer for krav ${navKravidentifikator}`}
                         >
