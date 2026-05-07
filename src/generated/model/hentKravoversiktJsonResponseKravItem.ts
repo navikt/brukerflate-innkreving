@@ -7,9 +7,9 @@
 import type { HentKravoversiktJsonResponseKravItemKravbeskrivelseItem } from './hentKravoversiktJsonResponseKravItemKravbeskrivelseItem';
 
 export type HentKravoversiktJsonResponseKravItem = {
+  skeKravidentifikator: string;
   /** @nullable */
-  skeKravidentifikator?: string | null;
-  navKravidentifikator: string;
+  navKravidentifikator?: string | null;
   /** @nullable */
   navReferanse?: string | null;
   kravtype: string;

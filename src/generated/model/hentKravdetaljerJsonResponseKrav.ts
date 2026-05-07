@@ -19,8 +19,7 @@ export type HentKravdetaljerJsonResponseKrav = {
   kravtype: string;
   opprinneligBeløp: number;
   gjenståendeBeløp: number;
-  /** @nullable */
-  skatteetatensKravidentifikator?: string | null;
+  skatteetatensKravidentifikator: string;
   kravlinjer?: HentKravdetaljerJsonResponseKravKravlinjerItem[];
   kravgrunnlag: HentKravdetaljerJsonResponseKravKravgrunnlag;
   innbetalingerPlassertMotKrav?: HentKravdetaljerJsonResponseKravInnbetalingerPlassertMotKravItem[];

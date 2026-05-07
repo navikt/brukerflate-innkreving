@@ -19,7 +19,7 @@ export const PostInternalKravdetaljerResponse = zod.object({
   "kravtype": zod.string(),
   "opprinneligBeløp": zod.number(),
   "gjenståendeBeløp": zod.number(),
-  "skatteetatensKravidentifikator": zod.string().nullish(),
+  "skatteetatensKravidentifikator": zod.string(),
   "kravlinjer": zod.array(zod.object({
   "kravlinjetype": zod.string(),
   "opprinneligBeløp": zod.number(),
@@ -79,8 +79,8 @@ export const PostInternalKravoversiktResponse = zod.object({
   "organisasjonsnavn": zod.string().nullish()
 }),
   "krav": zod.array(zod.object({
-  "skeKravidentifikator": zod.string().nullish(),
-  "navKravidentifikator": zod.string(),
+  "skeKravidentifikator": zod.string(),
+  "navKravidentifikator": zod.string().nullish(),
   "navReferanse": zod.string().nullish(),
   "kravtype": zod.string(),
   "kravbeskrivelse": zod.array(zod.object({
