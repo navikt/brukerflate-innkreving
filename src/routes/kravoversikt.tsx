@@ -36,7 +36,7 @@ function Kravoversikt() {
             // Om brukeren søker på skyldner, vises en tabell med krav
             if (value.søketype === "SKYLDNER") {
                 kravoversikt.mutate({
-                    data: { skyldner: value.søketekst, kravfilter: value.kravfilter },
+                    data: { skyldner: value.søketekst.trim(), kravfilter: value.kravfilter },
                 });
                 // Om brukeren søker på kravidentifikator, navigeres direkte til kravdetaljer
             } else {
@@ -44,7 +44,7 @@ function Kravoversikt() {
                 kravoversikt.reset();
                 await kravdetaljerNavigate({
                     search: { type: value.søketype },
-                    params: { kravId: value.søketekst },
+                    params: { kravId: value.søketekst.trim() },
                 });
             }
         },
